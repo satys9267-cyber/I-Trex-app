@@ -1,0 +1,34 @@
+{
+  "name": "itrex-platform",
+  "version": "2.4.0",
+  "description": "I-Trex Innovations — Autonomous Operating System & Enterprise Workspace Platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "gsap": "^3.15.0",
+    "lenis": "^1.3.27",
+    "mysql2": "^3.24.6",
+    "pg": "^8.11.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "itrex",
+    "startup",
+    "enterprise",
+    "workspace",
+    "realtime-sync",
+    "render-cloud"
+  ],
+  "author": "Satyam Swami",
+  "license": "MIT",
+  "devDependencies": {
+    "playwright": "^1.64.1"
+  }
+}

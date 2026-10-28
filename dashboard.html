@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace Dashboard — I-Trex Innovations</title>
+    
+    <!-- Link to Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        itrex: {
+                            bg: '#ffffff',
+                            navy: '#0b0f19',
+                            navyLight: '#1e293b',
+                            gold: '#c29738', 
+                            goldLight: '#fdfcf7',
+                            neutralLight: '#fafafa',
+                            border: '#f1f1f4',
+                            trexos: '#00f2fe',
+                            trexcore: '#f97316',
+                            trexvision: '#06b6d4',
+                            trexshield: '#15803d'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        space: ['Space Grotesk', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- GSAP Animation Engine -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <!-- Lenis Smooth Scroll Engine -->
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-itrex-bg dark:bg-itrex-navy text-itrex-navy dark:text-white font-sans antialiased overflow-x-hidden selection:bg-neutral-100 transition-colors duration-700 min-h-screen flex flex-col justify-between">
+
+    <!-- Scroll Progress Indicator -->
+    <div class="fixed top-0 left-0 w-full h-[3px] bg-neutral-100 dark:bg-neutral-800 z-50">
+        <div id="scroll-trajectory-progress" class="h-full bg-gradient-to-r from-itrex-trexos via-itrex-gold to-itrex-trexshield w-0 transition-all duration-100"></div>
+    </div>
+
+    <!-- Preloader Screen -->
+    <div id="loader" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 flex justify-between pointer-events-none opacity-20">
+            <div class="w-px h-full bg-neutral-200 ml-[10%]"></div>
+            <div class="w-px h-full bg-neutral-200"></div>
+            <div class="w-px h-full bg-neutral-200 mr-[10%]"></div>
+        </div>
+
+        <div class="relative flex flex-col items-center z-10 text-center">
+            <div id="loader-logo-img" class="w-20 h-20 mb-6 rounded-2xl overflow-hidden shadow-xl border border-neutral-200 flex items-center justify-center bg-black">
+                <img src="assets/images/itrex_logo.jpg" alt="I-Trex Logo" class="w-full h-full object-cover">
+            </div>
+
+            <h1 id="loader-logo" class="font-space font-bold tracking-[0.15em] text-4xl md:text-5xl text-itrex-navy flex select-none mb-3">
+                <span class="letter loader-letter opacity-0 transform translate-y-4">I</span>
+                <span class="letter loader-letter opacity-0 transform translate-y-4">-</span>
+                <span class="letter loader-letter opacity-0 transform translate-y-4">T</span>
+                <span class="letter loader-letter opacity-0 transform translate-y-4">R</span>
+                <span class="letter loader-letter opacity-0 transform translate-y-4">E</span>
+                <span class="letter loader-letter opacity-0 transform translate-y-4">X</span>
+            </h1>
+            <p id="loader-sub" class="text-xs tracking-[0.4em] text-neutral-400 uppercase font-mono mt-1 opacity-0 transform translate-y-4">
+                Loading Private Workspace Terminal...
+            </p>
+        </div>
+    </div>
+
+    <!-- Golden Light Sparkles Canvas -->
+    <canvas id="sparkle-canvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-[99] hidden lg:block"></canvas>
+
+    <!-- Background Architectural Guidelines -->
+    <div class="fixed inset-0 flex justify-between pointer-events-none opacity-20 dark:opacity-5 z-0 transition-opacity duration-700">
+        <div class="w-px h-full bg-itrex-border ml-12"></div>
+        <div class="w-px h-full bg-itrex-border hidden md:block"></div>
+        <div class="w-px h-full bg-itrex-border hidden lg:block"></div>
+        <div class="w-px h-full bg-itrex-border mr-12"></div>
+    </div>
+
+    <!-- Top Navigation Bar -->
+    <header id="navbar" class="w-full z-40 transition-all duration-300 py-4 px-6 lg:px-12 border-b border-itrex-border dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md sticky top-0">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            
+            <!-- Left: Logo & Live Sync Indicator -->
+            <div class="flex items-center space-x-4">
+                <a href="index.html" class="flex items-center space-x-3 group" data-hover="heading">
+                    <div class="w-9 h-9 rounded-xl overflow-hidden bg-black border border-neutral-300 dark:border-slate-700 shadow-sm transition-transform duration-500 group-hover:rotate-6 flex items-center justify-center">
+                        <img src="assets/images/itrex_logo.jpg" alt="I-Trex" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex flex-col text-left">
+                        <span class="font-space font-bold tracking-tight text-base leading-none">I-Trex Workspace</span>
+                        <span class="text-[8px] tracking-[0.25em] uppercase text-neutral-400 mt-1">Founder: Satyam · Node SG-EAST</span>
+                    </div>
+                </a>
+
+                <!-- Live Sync Badge -->
+                <div class="hidden sm:inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 text-[10px] font-mono">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span id="sync-status-text">Real-Time Mesh: Active</span>
+                </div>
+
+                <!-- Database Status Indicator -->
+                <div id="db-mode-badge" onclick="checkDatabaseStatus(true)" class="hidden md:inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-[10px] font-mono cursor-pointer hover:bg-cyan-500/20 transition-all duration-300" title="Click to inspect Cloud MySQL Database health">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                    <span id="db-mode-text">DB: Initializing...</span>
+                </div>
+            </div>
+
+            <!-- Right: Actions, Theme, and Profile Chip -->
+            <div class="flex items-center space-x-3 sm:space-x-4">
+                <!-- Live Notification Bell with Dropdown -->
+                <div class="relative">
+                    <button id="notif-bell-btn" onclick="toggleNotificationDropdown()" class="w-9 h-9 rounded-full border border-itrex-border dark:border-slate-800 flex items-center justify-center bg-white dark:bg-slate-900 shadow-sm transition-all duration-300 hover:border-itrex-gold focus:outline-none relative" data-hover="button" title="System Notifications & Change Logs">
+                        <i data-lucide="bell" class="w-4 h-4 text-neutral-600 dark:text-neutral-300"></i>
+                        <span id="notif-badge" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-mono font-bold flex items-center justify-center hidden animate-pulse">0</span>
+                    </button>
+
+                    <!-- Notifications Dropdown Panel -->
+                    <div id="notif-dropdown" class="absolute right-0 mt-3 w-80 sm:w-96 bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-2xl shadow-2xl p-4 hidden z-50 transition-all duration-300">
+                        <div class="flex items-center justify-between pb-3 border-b border-itrex-border dark:border-slate-800">
+                            <div class="flex items-center space-x-2">
+                                <span class="font-space font-bold text-sm text-itrex-navy dark:text-white">Live Notifications</span>
+                                <span id="notif-count-pill" class="text-[9px] px-2 py-0.5 rounded-full bg-itrex-gold/20 text-itrex-gold font-mono font-bold">0 New</span>
+                            </div>
+                            <button onclick="handleMarkAllNotificationsRead()" class="text-[10px] font-mono text-itrex-gold hover:underline">Mark all read</button>
+                        </div>
+                        <div id="notif-list" class="max-h-64 overflow-y-auto space-y-2 mt-3 pr-1 text-xs no-scrollbar">
+                            <div class="text-center py-6 text-neutral-400 text-xs font-mono">No new notifications</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle-btn" class="w-9 h-9 rounded-full border border-itrex-border dark:border-slate-800 flex items-center justify-center bg-white dark:bg-slate-900 shadow-sm transition-all duration-500" data-hover="button" title="Toggle Light / Dark Mode">
+                    <i data-lucide="sun" class="w-4 h-4 text-itrex-gold dark:hidden"></i>
+                    <i data-lucide="moon" class="w-4 h-4 text-itrex-gold hidden dark:block"></i>
+                </button>
+
+                <!-- Public Platform Link -->
+                <a href="index.html" class="hidden md:inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-full border border-itrex-border dark:border-slate-800 text-xs font-semibold text-neutral-500 dark:text-neutral-400 hover:text-itrex-navy dark:hover:text-white transition-colors">
+                    <i data-lucide="globe" class="w-3.5 h-3.5"></i>
+                    <span>Public Platform</span>
+                </a>
+
+                <!-- User Profile Badge & Quick Logout -->
+                <div class="flex items-center space-x-3 pl-3 border-l border-itrex-border dark:border-slate-800">
+                    <div class="w-9 h-9 rounded-full border border-itrex-gold bg-slate-950 flex items-center justify-center text-sm" id="nav-avatar">
+                        👑
+                    </div>
+                    <div class="text-left hidden lg:block">
+                        <span id="nav-username" class="text-xs font-bold text-itrex-navy dark:text-white block leading-tight">Satyam Swami</span>
+                        <span id="nav-userrole" class="text-[9px] font-mono text-itrex-gold uppercase block">ADMINISTRATOR</span>
+                    </div>
+                    <button onclick="handleSignOut()" class="p-2 rounded-lg text-neutral-400 hover:text-rose-500 hover:bg-neutral-100 dark:hover:bg-slate-900 transition-colors" title="Sign out of workspace">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <main id="main-content" class="relative z-10 px-4 sm:px-6 lg:px-12 py-8 flex-1 max-w-7xl mx-auto w-full space-y-8">
+
+        <!-- 1. HERO GREETING & TELEMETRY BANNER -->
+        <section class="bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-[32px] p-6 sm:p-10 shadow-sm relative overflow-hidden transition-colors duration-700">
+            <!-- Subtle background brand art -->
+            <div class="absolute -right-16 -bottom-16 w-80 h-80 opacity-5 pointer-events-none">
+                <img src="assets/images/itrex_logo.jpg" alt="" class="w-full h-full object-contain">
+            </div>
+
+            <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div class="space-y-3">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span id="dash-role-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-widest bg-itrex-gold/10 text-itrex-gold border border-itrex-gold/30">
+                            ADMINISTRATOR
+                        </span>
+                        <span class="text-xs font-mono text-neutral-400">Security Clearance: Tier-1 Verified</span>
+                    </div>
+                    <h1 id="dash-greeting-text" class="font-space font-bold text-3xl sm:text-5xl text-itrex-navy dark:text-white">
+                        Good Day, Satyam!
+                    </h1>
+                    <p id="dash-user-headline" class="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 max-w-2xl leading-relaxed">
+                        Founder & Chief Architect · Leading the Autonomous Microkernel & Distributed Cloud Mesh
+                    </p>
+                </div>
+
+                <!-- Live Clock & Quick Metric Pill -->
+                <div class="flex flex-wrap items-center gap-4 bg-itrex-neutralLight dark:bg-slate-950 p-4 rounded-2xl border border-itrex-border dark:border-slate-800">
+                    <div>
+                        <span class="text-[10px] font-mono uppercase text-neutral-400 block">Terminal Clock</span>
+                        <span id="dash-clock" class="text-xl font-bold font-mono text-itrex-navy dark:text-white">17:15:00</span>
+                    </div>
+                    <div class="border-l border-itrex-border dark:border-slate-800 pl-4">
+                        <span class="text-[10px] font-mono uppercase text-neutral-400 block">Edge Uptime</span>
+                        <span class="text-xl font-bold font-mono text-emerald-500">99.998%</span>
+                    </div>
+                    <div class="border-l border-itrex-border dark:border-slate-800 pl-4">
+                        <span class="text-[10px] font-mono uppercase text-neutral-400 block">Total Shift</span>
+                        <span id="dash-total-hours" class="text-xl font-bold font-mono text-itrex-gold">142.5 h</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action Toolbar -->
+            <div class="mt-8 pt-6 border-t border-itrex-border dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex flex-wrap items-center gap-3">
+                    <button onclick="openNewTaskModal()" class="px-4 py-2.5 rounded-xl bg-itrex-navy dark:bg-white text-white dark:text-itrex-navy font-bold text-xs uppercase tracking-wider transition-all duration-300 flex items-center space-x-2" data-hover="button">
+                        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                        <span>Create Sprint Task</span>
+                    </button>
+                    <button onclick="focusScratchpad()" class="px-4 py-2.5 rounded-xl border border-itrex-border dark:border-slate-800 bg-itrex-neutralLight dark:bg-slate-950 text-xs font-semibold hover:border-itrex-gold transition-colors flex items-center space-x-2" data-hover="button">
+                        <i data-lucide="message-square" class="w-3.5 h-3.5 text-itrex-gold"></i>
+                        <span>Team Scratchpad</span>
+                    </button>
+                    <button onclick="exportDatabaseJSON()" class="px-4 py-2.5 rounded-xl border border-itrex-border dark:border-slate-800 bg-itrex-neutralLight dark:bg-slate-950 text-xs font-semibold hover:border-itrex-gold transition-colors flex items-center space-x-2" data-hover="button" title="Export entire database as JSON for Render/Cloud backup">
+                        <i data-lucide="download" class="w-3.5 h-3.5 text-itrex-trexos"></i>
+                        <span>Export DB Backup</span>
+                    </button>
+                </div>
+
+                <div class="text-[11px] font-mono text-neutral-400 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span id="cloud-sync-indicator">Multi-Tab Mesh Active (Cloud Render Ready)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. SHIFT PRODUCTIVITY TIMER & METRICS -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Shift Stopwatch -->
+            <div class="lg:col-span-6 bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-[32px] p-6 sm:p-8 shadow-sm space-y-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="text-xs font-mono uppercase tracking-widest text-itrex-gold font-bold">Productivity Engine</span>
+                        <h3 class="font-space font-bold text-2xl text-itrex-navy dark:text-white mt-1">Active Work Session</h3>
+                    </div>
+                    <span id="shift-status-tag" class="text-[10px] font-mono uppercase px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-neutral-400">
+                        Standby
+                    </span>
+                </div>
+
+                <div class="bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-2xl p-6 text-center space-y-2">
+                    <span class="text-xs font-mono uppercase tracking-widest text-neutral-400">Elapsed Working Time</span>
+                    <div id="stopwatch-display" class="font-mono text-4xl sm:text-6xl font-extrabold text-itrex-navy dark:text-white tracking-widest">
+                        00:00:00
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3">
+                    <button id="btn-toggle-shift" onclick="toggleShiftStopwatch()" class="flex-1 py-3 bg-itrex-gold hover:bg-amber-400 text-itrex-navy font-bold text-xs uppercase tracking-wider rounded-xl transition-all duration-300 flex items-center justify-center space-x-2" data-hover="button">
+                        <i data-lucide="play" class="w-4 h-4 fill-current" id="shift-btn-icon"></i>
+                        <span id="shift-btn-text">Start Working Session</span>
+                    </button>
+                    <button onclick="resetShiftStopwatch()" class="px-5 py-3 border border-itrex-border dark:border-slate-800 text-neutral-400 hover:text-white text-xs font-bold uppercase rounded-xl transition-colors">
+                        Reset
+                    </button>
+                    <button onclick="saveAndLogShift()" class="px-5 py-3 border border-emerald-500/40 bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white text-xs font-bold uppercase rounded-xl transition-colors flex items-center space-x-1.5" title="Save this session into the database">
+                        <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                        <span>Log Hours</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Historical Shift Logs & Recent Milestones -->
+            <div class="lg:col-span-6 bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-[32px] p-6 sm:p-8 shadow-sm space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="text-xs font-mono uppercase tracking-widest text-neutral-400">Database Record</span>
+                        <h3 class="font-space font-bold text-2xl text-itrex-navy dark:text-white mt-1">Logged Sessions</h3>
+                    </div>
+                    <span class="text-xs font-mono text-neutral-400">Synced to User DB</span>
+                </div>
+
+                <div id="shift-logs-container" class="space-y-2.5 max-h-[220px] overflow-y-auto pr-2 no-scrollbar">
+                    <!-- Populated dynamically from database -->
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 3. REAL-TIME SPRINT KANBAN EXECUTION BOARD -->
+        <section class="space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <span class="text-xs font-mono uppercase tracking-widest text-itrex-gold font-bold">Autonomous Execution</span>
+                    <h2 class="font-space font-bold text-3xl text-itrex-navy dark:text-white mt-1">Sprint Kanban Board</h2>
+                    <p class="text-xs text-neutral-400">Changes update in real-time across all connected terminals and user databases.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="openNewTaskModal()" class="px-4 py-2 bg-itrex-gold hover:bg-amber-400 text-itrex-navy font-bold text-xs uppercase tracking-wider rounded-xl transition-all flex items-center space-x-1.5" data-hover="button">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        <span>Add Task</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                
+                <!-- COLUMN 1: TO DO -->
+                <div class="bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-[28px] p-5 shadow-sm space-y-4 flex flex-col">
+                    <div class="flex items-center justify-between pb-3 border-b border-itrex-border dark:border-slate-800">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-neutral-400"></span>
+                            <span class="font-space font-bold text-sm text-itrex-navy dark:text-white">To Do</span>
+                        </div>
+                        <span id="count-todo" class="text-xs font-mono px-2 py-0.5 rounded-full bg-neutral-100 dark:bg-slate-800 text-neutral-500">0</span>
+                    </div>
+                    <div id="kanban-col-todo" class="space-y-3 flex-1 min-h-[180px]"></div>
+                </div>
+
+                <!-- COLUMN 2: IN PROGRESS -->
+                <div class="bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-[28px] p-5 shadow-sm space-y-4 flex flex-col">
+                    <div class="flex items-center justify-between pb-3 border-b border-itrex-border dark:border-slate-800">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-itrex-trexcore"></span>
+                            <span class="font-space font-bold text-sm text-itrex-navy dark:text-white">In Progress</span>
+                        </div>
+                        <span id="count-in_progress" class="text-xs font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 font-bold">0</span>
+                    </div>
+                    <div id="kanban-col-in_progress" class="space-y-3 flex-1 min-h-[180px]"></div>
+                </div>
+
+                <!-- COLUMN 3: REVIEW -->
+                <div class="bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-[28px] p-5 shadow-sm space-y-4 flex flex-col">
+                    <div class="flex items-center justify-between pb-3 border-b border-itrex-border dark:border-slate-800">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-itrex-trexos"></span>
+                            <span class="font-space font-bold text-sm text-itrex-navy dark:text-white">Code Review</span>
+                        </div>
+                        <span id="count-review" class="text-xs font-mono px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 font-bold">0</span>
+                    </div>
+                    <div id="kanban-col-review" class="space-y-3 flex-1 min-h-[180px]"></div>
+                </div>
+
+                <!-- COLUMN 4: COMPLETED -->
+                <div class="bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-[28px] p-5 shadow-sm space-y-4 flex flex-col">
+                    <div class="flex items-center justify-between pb-3 border-b border-itrex-border dark:border-slate-800">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-itrex-trexshield"></span>
+                            <span class="font-space font-bold text-sm text-itrex-navy dark:text-white">Shipped / Completed</span>
+                        </div>
+                        <span id="count-completed" class="text-xs font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-bold">0</span>
+                    </div>
+                    <div id="kanban-col-completed" class="space-y-3 flex-1 min-h-[180px]"></div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 4. COLLABORATIVE SCRATCHPAD & LIVE AUDIT TRAIL -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Collaborative Notes / Messaging Stream -->
+            <div class="lg:col-span-7 bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-[32px] p-6 sm:p-8 shadow-sm space-y-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="text-xs font-mono uppercase tracking-widest text-itrex-gold font-bold">Real-Time Team Mesh</span>
+                        <h3 class="font-space font-bold text-2xl text-itrex-navy dark:text-white mt-1">Collaborative Scratchpad</h3>
+                    </div>
+                    <span class="text-xs font-mono text-neutral-400">Instant Broadcast</span>
+                </div>
+
+                <!-- Input Box -->
+                <form id="scratchpad-form" onsubmit="handlePostNote(event)" class="space-y-3">
+                    <div class="flex gap-2">
+                        <input id="scratchpad-text" type="text" required placeholder="Type a message or technical update to broadcast..." class="flex-1 bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-2.5 text-xs text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold font-sans">
+                        <select id="scratchpad-cat" class="bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-3 py-2.5 text-xs text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold font-mono">
+                            <option>Kernel</option>
+                            <option>Architecture</option>
+                            <option>SecOps</option>
+                            <option>General</option>
+                        </select>
+                        <button type="submit" class="px-4 py-2.5 bg-itrex-navy dark:bg-white text-white dark:text-itrex-navy font-bold text-xs uppercase rounded-xl transition-all hover:bg-itrex-gold dark:hover:bg-itrex-gold flex items-center space-x-1.5" data-hover="button">
+                            <span>Post</span>
+                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Stream List -->
+                <div id="scratchpad-list" class="space-y-3 max-h-[300px] overflow-y-auto pr-2 no-scrollbar">
+                    <!-- Populated dynamically from database -->
+                </div>
+            </div>
+
+            <!-- Live Audit Log Stream & Change Log Records -->
+            <div class="lg:col-span-5 bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-[32px] p-6 sm:p-8 shadow-sm space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="text-xs font-mono uppercase tracking-widest text-neutral-400">Zero-Trust Audit</span>
+                        <h3 class="font-space font-bold text-2xl text-itrex-navy dark:text-white mt-1">Audit & Logs</h3>
+                    </div>
+                    <!-- View Switcher -->
+                    <div class="flex items-center p-1 bg-neutral-100 dark:bg-slate-950 rounded-xl border border-itrex-border dark:border-slate-800 text-[10px] font-mono">
+                        <button id="btn-feed-audit" onclick="switchAuditTab('activity')" class="px-2.5 py-1 rounded-lg font-bold bg-white dark:bg-slate-900 text-itrex-gold shadow-sm transition-all">Activity</button>
+                        <button id="btn-feed-changelogs" onclick="switchAuditTab('changelog')" class="px-2.5 py-1 rounded-lg font-medium text-neutral-400 hover:text-white transition-all">Change Logs</button>
+                    </div>
+                </div>
+
+                <div id="activity-feed-list" class="space-y-2.5 max-h-[320px] overflow-y-auto pr-2 no-scrollbar">
+                    <!-- Populated dynamically from database -->
+                </div>
+
+                <div id="changelog-feed-list" class="space-y-2.5 max-h-[320px] overflow-y-auto pr-2 no-scrollbar hidden">
+                    <!-- Populated dynamically from change_logs database table -->
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 5. USER PROFILE & DATABASE RECORD EDITOR -->
+        <section class="bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-[32px] p-6 sm:p-10 shadow-sm space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-itrex-border dark:border-slate-800">
+                <div>
+                    <span class="text-xs font-mono uppercase tracking-widest text-itrex-gold font-bold">Profile & Persistence</span>
+                    <h3 class="font-space font-bold text-2xl text-itrex-navy dark:text-white mt-1">User Record Configuration</h3>
+                    <p class="text-xs text-neutral-400">Updates are permanently committed to the database and reflected across your profile.</p>
+                </div>
+                <button type="button" onclick="saveUserProfile()" class="px-6 py-3 bg-itrex-gold hover:bg-amber-400 text-itrex-navy font-bold text-xs uppercase tracking-wider rounded-xl transition-all duration-300 flex items-center space-x-2" data-hover="button">
+                    <i data-lucide="save" class="w-4 h-4"></i>
+                    <span>Commit Profile Updates</span>
+                </button>
+            </div>
+
+            <form id="profile-edit-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-xs">
+                <div>
+                    <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Full Name</label>
+                    <input id="edit-user-name" type="text" class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold font-sans">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Email Address (Immutable ID)</label>
+                    <input id="edit-user-email" type="email" disabled class="w-full bg-neutral-100 dark:bg-slate-950/50 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-neutral-400 cursor-not-allowed font-mono">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Job Title</label>
+                    <input id="edit-user-title" type="text" class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold font-sans">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Department / Team</label>
+                    <input id="edit-user-dept" type="text" class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold font-sans">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Contact Phone</label>
+                    <input id="edit-user-phone" type="text" class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold font-mono">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Security Provider</label>
+                    <input id="edit-user-provider" type="text" disabled class="w-full bg-neutral-100 dark:bg-slate-950/50 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-neutral-400 cursor-not-allowed font-mono">
+                </div>
+                <div class="md:col-span-2 lg:col-span-3">
+                    <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Bio / Technical Responsibilities</label>
+                    <textarea id="edit-user-bio" rows="3" class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold font-sans"></textarea>
+                </div>
+            </form>
+        </section>
+
+        <!-- 6. FOUNDER PRODUCT SHOWCASE & TEASER STAGE MANAGER -->
+        <section class="bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-[32px] p-6 sm:p-10 shadow-sm space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-itrex-border dark:border-slate-800">
+                <div>
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-itrex-gold/10 border border-itrex-gold/30 text-itrex-gold text-[10px] font-mono uppercase tracking-widest font-bold">
+                        <span class="w-1.5 h-1.5 rounded-full bg-itrex-gold animate-pulse"></span>
+                        <span>Founder Enclave Control</span>
+                    </div>
+                    <h3 class="font-space font-bold text-2xl text-itrex-navy dark:text-white mt-2">Product Showcase & Carousel Manager</h3>
+                    <p class="text-xs text-neutral-400">Configure public teaser cards, architectural taglines, accent colors, and transition timing.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button type="button" onclick="resetDefaultProductConfig()" class="px-4 py-2.5 rounded-xl border border-itrex-border dark:border-slate-800 text-neutral-400 hover:text-white text-xs font-bold uppercase transition-colors" data-hover="button">
+                        Reset Defaults
+                    </button>
+                    <button type="button" id="btn-save-product-config" onclick="saveProductShowcaseConfig()" class="px-6 py-2.5 bg-itrex-gold hover:bg-amber-400 text-itrex-navy font-bold text-xs uppercase tracking-wider rounded-xl transition-all duration-300 flex items-center space-x-2 shadow-md" data-hover="button">
+                        <i data-lucide="save" class="w-4 h-4"></i>
+                        <span>Save Showcase Updates</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div class="lg:col-span-4 space-y-3">
+                    <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400">Select Platform Product</label>
+                    <div id="product-mgr-selector-list" class="space-y-2">
+                        <!-- Populated dynamically with 5 products -->
+                    </div>
+
+                    <div class="pt-4 border-t border-itrex-border dark:border-slate-800 space-y-2">
+                        <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400">Auto-Play Timing</label>
+                        <select id="prod-mgr-interval" onchange="handleProductIntervalChange()" class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold font-mono">
+                            <option value="3000">3.0 Seconds (Fast Orbit)</option>
+                            <option value="4000">4.0 Seconds</option>
+                            <option value="4500" selected>4.5 Seconds (Standard Recommended)</option>
+                            <option value="5000">5.0 Seconds</option>
+                            <option value="6000">6.0 Seconds (Relaxed)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-8 bg-itrex-neutralLight/40 dark:bg-slate-950/60 border border-itrex-border dark:border-slate-800 rounded-2xl p-6 space-y-4">
+                    <form id="product-mgr-form" class="space-y-4 text-xs">
+                        <input type="hidden" id="prod-mgr-id" value="trexos">
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Product Title</label>
+                                <input id="prod-mgr-name" type="text" class="w-full bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-2.5 text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold font-bold">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Badge / Category Tag</label>
+                                <input id="prod-mgr-badge" type="text" class="w-full bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-2.5 text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold font-mono">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Architectural Tagline</label>
+                            <input id="prod-mgr-tagline" type="text" class="w-full bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-2.5 text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold font-mono font-medium">
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Public Description</label>
+                            <textarea id="prod-mgr-desc" rows="3" class="w-full bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-2.5 text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold leading-relaxed font-sans"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Highlight / Accent Color</label>
+                            <div class="flex items-center space-x-3">
+                                <input id="prod-mgr-color" type="color" onchange="updateProductColorLabel(this.value)" class="w-10 h-10 rounded-xl border border-itrex-border dark:border-slate-800 bg-transparent cursor-pointer p-0.5">
+                                <span id="prod-mgr-color-label" class="font-mono text-xs text-neutral-400 uppercase">#00F3FF</span>
+                                <div class="flex items-center space-x-1.5 ml-auto">
+                                    <button type="button" onclick="setProductColorPreset('#00f3ff')" class="w-6 h-6 rounded-full bg-[#00f3ff] border border-white/20 shadow-sm" title="Cyan"></button>
+                                    <button type="button" onclick="setProductColorPreset('#ff6b00')" class="w-6 h-6 rounded-full bg-[#ff6b00] border border-white/20 shadow-sm" title="Orange"></button>
+                                    <button type="button" onclick="setProductColorPreset('#8b5cf6')" class="w-6 h-6 rounded-full bg-[#8b5cf6] border border-white/20 shadow-sm" title="Purple"></button>
+                                    <button type="button" onclick="setProductColorPreset('#10b981')" class="w-6 h-6 rounded-full bg-[#10b981] border border-white/20 shadow-sm" title="Emerald"></button>
+                                    <button type="button" onclick="setProductColorPreset('#d4af37')" class="w-6 h-6 rounded-full bg-[#d4af37] border border-white/20 shadow-sm" title="Gold"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ========================================== -->
+    <!-- MODAL: ADD SPRINT TASK                     -->
+    <!-- ========================================== -->
+    <div id="modal-new-task" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 auth-modal-backdrop hidden">
+        <div class="max-w-lg w-full bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-[36px] p-8 shadow-2xl relative space-y-6">
+            <button onclick="closeNewTaskModal()" class="absolute top-6 right-6 text-neutral-400 hover:text-itrex-navy dark:hover:text-white text-lg font-bold">
+                &times;
+            </button>
+
+            <div class="space-y-1 text-left">
+                <span class="text-xs font-mono uppercase tracking-widest text-itrex-gold font-bold">New Deliverable</span>
+                <h3 class="font-space font-bold text-2xl text-itrex-navy dark:text-white">Create Sprint Task</h3>
+                <p class="text-xs text-neutral-400">Stores in system database and synchronizes across all active sessions.</p>
+            </div>
+
+            <form id="form-add-task" onsubmit="handleCreateTask(event)" class="space-y-4 text-left">
+                <div>
+                    <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Task Title *</label>
+                    <input id="task-title" type="text" required placeholder="e.g. Implement Zero-Trust micro-container isolation" class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Priority Level</label>
+                        <select id="task-priority" class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold">
+                            <option value="Critical">Critical (Immediate)</option>
+                            <option value="High" selected>High Priority</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Category</label>
+                        <select id="task-category" class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold">
+                            <option>Core Kernel</option>
+                            <option>Infrastructure</option>
+                            <option>Spatial AI</option>
+                            <option>SecOps</option>
+                            <option>General</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Target Completion Date</label>
+                    <input id="task-due-date" type="date" class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold font-mono">
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Task Description</label>
+                    <textarea id="task-desc" rows="3" placeholder="Provide architectural details, acceptance criteria, or telemetry benchmarks..." class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 bg-itrex-gold hover:bg-amber-400 text-itrex-navy font-bold text-xs uppercase tracking-widest rounded-xl transition-all duration-300 flex items-center justify-center space-x-2">
+                    <span>Commit Task to System Database</span>
+                    <i data-lucide="check" class="w-4 h-4"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Floating Toast Notification Container -->
+    <div id="toast-container" class="fixed top-20 right-6 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
+
+    <!-- Multi-Column Minimal Workspace Footer -->
+    <footer class="py-8 px-6 lg:px-12 border-t border-itrex-border dark:border-slate-800 bg-white dark:bg-itrex-navy text-[11px] text-neutral-400 font-mono transition-colors duration-700">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>I-Trex Innovations Operating System · User Session Active</span>
+            </div>
+            <div>
+                <span>Presented by Satyam · Real-Time Mesh Architecture</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="database.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>

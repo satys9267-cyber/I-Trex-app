@@ -1,0 +1,290 @@
+/* Custom Stylesheet — I-Trex Innovations
+ * Replicating Safar Saathi's Signature Design System, Luxury Aesthetics & Animations
+ */
+
+html {
+    scroll-behavior: smooth;
+    background-color: #ffffff;
+    transition: background-color 0.7s ease;
+}
+
+html.dark {
+    background-color: #0b0f19;
+}
+
+/* Hide scrollbars cleanly */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Boundary mask for horizontal layouts */
+.scroller-mask {
+    -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+}
+
+/* Dynamic Cursor Setup - Hardware Cursor Preserved for 0ms Latency */
+/* Custom cursor glow and micro-particles render as complementary ambient layers without hiding the native pointer */
+
+/* Spacing & 3D perspective for loader */
+#loader-logo {
+    perspective: 1000px;
+}
+
+.letter {
+    display: inline-block;
+    transform-origin: center;
+}
+
+/* Structural Architectural Grid Line rules */
+.w-px {
+    background-color: #f1f1f4;
+}
+
+.dark .w-px {
+    background-color: #1e293b;
+}
+
+/* Advanced visual shadows & borders */
+.shadow-sm {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.02) !important;
+}
+.shadow-md {
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.04) !important;
+}
+
+.dark .shadow-sm {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25) !important;
+}
+.dark .shadow-md {
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Hero Mask Blending */
+.hero-mask-blend {
+    -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,1) 35%, rgba(0,0,0,0) 80%);
+    mask-image: radial-gradient(circle, rgba(0,0,0,1) 35%, rgba(0,0,0,0) 80%);
+}
+
+/* Orbit rotation for avatar compass rings */
+@keyframes orbitSpinSlow {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.orbit-spin-slow {
+    animation: orbitSpinSlow 22s linear infinite;
+}
+
+/* Metallic Chrome Glow Filter */
+.chrome-glow {
+    filter: drop-shadow(0 0 12px rgba(194, 151, 56, 0.35)) drop-shadow(0 0 24px rgba(0, 242, 254, 0.2));
+}
+
+/* Smooth color transitions for interactive state nodes */
+.node-glow-pulse {
+    box-shadow: 0 0 0 0 rgba(194, 151, 56, 0.6);
+    animation: nodePulse 2.4s infinite cubic-bezier(0.66, 0, 0, 1);
+}
+
+@keyframes nodePulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(194, 151, 56, 0.6);
+    }
+    70% {
+        box-shadow: 0 0 0 12px rgba(194, 151, 56, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(194, 151, 56, 0);
+    }
+}
+
+/* Authentication Page & Modal Specializations */
+.otp-digit-box {
+    width: 48px;
+    height: 56px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    font-family: 'Space Grotesk', monospace;
+    border-radius: 12px;
+    transition: all 0.25s ease;
+}
+
+.otp-digit-box:focus {
+    border-color: #c29738;
+    box-shadow: 0 0 0 3px rgba(194, 151, 56, 0.2);
+    transform: translateY(-2px);
+    outline: none;
+}
+
+/* Password Strength Indicator */
+.strength-bar {
+    height: 4px;
+    border-radius: 2px;
+    transition: all 0.35s ease;
+}
+
+/* Auth Modal Backdrop */
+.auth-modal-backdrop {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+/* Google Sign-in button hover */
+.btn-google-auth {
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-google-auth:hover {
+    transform: translateY(-1.5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.dark .btn-google-auth:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Lenis Smooth Scroll Recommended Rules */
+html.lenis, html.lenis body {
+    height: auto;
+}
+
+.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+    overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+    pointer-events: none;
+}
+
+/* Glassmorphism & High-Tech Cards */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(241, 241, 244, 0.8);
+}
+
+.dark .glass-panel {
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(30, 41, 59, 0.8);
+}
+
+/* 3D Tilt perspective container */
+.tilt-card {
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s ease;
+    transform-style: preserve-3d;
+}
+
+.tilt-card:hover {
+    transform: translateY(-6px) scale(1.01);
+}
+
+/* Animated SVG Dash Traveling Pulse */
+@keyframes dashTravel {
+    to {
+        stroke-dashoffset: -100;
+    }
+}
+
+.path-traveling-dash {
+    stroke-dasharray: 8 16;
+    animation: dashTravel 4s linear infinite;
+}
+
+/* Curved / Peek Carousel Stage Styling */
+.carousel-card-silhouette {
+    border-radius: 36px;
+    position: relative;
+    transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.65s ease, box-shadow 0.65s ease, border-color 0.5s ease;
+    will-change: transform, opacity;
+}
+
+.carousel-card-silhouette::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 15%;
+    right: 15%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, currentColor, transparent);
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.carousel-card-active {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+    z-index: 20;
+}
+
+.carousel-card-inactive {
+    opacity: 0.38 !important;
+    transform: scale(0.92) !important;
+    z-index: 10;
+    cursor: pointer;
+}
+
+.carousel-card-inactive:hover {
+    opacity: 0.62 !important;
+}
+
+/* Curved peek mask for stage edges */
+.carousel-stage-mask {
+    -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+}
+
+/* Cyber-Neural Stream Atmosphere & Holographic Cards */
+.cyber-neural-gradient-title {
+    background: linear-gradient(135deg, #0b0f19 0%, #1e293b 60%, #c29738 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.dark .cyber-neural-gradient-title {
+    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 60%, #c29738 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.isometric-wireframe-grid {
+    background-image: 
+        linear-gradient(to right, rgba(194, 151, 56, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 242, 254, 0.08) 1px, transparent 1px);
+    background-size: 40px 40px;
+    transform: perspective(600px) rotateX(55deg);
+    transform-origin: center top;
+}
+
+.holographic-card {
+    background: rgba(12, 19, 34, 0.94);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.holographic-card:hover {
+    border-color: rgba(194, 151, 56, 0.65);
+    box-shadow: 0 0 25px rgba(194, 151, 56, 0.2), 0 16px 32px rgba(0, 0, 0, 0.5);
+}

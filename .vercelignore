@@ -1,0 +1,10 @@
+node_modules
+tests
+*.png
+data
+.vscode
+.git
+.github
+verify-playwright-full.js
+verify-playwright.js
+start-server.ps1
