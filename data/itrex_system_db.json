@@ -1,0 +1,139 @@
+{
+  "users": [
+    {
+      "id": "usr-001",
+      "name": "Satyam Swami",
+      "email": "satys9267@gmail.com",
+      "role": "admin",
+      "title": "Founder & Chief Architect",
+      "department": "Executive Systems & Kernel",
+      "avatar": "👑",
+      "phone": "+91 74998 25344",
+      "bio": "Founding visionary of I-Trex Innovations. Leading autonomous neural microkernels and distributed systems.",
+      "provider": "Google OAuth (Verified)",
+      "verified": true,
+      "totalShiftHours": "142.5"
+    },
+    {
+      "id": "usr-002",
+      "name": "Ishwari Patil",
+      "email": "ishwari.patil@itrex.internal",
+      "role": "admin",
+      "title": "Co-Founder & AI Systems Lead",
+      "department": "Neural Systems & Core AI",
+      "avatar": "🔬",
+      "phone": "+91 98220 00000",
+      "bio": "Co-Founder at I-Trex Innovations. Leading distributed ML systems and spatial telemetry algorithms.",
+      "provider": "Google OAuth (Verified)",
+      "verified": true,
+      "totalShiftHours": "118.0"
+    }
+  ],
+  "tasks": [
+    {
+      "title": "Verify MySQL 24/7 Zero Charges Cloud Integration",
+      "description": "Automated Playwright & Node verification test",
+      "assignedTo": "usr-001",
+      "assigneeName": "Satyam Swami",
+      "priority": "Critical",
+      "category": "Database",
+      "id": "tsk-mvsg78zu",
+      "createdAt": "2026-10-28T18:28:47.562Z"
+    },
+    {
+      "id": "tsk-seed-01",
+      "title": "TrexOS Deterministic Kernel v2.4 Release",
+      "description": "Compile and benchmark microkernel Ring 0 memory enclaves with sub-0.35ms scheduling latency.",
+      "assignedTo": "usr-001",
+      "assigneeName": "Satyam Swami",
+      "priority": "Critical",
+      "status": "in_progress",
+      "category": "Kernel Architecture",
+      "dueDate": "2026-11-05",
+      "createdAt": "2026-10-28T18:28:32.340Z"
+    },
+    {
+      "id": "tsk-seed-02",
+      "title": "Planetary State Sync Mesh Optimization",
+      "description": "Deploy WireGuard mTLS consensus nodes across 12 edge cloud regions.",
+      "assignedTo": "usr-002",
+      "assigneeName": "Ishwari Patil",
+      "priority": "High",
+      "status": "review",
+      "category": "Distributed Mesh",
+      "dueDate": "2026-11-08",
+      "createdAt": "2026-10-28T18:28:32.346Z"
+    }
+  ],
+  "notes": [
+    {
+      "id": "note-seed-01",
+      "author": "Satyam Swami",
+      "authorAvatar": "👑",
+      "text": "Autonomous Microkernel v2.4 passed all memory barrier tests at 0.35ms latency.",
+      "category": "Architecture",
+      "timestamp": "Today at 10:45 AM"
+    }
+  ],
+  "shifts": [],
+  "activity_logs": [],
+  "change_logs": [
+    {
+      "id": "clog-mvsg78zv-ia7m",
+      "user_id": "usr-001",
+      "user_name": "Satyam Swami",
+      "action_type": "TASK_CREATED",
+      "target_entity": "tasks",
+      "target_id": "tsk-mvsg78zu",
+      "change_details": "{\"title\":\"Verify MySQL 24/7 Zero Charges Cloud Integration\",\"priority\":\"Critical\"}",
+      "ip_address": "::1",
+      "level": "INFO",
+      "created_at": "2026-10-28T18:28:47.563Z"
+    },
+    {
+      "id": "clog-seed-01",
+      "user_id": "usr-001",
+      "user_name": "Satyam Swami",
+      "action_type": "SYSTEM_BOOT",
+      "target_entity": "database",
+      "target_id": "itrex_db",
+      "change_details": "System initialized with Unified MySQL + Local Engine.",
+      "ip_address": "127.0.0.1",
+      "level": "INFO",
+      "created_at": "2026-10-28T18:28:32.346Z"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "notif-mvsg78zv-tiwg",
+      "user_id": "usr-001",
+      "title": "New Task Assigned: Verify MySQL 24/7 Zero Charges Cloud Integration",
+      "message": "Task \"Verify MySQL 24/7 Zero Charges Cloud Integration\" with Critical priority was created and assigned.",
+      "type": "info",
+      "is_read": false,
+      "link": "dashboard.html#tasks",
+      "created_at": "2026-10-28T18:28:47.564Z"
+    },
+    {
+      "id": "notif-seed-01",
+      "user_id": "all",
+      "title": "MySQL Database Engine Online",
+      "message": "Autonomous MySQL relational database initialized with change logs & notification streams.",
+      "type": "success",
+      "is_read": false,
+      "link": "dashboard.html",
+      "created_at": "2026-10-28T18:28:32.346Z"
+    },
+    {
+      "id": "notif-seed-02",
+      "user_id": "usr-001",
+      "title": "Welcome Founder Satyam Swami",
+      "message": "Your I-Trex Workspace is active with 24/7 cloud persistence.",
+      "type": "info",
+      "is_read": false,
+      "link": "dashboard.html#profile",
+      "created_at": "2026-10-28T18:28:32.346Z"
+    }
+  ],
+  "contact_inquiries": []
+}
