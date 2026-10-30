@@ -84,7 +84,7 @@
     <!-- Sticky Product Subnavigation Bar -->
     <div class="sticky top-20 z-40 bg-black/90 backdrop-blur-md border-b border-white/10 px-6 overflow-x-auto no-scrollbar">
         <div class="max-w-7xl mx-auto flex items-center justify-between py-3 gap-6 font-mono text-xs">
-            <div class="flex items-center gap-6 shrink-0">
+            <div id="product-subnav-links" class="flex items-center gap-6 shrink-0">
                 <a href="#trexos" class="text-neutral-400 hover:text-white transition-colors py-1 border-b-2 border-transparent hover:border-cyan-400">01 // TREXOS</a>
                 <a href="#trexcore" class="text-neutral-400 hover:text-white transition-colors py-1 border-b-2 border-transparent hover:border-orange-400">02 // TREXCORE</a>
                 <a href="#trexvision" class="text-neutral-400 hover:text-white transition-colors py-1 border-b-2 border-transparent hover:border-cyan-300">03 // TREXVISION</a>
@@ -113,6 +113,7 @@
         </div>
     </section>
 
+    <div id="products-dynamic-container">
     <!-- PRODUCT 01: TREXOS -->
     <section id="trexos" class="py-28 px-6 lg:px-12 border-b border-white/10 bg-black">
         <div class="max-w-7xl mx-auto space-y-12">
@@ -491,6 +492,8 @@ int trace_syscall(struct trace_event_raw_sys_enter *ctx) {
         </div>
     </section>
 
+    </div><!-- /#products-dynamic-container -->
+
     <!-- Bottom Action CTA -->
     <section class="py-24 px-6 lg:px-12 border-t border-white/10 bg-gradient-to-t from-black via-[#05070a] to-black text-center">
         <div class="max-w-4xl mx-auto space-y-8">
@@ -523,6 +526,7 @@ int trace_syscall(struct trace_event_raw_sys_enter *ctx) {
     </footer>
 
     <!-- Master Application Script with Thematic Animations -->
+    <script src="products-sync.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

@@ -635,8 +635,9 @@ function initAuthController() {
         `);
 
         setTimeout(() => {
-            const targetView = user.role === 'admin' ? 'admin' : (user.role === 'employee' ? 'employee' : 'user');
-            window.location.href = `dashboard.html?role=${targetView}`;
+            const isPrivileged = user.role === 'admin' || user.role === 'founder' || user.role === 'co-founder';
+            const targetPage = isPrivileged ? 'admin.html' : `dashboard.html?role=${user.role || 'user'}`;
+            window.location.href = targetPage;
         }, 1200);
     }
 

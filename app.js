@@ -40,6 +40,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 11. Initialize GSAP ScrollTrigger Animations
     initScrollAnimations();
+
+    // 12. Synchronize leadership cards with database
+    initLeadershipSync();
 });
 
 /* ==========================================================================
@@ -95,58 +98,127 @@ function initPreloader() {
     }
 
     const hasSeenIntro = sessionStorage.getItem('itrex_intro_seen');
-    if (hasSeenIntro) {
-        preloader.classList.add('fade-out');
-        setTimeout(() => {
-            if (preloader.parentNode) preloader.remove();
-            triggerHeroHeadlineAnimation();
-        }, 350);
+    const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (hasSeenIntro || prefersReducedMotion) {
+        preloader.style.display = 'none';
+        if (preloader.parentNode) preloader.remove();
+        triggerHeroHeadlineAnimation();
         return;
     }
 
-    // Step 1: Smooth subtle scale-in of the metallic logo
-    if (logoImg) {
-        setTimeout(() => {
-            logoImg.classList.remove('scale-95');
-            logoImg.classList.add('scale-100');
-        }, 300);
+    let isDismissed = false;
+
+    function completeIntro() {
+        if (isDismissed) return;
+        isDismissed = true;
+        sessionStorage.setItem('itrex_intro_seen', 'true');
+
+        if (typeof gsap !== 'undefined') {
+            gsap.to(preloader, {
+                opacity: 0,
+                duration: 0.7,
+                ease: "power2.inOut",
+                onComplete: () => {
+                    if (preloader.parentNode) preloader.remove();
+                }
+            });
+            setTimeout(() => {
+                triggerHeroHeadlineAnimation();
+            }, 250);
+        } else {
+            preloader.classList.add('fade-out');
+            setTimeout(() => {
+                if (preloader.parentNode) preloader.remove();
+                triggerHeroHeadlineAnimation();
+            }, 500);
+        }
     }
 
-    // Step 2: Fade-in of brand typography with wide letter spacing
-    if (brandText) {
-        setTimeout(() => {
-            brandText.classList.remove('opacity-0');
-            brandText.classList.add('opacity-100');
-        }, 1500);
-    }
+    if (typeof gsap !== 'undefined') {
+        const tl = gsap.timeline();
 
-    // Step 3: Extended cinematic duration (4.5 seconds for majestic supercar pacing)
-    const dismissTimer = setTimeout(() => {
-        dismissPreloader();
-    }, 4500);
+        // PHASE 1: Initial Appearance (0.0s - 0.8s) - Prominent logo fade-in & scale
+        tl.fromTo(logoImg, 
+            { opacity: 0, scale: 0.90 },
+            { opacity: 1, scale: 1.0, duration: 0.8, ease: "power2.out" }
+        )
+        // PHASE 2: Logo Presentation (0.8s - 2.0s) - Brand typography reveal
+        .fromTo(brandText,
+            { opacity: 0, y: 15 },
+            { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
+            "-=0.2"
+        )
+        // PHASE 3: Seamless Dissolve & Overlap (2.2s - 2.9s)
+        .to(preloader, {
+            opacity: 0,
+            duration: 0.75,
+            ease: "power2.inOut",
+            delay: 0.9,
+            onStart: () => {
+                // PHASE 4: Seamless Homepage Reveal overlaps with preloader dissolve
+                triggerHeroHeadlineAnimation();
+            },
+            onComplete: () => {
+                isDismissed = true;
+                sessionStorage.setItem('itrex_intro_seen', 'true');
+                if (preloader.parentNode) preloader.remove();
+            }
+        });
 
-    if (skipBtn) {
-        skipBtn.addEventListener('click', () => {
-            clearTimeout(dismissTimer);
-            dismissPreloader();
+        if (skipBtn) skipBtn.addEventListener('click', () => { tl.kill(); completeIntro(); });
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !isDismissed) {
+                tl.kill();
+                completeIntro();
+            }
+        });
+
+    } else {
+        if (logoImg) logoImg.classList.add('scale-100');
+        if (brandText) brandText.classList.remove('opacity-0');
+        const timer = setTimeout(completeIntro, 2800);
+        if (skipBtn) skipBtn.addEventListener('click', () => { clearTimeout(timer); completeIntro(); });
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') { clearTimeout(timer); completeIntro(); }
         });
     }
+}
 
-    window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && preloader && !preloader.classList.contains('fade-out')) {
-            clearTimeout(dismissTimer);
-            dismissPreloader();
+async function initLeadershipSync() {
+    try {
+        const response = await fetch('/api/profiles/public');
+        if (!response.ok) return;
+        const { founder, cofounder } = await response.json();
+
+        if (founder) {
+            const fName = document.getElementById('founder-name');
+            const fTitle = document.getElementById('founder-title');
+            const fBio = document.getElementById('founder-bio');
+            const fSkills = document.getElementById('founder-skills');
+
+            if (fName && founder.name) fName.textContent = founder.name;
+            if (fTitle && founder.title) fTitle.textContent = founder.title;
+            if (fBio && founder.bio) fBio.textContent = founder.bio;
+            if (fSkills && Array.isArray(founder.skills)) {
+                fSkills.innerHTML = founder.skills.map(s => '<span class="font-mono text-[10px] px-2.5 py-1 bg-white/5 border border-white/10 text-neutral-300">' + s + '</span>').join('');
+            }
         }
-    });
 
-    function dismissPreloader() {
-        sessionStorage.setItem('itrex_intro_seen', 'true');
-        preloader.classList.add('fade-out');
-        setTimeout(() => {
-            if (preloader.parentNode) preloader.remove();
-            triggerHeroHeadlineAnimation();
-        }, 850);
-    }
+        if (cofounder) {
+            const cName = document.getElementById('cofounder-name');
+            const cTitle = document.getElementById('cofounder-title');
+            const cBio = document.getElementById('cofounder-bio');
+            const cSkills = document.getElementById('cofounder-skills');
+
+            if (cName && cofounder.name) cName.textContent = cofounder.name;
+            if (cTitle && cofounder.title) cTitle.textContent = cofounder.title;
+            if (cBio && cofounder.bio) cBio.textContent = cofounder.bio;
+            if (cSkills && Array.isArray(cofounder.skills)) {
+                cSkills.innerHTML = cofounder.skills.map(s => '<span class="font-mono text-[10px] px-2.5 py-1 bg-white/5 border border-white/10 text-neutral-300">' + s + '</span>').join('');
+            }
+        }
+    } catch (e) {}
 }
 
 /* ==========================================================================

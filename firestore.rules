@@ -4,66 +4,166 @@ rules_version = '2';
 // Assumed Data Model
 // ===============================================================
 //
-// Application: I-Trex Innovations
+// Application: I-Trex Admin Management System & Enterprise Ecosystem
 // Architecture: Cloud Firestore Hardened Security Rules (OWASP-Compliant)
-// Founder: Satyam Swami (satys9267@gmail.com)
+// Leadership: Satyam Swami (Founder, satys9267@gmail.com, usr-001)
+//             Ishwari Patil (Co-Founder, ishwari.patil@itrex.internal, usr-002)
+//
+// Collection: /products/{productId}
+// Document ID: Product ID (e.g., trx-01, trx-02)
+// Fields:
+//   - id: string (optional, 1-128 chars, immutable)
+//   - slug: string (optional, 1-100 chars)
+//   - code: string (optional, 1-50 chars)
+//   - name: string (required, 1-150 chars)
+//   - tagline: string (required, 1-200 chars)
+//   - category: string (required, 1-50 chars)
+//   - status: string (required, enum ['published', 'draft', 'archived'], 1-50 chars)
+//   - stage: string (optional, 0-50 chars)
+//   - assurance: string (optional, 0-100 chars)
+//   - leadArchitect: string (optional, 0-100 chars)
+//   - pricing: string (optional, 0-50 chars)
+//   - shortDescription: string (optional, 0-1000 chars)
+//   - detailedDescription: string (optional, 0-10000 chars)
+//   - technologies: list (optional, max 30 string items)
+//   - keyFeatures: list (optional, max 30 string items)
+//   - specs: map (optional, max 20 key-value pairs)
+//   - banner: string (optional, 0-500 chars)
+//   - demoLink: string (optional, 0-500 chars)
+//   - githubLink: string (optional, 0-500 chars)
+//   - docLink: string (optional, 0-500 chars)
+//   - launchDate: string (optional, 0-50 chars)
+//   - createdAt: timestamp / string (optional, immutable)
+//   - updatedAt: timestamp / string (optional)
+//
+// Collection: /approvalRequests/{requestId} (alias: /approval_requests/{requestId})
+// Document ID: Request ID (e.g., appr-001)
+// Fields:
+//   - id: string (optional, 1-128 chars, immutable)
+//   - applicantId: string (required, 1-128 chars, applicant UID, immutable)
+//   - applicantName: string (required, 1-100 chars)
+//   - applicantEmail: string (required, 5-120 chars, valid email)
+//   - requestedDesignation: string (optional, 0-100 chars)
+//   - department: string (optional, 0-100 chars)
+//   - bio: string (optional, 0-2000 chars)
+//   - status: string (required, enum ['pending', 'approved', 'rejected'])
+//   - emailVerified: bool (optional)
+//   - submittedAt: timestamp / string (optional, immutable)
+//   - decision: map (optional, max 10 keys: approverId, approverName, approverRole, decision, reason, decidedAt)
+//   - createdAt: timestamp / string (optional, immutable)
+//   - updatedAt: timestamp / string (optional)
 //
 // Collection: /users/{userId}
-// Document ID: Firebase Auth UID (matches request.auth.uid)
+// Document ID: Firebase Auth UID or user ID ('usr-001', 'usr-002', etc.)
 // Fields:
-//   - uid: string (required, 1-128 chars, matches document ID and auth.uid, immutable)
-//   - name: string (required, 1-100 chars, user full/display name)
-//   - username: string (required, 3-30 chars, alphanumeric/underscore, immutable by standard user)
-//   - email: string (required, 5-120 chars, valid email syntax, immutable by standard user)
-//   - emailVerified: bool (required, matches auth token state on creation, immutable by standard user)
-//   - role: string (required, enum ['user', 'employee', 'admin'], immutable by standard user, admin mutable only)
-//   - twoFactorEnabled: bool (required, 2FA status indicator, user mutable)
-//   - createdAt: timestamp (required, creation timestamp, immutable)
-//   - updatedAt: timestamp (required, update timestamp, recent / >= createdAt)
+//   - uid / id: string (optional, 1-128 chars, matches document ID, immutable)
+//   - name: string (required, 1-100 chars)
+//   - email: string (required, 5-120 chars, valid email syntax, immutable by standard users)
+//   - role: string (required, enum ['founder', 'co-founder', 'admin', 'employee', 'user'], immutable by standard user)
+//   - username: string (optional, 3-30 chars, alphanumeric/underscore)
+//   - title: string (optional, 0-100 chars)
+//   - department: string (optional, 0-100 chars)
+//   - avatar: string (optional, 0-255 chars)
+//   - phone: string (optional, 0-30 chars)
+//   - bio: string (optional, 0-2000 chars)
+//   - skills: list (optional, max 25 string items)
+//   - social: map (optional, max 10 key-value pairs)
+//   - provider: string (optional, 0-50 chars)
+//   - verified: bool (optional)
+//   - emailVerified: bool (optional)
+//   - twoFactorEnabled: bool (optional)
+//   - status: string (optional, 0-50 chars, e.g. 'active', 'pending_activation', 'rejected')
+//   - totalShiftHours: string / number (optional)
+//   - lastLoginAt: timestamp / string (optional)
+//   - joiningDate: string (optional, 0-50 chars)
+//   - assignedProjects: list (optional, max 20 string items)
+//   - createdAt: timestamp / string (optional, immutable)
+//   - updatedAt: timestamp / string (optional)
 //
-// Collection: /usernames/{username}
-// Document ID: Unique lowercase/alphanumeric username (3-30 chars)
+// Collection: /employeeTasks/{taskId} (alias: /employee_tasks/{taskId})
+// Document ID: Task ID (e.g., etask-001)
 // Fields:
-//   - uid: string (required, 1-128 chars, UID of the owner reserving the handle)
-//   - createdAt: timestamp (required, creation timestamp)
+//   - id: string (optional, 1-128 chars, immutable)
+//   - title: string (required, 1-200 chars)
+//   - employeeId: string (required, 1-128 chars, assigned employee UID, immutable)
+//   - employeeName: string (optional, 0-100 chars)
+//   - project: string (optional, 0-100 chars)
+//   - priority: string (optional, 0-50 chars)
+//   - status: string (required, 1-50 chars)
+//   - progress: number (optional, 0-100)
+//   - deadline: string / timestamp (optional)
+//   - description: string (optional, 0-5000 chars)
+//   - assignedBy: string (optional, 0-100 chars, immutable)
+//   - assignedAt: timestamp / string (optional)
+//   - createdAt: timestamp / string (optional, immutable)
+//   - updatedAt: timestamp / string (optional)
 //
-// Collection: /sessions/{sessionId}
-// Document ID: Session UUID / random identifier
+// Collection: /workSubmissions/{submissionId} (alias: /work_submissions/{submissionId})
+// Document ID: Submission ID (e.g., sub-001)
 // Fields:
-//   - userId: string (required, 1-128 chars, matches request.auth.uid, immutable)
-//   - createdAt: timestamp (required, session creation timestamp, immutable)
-//   - lastActive: timestamp (required, recent heartbeat/activity timestamp)
-//   - userAgent: string (optional, 0-255 chars, client browser/device)
-//   - ipAddress: string (optional, 0-45 chars, IPv4 or IPv6 client address)
-//   - isValid: bool (optional, session active validity flag)
-//   - expiresAt: timestamp (optional, session expiry timestamp)
+//   - id: string (optional, 1-128 chars, immutable)
+//   - taskId: string (required, 1-128 chars, immutable)
+//   - employeeId: string (required, 1-128 chars, submitting employee UID, immutable)
+//   - employeeName: string (optional, 0-100 chars)
+//   - commitHash: string (optional, 0-100 chars)
+//   - repo: string (optional, 0-200 chars)
+//   - title: string (required, 1-200 chars)
+//   - notes: string (optional, 0-5000 chars)
+//   - status: string (required, enum ['under_review', 'approved', 'rejected', 'pending'])
+//   - submittedAt: timestamp / string (optional, immutable)
+//   - reviewedBy: string (optional, 0-100 chars)
+//   - reviewedAt: timestamp / string (optional)
+//   - feedback: string (optional, 0-2000 chars)
+//   - createdAt: timestamp / string (optional, immutable)
+//   - updatedAt: timestamp / string (optional)
 //
-// Collection: /employee_workspace/{docId}
-// Document ID: Workspace resource ID (tasks, projects, sprint boards, technical specs)
+// Collection: /contactMessages/{messageId} (alias: /contact_inquiries/{inquiryId})
+// Document ID: Message ID (e.g., inq-001)
 // Fields:
-//   - title: string (required, 1-200 chars, item title)
-//   - description: string (optional, 0-10000 chars, markdown description/content)
-//   - category: string (optional, 0-50 chars, workspace domain/category)
-//   - status: string (optional, 0-50 chars, task status)
-//   - assignedTo: string (optional, 0-128 chars, assignee user UID)
-//   - createdBy: string (required, 1-128 chars, author UID, immutable)
-//   - createdAt: timestamp (required, creation timestamp, immutable)
-//   - updatedAt: timestamp (required, last update timestamp, >= createdAt)
-//   - tags: list (optional, max 20 string items, each string 1-50 chars)
-//   - metadata: map (optional, max 20 key-value pairs)
+//   - id: string (optional, 1-128 chars, immutable)
+//   - name: string (required, 1-100 chars)
+//   - email: string (required, 5-120 chars, valid email syntax)
+//   - category: string (optional, 0-100 chars)
+//   - subject: string (optional, 0-200 chars)
+//   - message: string (required, 1-4000 chars)
+//   - status: string (optional, enum ['unread', 'read', 'replied', 'archived'], 1-50 chars)
+//   - replies: list (optional, max 50 map items)
+//   - phone: string (optional, 0-30 chars)
+//   - company: string (optional, 0-100 chars)
+//   - createdAt: timestamp / string (optional, immutable)
+//   - updatedAt: timestamp / string (optional)
 //
-// Collection: /audit_logs/{logId}
-// Document ID: Unique audit entry ID (UUID / timestamp-based)
+// Collection: /conversations/{conversationId}
+// Document ID: Conversation ID
 // Fields:
+//   - id: string (optional, 1-128 chars, immutable)
+//   - name: string (required, 1-100 chars)
+//   - email: string (required, 5-120 chars, valid email syntax)
+//   - subject: string (optional, 0-200 chars)
+//   - message: string (required, 1-4000 chars)
+//   - status: string (optional, enum ['unread', 'active', 'closed', 'replied', 'archived'], 1-50 chars)
+//   - participants: list (optional, max 10 string items)
+//   - messages: list (optional, max 100 map items)
+//   - replies: list (optional, max 50 map items)
+//   - createdAt: timestamp / string (optional, immutable)
+//   - updatedAt: timestamp / string (optional)
+//
+// Collection: /auditLogs/{logId} (alias: /audit_logs/{logId}, /admin_audit_logs/{logId})
+// Document ID: Unique Audit Log ID (e.g., alog-seed-01)
+// Fields:
+//   - id: string (optional, 1-128 chars, immutable)
+//   - action: string (required, 1-100 chars)
 //   - actorId: string (required, 1-128 chars, UID of actor, immutable)
-//   - action: string (required, 1-100 chars, security action code)
-//   - category: string (required, 1-50 chars, security domain)
-//   - status: string (required, enum ['SUCCESS', 'FAILURE', 'DENIED', 'WARNING'])
-//   - targetId: string (optional, 0-128 chars, target resource or user ID)
-//   - ipAddress: string (optional, 0-45 chars, client IP address)
-//   - userAgent: string (optional, 0-255 chars, client user agent string)
-//   - details: string (optional, 0-2000 chars, audit diagnostic details)
-//   - timestamp: timestamp (required, event timestamp, recent)
+//   - actorName: string (optional, 0-100 chars)
+//   - actorRole: string (optional, 0-50 chars)
+//   - targetType: string (optional, 0-50 chars)
+//   - targetId: string (optional, 0-128 chars)
+//   - category: string (optional, 0-50 chars)
+//   - status: string (optional, 0-50 chars)
+//   - details: string / map (optional, max 5000 chars or max 20 key-value pairs)
+//   - ipAddress: string (optional, 0-45 chars)
+//   - userAgent: string (optional, 0-255 chars)
+//   - timestamp: timestamp / string (required)
 //
 // ===============================================================
 
@@ -71,7 +171,7 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ===============================================================
-    // Helper Functions: Authentication & Authority Sources
+    // Helper Functions: Authentication & Authority Sources (RBAC)
     // ===============================================================
 
     // Check if the request is from an authenticated user
@@ -84,52 +184,97 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
 
-    // Check if user has a verified email address in Firebase Authentication
+    // Check if user has a verified email in Firebase Authentication
     function isEmailVerified() {
       return isAuthenticated() &&
              ('email_verified' in request.auth.token) &&
              request.auth.token.email_verified == true;
     }
 
-    // Safe bootstrap administrator: Verified founder email
-    function isFounderAdmin() {
-      return isAuthenticated() &&
-             ('email' in request.auth.token) &&
-             request.auth.token.email == 'satys9267@gmail.com' &&
-             request.auth.token.email_verified == true;
+    // Safe bootstrap Founder check: Verified founder email, UID, custom claim, or user doc
+    function isFounder() {
+      return isAuthenticated() && (
+        (
+          ('email' in request.auth.token) &&
+          request.auth.token.email == 'satys9267@gmail.com' &&
+          isEmailVerified()
+        ) ||
+        request.auth.uid == 'usr-001' ||
+        (('role' in request.auth.token) && request.auth.token.role == 'founder') ||
+        (
+          exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'founder'
+        )
+      );
     }
 
-    // Administrator via verified Custom Claim: request.auth.token.role == 'admin'
-    function isAdminClaim() {
-      return isAuthenticated() &&
-             ('role' in request.auth.token) &&
-             request.auth.token.role == 'admin';
+    // Co-Founder check: Ishwari Patil via verified internal email, UID, claim, or user doc
+    function isCoFounder() {
+      return isAuthenticated() && (
+        (
+          ('email' in request.auth.token) &&
+          request.auth.token.email == 'ishwari.patil@itrex.internal' &&
+          isEmailVerified()
+        ) ||
+        request.auth.uid == 'usr-002' ||
+        (('role' in request.auth.token) && request.auth.token.role == 'co-founder') ||
+        (
+          exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'co-founder'
+        )
+      );
     }
 
-    // Administrator via Firestore user document role fallback
-    function isAdminDoc() {
-      return isAuthenticated() &&
-             isEmailVerified() &&
-             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    // Exclusive Founder or Co-Founder combined check
+    function isFounderOrCoFounder() {
+      return isFounder() || isCoFounder();
     }
 
-    // Unified Administrator check (Founder email bootstrap, custom claim, or user doc)
+    // Administrator via verified Custom Claim or Firestore user document fallback
+    function isOrdinaryAdmin() {
+      return isAuthenticated() && (
+        (('role' in request.auth.token) && request.auth.token.role == 'admin') ||
+        (
+          isEmailVerified() &&
+          exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+        )
+      );
+    }
+
+    // Unified Administrator check (Founder, Co-Founder, or Administrator)
     function isAdmin() {
-      return isFounderAdmin() || isAdminClaim() || isAdminDoc();
+      return isFounder() || isCoFounder() || isOrdinaryAdmin();
     }
 
-    // Verified Employee or Administrator for internal workspace access
-    function isVerifiedEmployeeOrAdmin() {
-      return isEmailVerified() && (
-        isFounderAdmin() ||
-        isAdminClaim() ||
+    // Verified Employee check
+    function isEmployee() {
+      return isAuthenticated() && (
         (('role' in request.auth.token) && request.auth.token.role == 'employee') ||
         (
           exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['employee', 'admin']
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'employee'
         )
       );
+    }
+
+    // Verified Employee or Administrator
+    function isEmployeeOrAdmin() {
+      return isEmployee() || isAdmin();
+    }
+
+    // Helper: Identify if target profile document belongs to Founder
+    function isFounderTarget(userId) {
+      return userId == 'usr-001' ||
+             (resource != null && ('email' in resource.data) && resource.data.email == 'satys9267@gmail.com') ||
+             (request.resource != null && ('email' in request.resource.data) && request.resource.data.email == 'satys9267@gmail.com');
+    }
+
+    // Helper: Identify if target profile document belongs to Co-Founder
+    function isCoFounderTarget(userId) {
+      return userId == 'usr-002' ||
+             (resource != null && ('email' in resource.data) && resource.data.email == 'ishwari.patil@itrex.internal') ||
+             (request.resource != null && ('email' in request.resource.data) && request.resource.data.email == 'ishwari.patil@itrex.internal');
     }
 
     // ===============================================================
@@ -174,6 +319,13 @@ service cloud.firestore {
              (request.resource.data[field] is map && request.resource.data[field].size() <= maxKeys);
     }
 
+    // Optional timestamp or ISO-string validation
+    function isValidTimestampOrDateStr(field) {
+      return !(field in request.resource.data) ||
+             request.resource.data[field] is timestamp ||
+             (request.resource.data[field] is string && request.resource.data[field].size() <= 50);
+    }
+
     // RFC 5322 compliant regex email validator with bounded length
     function isValidEmail(email) {
       return email is string &&
@@ -201,53 +353,240 @@ service cloud.firestore {
     // Domain Validator Functions (Validator Function Pattern)
     // ===============================================================
 
-    // Comprehensive validator for /users/{userId} documents
-    function isValidUser(data) {
-      return hasRequiredFields([
-               'uid', 'name', 'username', 'email', 'emailVerified',
-               'role', 'twoFactorEnabled', 'createdAt', 'updatedAt'
-             ]) &&
+    // 1. Validator for /products/{productId}
+    function isValidProduct(data) {
+      return hasRequiredFields(['name', 'tagline', 'category', 'status']) &&
              hasOnlyAllowedFields([
-               'uid', 'name', 'username', 'email', 'emailVerified',
-               'role', 'twoFactorEnabled', 'createdAt', 'updatedAt'
+               'id', 'slug', 'code', 'name', 'tagline', 'category', 'status',
+               'stage', 'assurance', 'leadArchitect', 'pricing', 'shortDescription',
+               'detailedDescription', 'technologies', 'keyFeatures', 'specs',
+               'banner', 'demoLink', 'githubLink', 'docLink', 'launchDate',
+               'createdAt', 'updatedAt'
              ]) &&
-             validStringLength(data.uid, 1, 128) &&
-             validStringLength(data.name, 1, 100) &&
-             isValidUsername(data.username) &&
-             isValidEmail(data.email) &&
-             data.emailVerified is bool &&
-             data.role is string &&
-             data.role in ['user', 'employee', 'admin'] &&
-             data.twoFactorEnabled is bool &&
-             data.createdAt is timestamp &&
-             data.updatedAt is timestamp &&
-             data.updatedAt >= data.createdAt;
+             validStringLength(data.name, 1, 150) &&
+             validStringLength(data.tagline, 1, 200) &&
+             validStringLength(data.category, 1, 50) &&
+             validStringLength(data.status, 1, 50) &&
+             data.status in ['published', 'draft', 'archived'] &&
+             isValidOptionalString('pricing', 0, 50) &&
+             isValidOptionalString('id', 0, 128) &&
+             isValidOptionalString('slug', 0, 100) &&
+             isValidOptionalString('code', 0, 50) &&
+             isValidOptionalString('stage', 0, 50) &&
+             isValidOptionalString('assurance', 0, 100) &&
+             isValidOptionalString('leadArchitect', 0, 100) &&
+             isValidOptionalString('shortDescription', 0, 1000) &&
+             isValidOptionalString('detailedDescription', 0, 10000) &&
+             isValidOptionalString('banner', 0, 500) &&
+             isValidOptionalString('demoLink', 0, 500) &&
+             isValidOptionalString('githubLink', 0, 500) &&
+             isValidOptionalString('docLink', 0, 500) &&
+             isValidOptionalString('launchDate', 0, 50) &&
+             isValidOptionalList('technologies', 30) &&
+             isValidOptionalList('keyFeatures', 30) &&
+             isValidOptionalMap('specs', 20) &&
+             isValidTimestampOrDateStr('createdAt') &&
+             isValidTimestampOrDateStr('updatedAt');
     }
 
-    // Comprehensive validator for /usernames/{username} documents
+    // 2. Validator for /approvalRequests/{requestId}
+    function isValidApprovalRequest(data) {
+      return hasRequiredFields(['applicantId', 'applicantName', 'applicantEmail', 'status']) &&
+             hasOnlyAllowedFields([
+               'id', 'applicantId', 'applicantName', 'applicantEmail',
+               'requestedDesignation', 'department', 'bio', 'status',
+               'emailVerified', 'submittedAt', 'decision', 'createdAt', 'updatedAt'
+             ]) &&
+             validStringLength(data.applicantId, 1, 128) &&
+             validStringLength(data.applicantName, 1, 100) &&
+             isValidEmail(data.applicantEmail) &&
+             data.status in ['pending', 'approved', 'rejected'] &&
+             isValidOptionalString('id', 0, 128) &&
+             isValidOptionalString('requestedDesignation', 0, 100) &&
+             isValidOptionalString('department', 0, 100) &&
+             isValidOptionalString('bio', 0, 2000) &&
+             (!('emailVerified' in data) || data.emailVerified is bool) &&
+             (!('decision' in data) || data.decision == null || isValidOptionalMap('decision', 10)) &&
+             isValidTimestampOrDateStr('submittedAt') &&
+             isValidTimestampOrDateStr('createdAt') &&
+             isValidTimestampOrDateStr('updatedAt');
+    }
+
+    // 3. Validator for /users/{userId}
+    function isValidUser(data) {
+      return hasRequiredFields(['name', 'email', 'role']) &&
+             hasOnlyAllowedFields([
+               'uid', 'id', 'name', 'username', 'email', 'role', 'title',
+               'department', 'avatar', 'phone', 'bio', 'provider', 'skills',
+               'social', 'verified', 'emailVerified', 'twoFactorEnabled',
+               'status', 'totalShiftHours', 'lastLoginAt', 'joiningDate',
+               'assignedProjects', 'createdAt', 'updatedAt'
+             ]) &&
+             validStringLength(data.name, 1, 100) &&
+             isValidEmail(data.email) &&
+             data.role in ['founder', 'co-founder', 'admin', 'employee', 'user'] &&
+             isValidOptionalString('uid', 0, 128) &&
+             isValidOptionalString('id', 0, 128) &&
+             isValidOptionalString('username', 3, 30) &&
+             isValidOptionalString('title', 0, 100) &&
+             isValidOptionalString('department', 0, 100) &&
+             isValidOptionalString('avatar', 0, 255) &&
+             isValidOptionalString('phone', 0, 30) &&
+             isValidOptionalString('bio', 0, 2000) &&
+             isValidOptionalString('provider', 0, 50) &&
+             isValidOptionalString('status', 0, 50) &&
+             isValidOptionalString('joiningDate', 0, 50) &&
+             (!('verified' in data) || data.verified is bool) &&
+             (!('emailVerified' in data) || data.emailVerified is bool) &&
+             (!('twoFactorEnabled' in data) || data.twoFactorEnabled is bool) &&
+             (!('totalShiftHours' in data) || data.totalShiftHours is string || data.totalShiftHours is number) &&
+             isValidOptionalList('skills', 25) &&
+             isValidOptionalList('assignedProjects', 20) &&
+             isValidOptionalMap('social', 10) &&
+             isValidTimestampOrDateStr('lastLoginAt') &&
+             isValidTimestampOrDateStr('createdAt') &&
+             isValidTimestampOrDateStr('updatedAt');
+    }
+
+    // 4. Validator for /employeeTasks/{taskId}
+    function isValidEmployeeTask(data) {
+      return hasRequiredFields(['title', 'employeeId', 'status']) &&
+             hasOnlyAllowedFields([
+               'id', 'title', 'employeeId', 'employeeName', 'project',
+               'priority', 'status', 'progress', 'deadline', 'description',
+               'assignedBy', 'assignedAt', 'createdAt', 'updatedAt'
+             ]) &&
+             validStringLength(data.title, 1, 200) &&
+             validStringLength(data.employeeId, 1, 128) &&
+             validStringLength(data.status, 1, 50) &&
+             isValidOptionalString('id', 0, 128) &&
+             isValidOptionalString('employeeName', 0, 100) &&
+             isValidOptionalString('project', 0, 100) &&
+             isValidOptionalString('priority', 0, 50) &&
+             isValidOptionalString('description', 0, 5000) &&
+             isValidOptionalString('assignedBy', 0, 100) &&
+             (!('progress' in data) || (data.progress is number && data.progress >= 0 && data.progress <= 100)) &&
+             isValidTimestampOrDateStr('deadline') &&
+             isValidTimestampOrDateStr('assignedAt') &&
+             isValidTimestampOrDateStr('createdAt') &&
+             isValidTimestampOrDateStr('updatedAt');
+    }
+
+    // 5. Validator for /workSubmissions/{submissionId}
+    function isValidWorkSubmission(data) {
+      return hasRequiredFields(['taskId', 'employeeId', 'title', 'status']) &&
+             hasOnlyAllowedFields([
+               'id', 'taskId', 'employeeId', 'employeeName', 'commitHash',
+               'repo', 'title', 'notes', 'submittedAt', 'status',
+               'reviewedBy', 'reviewedAt', 'feedback', 'createdAt', 'updatedAt'
+             ]) &&
+             validStringLength(data.taskId, 1, 128) &&
+             validStringLength(data.employeeId, 1, 128) &&
+             validStringLength(data.title, 1, 200) &&
+             data.status in ['under_review', 'approved', 'rejected', 'pending'] &&
+             isValidOptionalString('id', 0, 128) &&
+             isValidOptionalString('employeeName', 0, 100) &&
+             isValidOptionalString('commitHash', 0, 100) &&
+             isValidOptionalString('repo', 0, 200) &&
+             isValidOptionalString('notes', 0, 5000) &&
+             isValidOptionalString('reviewedBy', 0, 100) &&
+             isValidOptionalString('feedback', 0, 2000) &&
+             isValidTimestampOrDateStr('submittedAt') &&
+             isValidTimestampOrDateStr('reviewedAt') &&
+             isValidTimestampOrDateStr('createdAt') &&
+             isValidTimestampOrDateStr('updatedAt');
+    }
+
+    // 6. Validator for /contactMessages/{messageId}
+    function isValidContactMessage(data) {
+      return hasRequiredFields(['name', 'email', 'message']) &&
+             hasOnlyAllowedFields([
+               'id', 'name', 'email', 'category', 'subject', 'message',
+               'status', 'replies', 'phone', 'company', 'createdAt', 'updatedAt'
+             ]) &&
+             validStringLength(data.name, 1, 100) &&
+             isValidEmail(data.email) &&
+             validStringLength(data.message, 1, 4000) &&
+             isValidOptionalString('id', 0, 128) &&
+             isValidOptionalString('category', 0, 100) &&
+             isValidOptionalString('subject', 0, 200) &&
+             isValidOptionalString('status', 0, 50) &&
+             isValidOptionalString('phone', 0, 30) &&
+             isValidOptionalString('company', 0, 100) &&
+             (!('status' in data) || data.status in ['unread', 'read', 'replied', 'archived']) &&
+             isValidOptionalList('replies', 50) &&
+             isValidTimestampOrDateStr('createdAt') &&
+             isValidTimestampOrDateStr('updatedAt');
+    }
+
+    // 7. Validator for /conversations/{conversationId}
+    function isValidConversation(data) {
+      return hasRequiredFields(['name', 'email', 'message']) &&
+             hasOnlyAllowedFields([
+               'id', 'name', 'email', 'subject', 'message', 'status',
+               'participants', 'messages', 'replies', 'createdAt', 'updatedAt'
+             ]) &&
+             validStringLength(data.name, 1, 100) &&
+             isValidEmail(data.email) &&
+             validStringLength(data.message, 1, 4000) &&
+             isValidOptionalString('id', 0, 128) &&
+             isValidOptionalString('subject', 0, 200) &&
+             isValidOptionalString('status', 0, 50) &&
+             (!('status' in data) || data.status in ['unread', 'active', 'closed', 'replied', 'archived']) &&
+             isValidOptionalList('participants', 10) &&
+             isValidOptionalList('messages', 100) &&
+             isValidOptionalList('replies', 50) &&
+             isValidTimestampOrDateStr('createdAt') &&
+             isValidTimestampOrDateStr('updatedAt');
+    }
+
+    // 8. Validator for /auditLogs/{logId}
+    function isValidAuditLog(data) {
+      return hasRequiredFields(['action', 'actorId', 'timestamp']) &&
+             hasOnlyAllowedFields([
+               'id', 'action', 'actorId', 'actorName', 'actorRole',
+               'targetType', 'targetId', 'category', 'status', 'details',
+               'ipAddress', 'userAgent', 'timestamp'
+             ]) &&
+             validStringLength(data.action, 1, 100) &&
+             validStringLength(data.actorId, 1, 128) &&
+             isValidOptionalString('id', 0, 128) &&
+             isValidOptionalString('actorName', 0, 100) &&
+             isValidOptionalString('actorRole', 0, 50) &&
+             isValidOptionalString('targetType', 0, 50) &&
+             isValidOptionalString('targetId', 0, 128) &&
+             isValidOptionalString('category', 0, 50) &&
+             isValidOptionalString('status', 0, 50) &&
+             isValidOptionalString('ipAddress', 0, 45) &&
+             isValidOptionalString('userAgent', 0, 255) &&
+             (!('details' in data) || (data.details is string && data.details.size() <= 5000) || isValidOptionalMap('details', 20)) &&
+             isValidTimestampOrDateStr('timestamp');
+    }
+
+    // 9. Validator for /usernames/{username}
     function isValidUsernameDoc(data) {
       return hasRequiredFields(['uid', 'createdAt']) &&
              hasOnlyAllowedFields(['uid', 'createdAt']) &&
              validStringLength(data.uid, 1, 128) &&
-             data.createdAt is timestamp;
+             isValidTimestampOrDateStr('createdAt');
     }
 
-    // Comprehensive validator for /sessions/{sessionId} documents
+    // 10. Validator for /sessions/{sessionId}
     function isValidSession(data) {
       return hasRequiredFields(['userId', 'createdAt', 'lastActive']) &&
              hasOnlyAllowedFields([
                'userId', 'createdAt', 'lastActive', 'userAgent', 'ipAddress', 'isValid', 'expiresAt'
              ]) &&
              validStringLength(data.userId, 1, 128) &&
-             data.createdAt is timestamp &&
-             data.lastActive is timestamp &&
+             isValidTimestampOrDateStr('createdAt') &&
+             isValidTimestampOrDateStr('lastActive') &&
              isValidOptionalString('userAgent', 0, 255) &&
              isValidOptionalString('ipAddress', 0, 45) &&
              (!('isValid' in data) || data.isValid is bool) &&
-             (!('expiresAt' in data) || data.expiresAt is timestamp);
+             isValidTimestampOrDateStr('expiresAt');
     }
 
-    // Comprehensive validator for /employee_workspace/{docId} documents
+    // 11. Validator for /employee_workspace/{docId}
     function isValidWorkspaceDoc(data) {
       return hasRequiredFields(['title', 'createdBy', 'createdAt', 'updatedAt']) &&
              hasOnlyAllowedFields([
@@ -255,35 +594,15 @@ service cloud.firestore {
                'createdBy', 'createdAt', 'updatedAt', 'tags', 'metadata'
              ]) &&
              validStringLength(data.title, 1, 200) &&
+             validStringLength(data.createdBy, 1, 128) &&
              isValidOptionalString('description', 0, 10000) &&
              isValidOptionalString('category', 0, 50) &&
              isValidOptionalString('status', 0, 50) &&
              isValidOptionalString('assignedTo', 0, 128) &&
-             validStringLength(data.createdBy, 1, 128) &&
-             data.createdAt is timestamp &&
-             data.updatedAt is timestamp &&
-             data.updatedAt >= data.createdAt &&
              isValidOptionalList('tags', 20) &&
-             isValidOptionalMap('metadata', 20);
-    }
-
-    // Comprehensive validator for /audit_logs/{logId} documents
-    function isValidAuditLog(data) {
-      return hasRequiredFields(['actorId', 'action', 'category', 'status', 'timestamp']) &&
-             hasOnlyAllowedFields([
-               'actorId', 'action', 'category', 'status',
-               'targetId', 'ipAddress', 'userAgent', 'details', 'timestamp'
-             ]) &&
-             validStringLength(data.actorId, 1, 128) &&
-             validStringLength(data.action, 1, 100) &&
-             validStringLength(data.category, 1, 50) &&
-             data.status is string &&
-             data.status in ['SUCCESS', 'FAILURE', 'DENIED', 'WARNING'] &&
-             isValidOptionalString('targetId', 0, 128) &&
-             isValidOptionalString('ipAddress', 0, 45) &&
-             isValidOptionalString('userAgent', 0, 255) &&
-             isValidOptionalString('details', 0, 2000) &&
-             isRecent(data.timestamp);
+             isValidOptionalMap('metadata', 20) &&
+             isValidTimestampOrDateStr('createdAt') &&
+             isValidTimestampOrDateStr('updatedAt');
     }
 
     // ===============================================================
@@ -297,99 +616,360 @@ service cloud.firestore {
     // Collection Rules
     // ===============================================================
 
-    // 1. /users/{userId}
-    // Secures core user profile and sensitive PII.
+    // ---------------------------------------------------------------
+    // 1. /products/{productId}
+    // Public Showroom & Administrative Catalog
+    // ---------------------------------------------------------------
+    match /products/{productId} {
+      // Read: Any visitor if published; Admins, Founders, Co-Founders can read all states
+      allow read: if (resource != null && resource.data.status == 'published') || isAdmin();
+
+      // Create: Strictly restricted to Founder, Co-Founder, or Admin
+      allow create: if isAdmin() &&
+                       isValidProduct(request.resource.data);
+
+      // Update: Strictly restricted to Founder, Co-Founder, or Admin
+      allow update: if isAdmin() &&
+                       isValidProduct(request.resource.data) &&
+                       areImmutableFieldsUnchanged(['id', 'createdAt']);
+
+      // Delete: Strictly restricted to Founder, Co-Founder, or Admin
+      allow delete: if isAdmin();
+    }
+
+    // ---------------------------------------------------------------
+    // 2. /approvalRequests/{requestId} & /approval_requests/{requestId}
+    // Executive Approval Center (Founder & Co-Founder Exclusive Privilege)
+    // ---------------------------------------------------------------
+    match /approvalRequests/{requestId} {
+      // Read: Strictly restricted to Founder and Co-Founder
+      allow read: if isFounderOrCoFounder();
+
+      // Create: Strictly restricted to Founder and Co-Founder
+      allow create: if isFounderOrCoFounder() &&
+                       isValidApprovalRequest(request.resource.data);
+
+      // Update: Strictly restricted to Founder and Co-Founder
+      allow update: if isFounderOrCoFounder() &&
+                       isValidApprovalRequest(request.resource.data) &&
+                       areImmutableFieldsUnchanged(['id', 'applicantId', 'submittedAt']);
+
+      // Delete: Strictly restricted to Founder and Co-Founder
+      allow delete: if isFounderOrCoFounder();
+    }
+
+    match /approval_requests/{requestId} {
+      allow read: if isFounderOrCoFounder();
+      allow create: if isFounderOrCoFounder() && isValidApprovalRequest(request.resource.data);
+      allow update: if isFounderOrCoFounder() && isValidApprovalRequest(request.resource.data) && areImmutableFieldsUnchanged(['id', 'applicantId', 'submittedAt']);
+      allow delete: if isFounderOrCoFounder();
+    }
+
+    // ---------------------------------------------------------------
+    // 3. /users/{userId}
+    // Profile Management with Strict Founder & Co-Founder Isolation
+    // ---------------------------------------------------------------
     match /users/{userId} {
       // Read: Document owner themselves or Administrator
-      // OWASP: PII Protection - strictly isolates email and 2FA status from public enumeration
+      // OWASP: PII Protection - strictly isolates email, phone, and 2FA status from public enumeration
       allow read: if isOwner(userId) || isAdmin();
 
-      // Create: User creating own document upon registration (strictly 'user' role) or Admin
+      // Create: User self-registration with 'user' role or Administrator provisioning
       allow create: if isAuthenticated() &&
                        isValidUser(request.resource.data) &&
-                       request.resource.data.uid == userId &&
                        (
+                         // Founder self-bootstrapping
+                         (isFounder() && isFounderTarget(userId)) ||
+                         // Co-Founder self-bootstrapping
+                         (isCoFounder() && isCoFounderTarget(userId)) ||
+                         // Standard user creating own initial profile
                          (
                            isOwner(userId) &&
                            request.resource.data.role == 'user' &&
-                           request.resource.data.emailVerified == request.auth.token.email_verified &&
-                           (!('email' in request.auth.token) || request.resource.data.email == request.auth.token.email) &&
-                           isRecent(request.resource.data.createdAt) &&
-                           isRecent(request.resource.data.updatedAt)
+                           (!('email' in request.auth.token) || request.resource.data.email == request.auth.token.email)
                          ) ||
-                         isAdmin()
+                         // Administrator creating employee or user accounts (cannot touch founder/co-founder)
+                         (
+                           isAdmin() &&
+                           !isFounderTarget(userId) &&
+                           !isCoFounderTarget(userId)
+                         )
                        );
 
-      // Update: Standard users can only update safe fields ('name', 'twoFactorEnabled', 'updatedAt')
-      // CRITICAL: Standard user CANNOT elevate role, change email, or modify uid!
-      // Role modifications can ONLY be performed by an Administrator.
+      // Update: Strict Founder / Co-Founder Isolation & Employee Personal Field Lockdown
       allow update: if isAuthenticated() &&
                        isValidUser(request.resource.data) &&
                        (
+                         // 1. Founder can ONLY edit Founder profile
                          (
-                           isOwner(userId) &&
-                           request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'twoFactorEnabled', 'updatedAt']) &&
-                           request.resource.data.uid == resource.data.uid &&
-                           request.resource.data.email == resource.data.email &&
-                           request.resource.data.username == resource.data.username &&
-                           request.resource.data.role == resource.data.role &&
-                           request.resource.data.emailVerified == resource.data.emailVerified &&
-                           request.resource.data.createdAt == resource.data.createdAt &&
-                           isRecent(request.resource.data.updatedAt)
+                           isFounderTarget(userId) &&
+                           isFounder() &&
+                           (isOwner(userId) || (('email' in request.auth.token) && request.auth.token.email == 'satys9267@gmail.com')) &&
+                           areImmutableFieldsUnchanged(['uid', 'createdAt'])
                          ) ||
+                         // 2. Co-Founder can ONLY edit Co-Founder profile
+                         (
+                           isCoFounderTarget(userId) &&
+                           isCoFounder() &&
+                           (isOwner(userId) || (('email' in request.auth.token) && request.auth.token.email == 'ishwari.patil@itrex.internal')) &&
+                           areImmutableFieldsUnchanged(['uid', 'createdAt'])
+                         ) ||
+                         // 3. Employees / standard users can ONLY edit their own personal profile fields
+                         (
+                           !isFounderTarget(userId) &&
+                           !isCoFounderTarget(userId) &&
+                           isOwner(userId) &&
+                           request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+                             'name', 'title', 'department', 'avatar', 'phone', 'bio',
+                             'skills', 'social', 'twoFactorEnabled', 'updatedAt'
+                           ]) &&
+                           request.resource.data.role == resource.data.role &&
+                           areImmutableFieldsUnchanged(['uid', 'email', 'createdAt', 'status'])
+                         ) ||
+                         // 4. Administrators updating standard employee / user accounts (CANNOT touch Founder or Co-Founder)
                          (
                            isAdmin() &&
+                           !isFounderTarget(userId) &&
+                           !isCoFounderTarget(userId) &&
                            areImmutableFieldsUnchanged(['uid', 'createdAt'])
                          )
                        );
 
-      // Delete: Restricted strictly to Administrator
+      // Delete: Restricted to Administrator; Founder and Co-Founder profiles are permanently protected
+      allow delete: if isAdmin() &&
+                       !isFounderTarget(userId) &&
+                       !isCoFounderTarget(userId);
+    }
+
+    // ---------------------------------------------------------------
+    // 4. /employeeTasks/{taskId} & /workSubmissions/{submissionId}
+    // Employee Task Allocation & Work Delivery Tracking
+    // ---------------------------------------------------------------
+    match /employeeTasks/{taskId} {
+      // Read: Assigned employee and administrators
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.employeeId == request.auth.uid);
+
+      // Create: Restricted to administrators
+      allow create: if isAdmin() &&
+                       isValidEmployeeTask(request.resource.data);
+
+      // Update: Admins can update all fields; assigned employee can update progress/status
+      allow update: if isValidEmployeeTask(request.resource.data) &&
+                       (
+                         (isAdmin() && areImmutableFieldsUnchanged(['id', 'createdAt'])) ||
+                         (
+                           isAuthenticated() &&
+                           resource.data.employeeId == request.auth.uid &&
+                           request.resource.data.employeeId == resource.data.employeeId &&
+                           request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'progress', 'updatedAt']) &&
+                           areImmutableFieldsUnchanged(['id', 'employeeId', 'assignedBy', 'createdAt'])
+                         )
+                       );
+
+      // Delete: Restricted to administrators
       allow delete: if isAdmin();
     }
 
-    // 2. /usernames/{username}
-    // Unique username registry mapping handle to UID for collision prevention
+    match /employee_tasks/{taskId} {
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.employeeId == request.auth.uid);
+      allow create: if isAdmin() && isValidEmployeeTask(request.resource.data);
+      allow update: if isValidEmployeeTask(request.resource.data) &&
+                       (
+                         (isAdmin() && areImmutableFieldsUnchanged(['id', 'createdAt'])) ||
+                         (
+                           isAuthenticated() &&
+                           resource.data.employeeId == request.auth.uid &&
+                           request.resource.data.employeeId == resource.data.employeeId &&
+                           request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'progress', 'updatedAt']) &&
+                           areImmutableFieldsUnchanged(['id', 'employeeId', 'assignedBy', 'createdAt'])
+                         )
+                       );
+      allow delete: if isAdmin();
+    }
+
+    match /workSubmissions/{submissionId} {
+      // Read: Assigned employee and administrators
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.employeeId == request.auth.uid);
+
+      // Create: Creatable by assigned employee with initial status 'under_review' or 'pending'
+      allow create: if isAuthenticated() &&
+                       isValidWorkSubmission(request.resource.data) &&
+                       request.resource.data.employeeId == request.auth.uid &&
+                       request.resource.data.status in ['under_review', 'pending'];
+
+      // Update: Approval restricted to administrators; employee can amend notes before review
+      allow update: if isValidWorkSubmission(request.resource.data) &&
+                       (
+                         (
+                           isAdmin() &&
+                           areImmutableFieldsUnchanged(['id', 'employeeId', 'taskId', 'submittedAt'])
+                         ) ||
+                         (
+                           isAuthenticated() &&
+                           resource.data.employeeId == request.auth.uid &&
+                           resource.data.status in ['under_review', 'pending'] &&
+                           request.resource.data.diff(resource.data).affectedKeys().hasOnly(['notes', 'commitHash', 'repo', 'title', 'updatedAt']) &&
+                           request.resource.data.status == resource.data.status &&
+                           areImmutableFieldsUnchanged(['id', 'employeeId', 'taskId', 'submittedAt'])
+                         )
+                       );
+
+      // Delete: Restricted to administrators
+      allow delete: if isAdmin();
+    }
+
+    match /work_submissions/{submissionId} {
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.employeeId == request.auth.uid);
+      allow create: if isAuthenticated() &&
+                       isValidWorkSubmission(request.resource.data) &&
+                       request.resource.data.employeeId == request.auth.uid &&
+                       request.resource.data.status in ['under_review', 'pending'];
+      allow update: if isValidWorkSubmission(request.resource.data) &&
+                       (
+                         (isAdmin() && areImmutableFieldsUnchanged(['id', 'employeeId', 'taskId', 'submittedAt'])) ||
+                         (
+                           isAuthenticated() &&
+                           resource.data.employeeId == request.auth.uid &&
+                           resource.data.status in ['under_review', 'pending'] &&
+                           request.resource.data.diff(resource.data).affectedKeys().hasOnly(['notes', 'commitHash', 'repo', 'title', 'updatedAt']) &&
+                           request.resource.data.status == resource.data.status &&
+                           areImmutableFieldsUnchanged(['id', 'employeeId', 'taskId', 'submittedAt'])
+                         )
+                       );
+      allow delete: if isAdmin();
+    }
+
+    // ---------------------------------------------------------------
+    // 5. /contactMessages/{messageId} & /conversations/{conversationId}
+    // Public Contact Submissions & Restricted Executive Inquiries
+    // ---------------------------------------------------------------
+    match /contactMessages/{messageId} {
+      // Read: Strictly restricted to Founder, Co-Founder, and Admin
+      allow read: if isAdmin();
+
+      // Create: Public creation with strict string limits (DoS prevention)
+      allow create: if isValidContactMessage(request.resource.data) &&
+                       (!('status' in request.resource.data) || request.resource.data.status == 'unread') &&
+                       (!('replies' in request.resource.data) || request.resource.data.replies.size() == 0);
+
+      // Update: Strictly restricted to Founder, Co-Founder, and Admin
+      allow update: if isAdmin() &&
+                       isValidContactMessage(request.resource.data) &&
+                       areImmutableFieldsUnchanged(['name', 'email', 'message', 'createdAt']);
+
+      // Delete: Strictly restricted to Founder, Co-Founder, and Admin
+      allow delete: if isAdmin();
+    }
+
+    match /contact_inquiries/{inquiryId} {
+      allow read: if isAdmin();
+      allow create: if isValidContactMessage(request.resource.data) &&
+                       (!('status' in request.resource.data) || request.resource.data.status == 'unread') &&
+                       (!('replies' in request.resource.data) || request.resource.data.replies.size() == 0);
+      allow update: if isAdmin() &&
+                       isValidContactMessage(request.resource.data) &&
+                       areImmutableFieldsUnchanged(['name', 'email', 'message', 'createdAt']);
+      allow delete: if isAdmin();
+    }
+
+    match /conversations/{conversationId} {
+      // Read: Strictly restricted to Founder, Co-Founder, and Admin
+      allow read: if isAdmin();
+
+      // Create: Public creation with strict string limits
+      allow create: if isValidConversation(request.resource.data) &&
+                       (!('status' in request.resource.data) || request.resource.data.status in ['unread', 'active']);
+
+      // Update: Strictly restricted to Founder, Co-Founder, and Admin
+      allow update: if isAdmin() &&
+                       isValidConversation(request.resource.data) &&
+                       areImmutableFieldsUnchanged(['email', 'createdAt']);
+
+      // Delete: Strictly restricted to Founder, Co-Founder, and Admin
+      allow delete: if isAdmin();
+
+      // Nested Messages subcollection
+      match /messages/{messageId} {
+        allow read: if isAdmin();
+        allow create: if (isAdmin() || (validStringLength(request.resource.data.text, 1, 4000) && (!('senderRole' in request.resource.data) || request.resource.data.senderRole == 'visitor')));
+        allow update, delete: if isAdmin();
+      }
+    }
+
+    // ---------------------------------------------------------------
+    // 6. /auditLogs/{logId} (Immutable Append-Only Audit Trail)
+    // ---------------------------------------------------------------
+    match /auditLogs/{logId} {
+      // Read: Strictly restricted to Founder, Co-Founder, and Admin
+      allow read: if isAdmin();
+
+      // Create: Allowed for authenticated administrators (immutable logging)
+      allow create: if isAdmin() &&
+                       isValidAuditLog(request.resource.data);
+
+      // Update: Strictly NEVER allowed (audit trail integrity)
+      allow update: if false;
+
+      // Delete: Strictly NEVER allowed (audit trail integrity)
+      allow delete: if false;
+    }
+
+    match /audit_logs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin() && isValidAuditLog(request.resource.data);
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    match /admin_audit_logs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin() && isValidAuditLog(request.resource.data);
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // ---------------------------------------------------------------
+    // 7. /usernames/{username}
+    // Unique Handle Registry for Identity Collision Prevention
+    // ---------------------------------------------------------------
     match /usernames/{username} {
-      // Read: Public and authenticated read permitted for username availability checks
+      // Read: Public and authenticated read permitted for availability checks
       allow read: if true;
 
-      // Create: Authenticated user reserving their own unique handle
+      // Create: Authenticated user reserving their own handle
       allow create: if isAuthenticated() &&
                        isValidUsername(username) &&
                        isValidUsernameDoc(request.resource.data) &&
-                       request.resource.data.uid == request.auth.uid &&
-                       isRecent(request.resource.data.createdAt);
+                       request.resource.data.uid == request.auth.uid;
 
-      // Update: Disallowed - handles are immutable once claimed
+      // Update: Disallowed (handles are immutable once claimed)
       allow update: if false;
 
-      // Delete: Owner can release their own handle; Administrator can release any handle
+      // Delete: Owner can release their handle; Admin can release any handle
       allow delete: if (isAuthenticated() && resource.data.uid == request.auth.uid) || isAdmin();
     }
 
-    // 3. /sessions/{sessionId}
-    // Secures active client sessions, multi-tab states, and login tokens
+    // ---------------------------------------------------------------
+    // 8. /sessions/{sessionId}
+    // Multi-tab Client Sessions and Heartbeat Verification
+    // ---------------------------------------------------------------
     match /sessions/{sessionId} {
-      // Read: Only the authenticated session owner or Administrator
-      allow read: if isAuthenticated() &&
-                     (resource.data.userId == request.auth.uid || isAdmin());
+      // Read: Session owner or Administrator
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
 
-      // Create: Authenticated user creating their own session entry
+      // Create: Authenticated user creating their own session
       allow create: if isAuthenticated() &&
                        isValidSession(request.resource.data) &&
-                       request.resource.data.userId == request.auth.uid &&
-                       isRecent(request.resource.data.createdAt) &&
-                       isRecent(request.resource.data.lastActive);
+                       request.resource.data.userId == request.auth.uid;
 
-      // Update: Session owner updating activity heartbeat, or Administrator
+      // Update: Session owner or Administrator
       allow update: if isAuthenticated() &&
                        isValidSession(request.resource.data) &&
                        (
                          (
                            resource.data.userId == request.auth.uid &&
                            request.resource.data.userId == resource.data.userId &&
-                           request.resource.data.createdAt == resource.data.createdAt &&
-                           isRecent(request.resource.data.lastActive)
+                           areImmutableFieldsUnchanged(['userId', 'createdAt'])
                          ) ||
                          (
                            isAdmin() &&
@@ -397,51 +977,31 @@ service cloud.firestore {
                          )
                        );
 
-      // Delete: Owner revoking their session or Administrator terminating it
-      allow delete: if isAuthenticated() &&
-                       (resource.data.userId == request.auth.uid || isAdmin());
+      // Delete: Session owner revoking session or Administrator terminating it
+      allow delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
     }
 
-    // 4. /employee_workspace/{docId}
-    // Internal company workspace (projects, sprint backlog, tech notes)
+    // ---------------------------------------------------------------
+    // 9. /employee_workspace/{docId}
+    // Internal Workspace (Sprint backlog, engineering documentation)
+    // ---------------------------------------------------------------
     match /employee_workspace/{docId} {
-      // Read: Restricted strictly to verified employees and administrators
-      allow read: if isVerifiedEmployeeOrAdmin();
+      // Read: Verified employees and administrators
+      allow read: if isEmployeeOrAdmin();
 
-      // Create: Verified employee or administrator, author UID must match caller
-      allow create: if isVerifiedEmployeeOrAdmin() &&
+      // Create: Employee or administrator, author UID must match caller
+      allow create: if isEmployeeOrAdmin() &&
                        isValidWorkspaceDoc(request.resource.data) &&
-                       request.resource.data.createdBy == request.auth.uid &&
-                       isRecent(request.resource.data.createdAt) &&
-                       isRecent(request.resource.data.updatedAt);
+                       request.resource.data.createdBy == request.auth.uid;
 
-      // Update: Verified employee or administrator, immutable author and creation date
-      allow update: if isVerifiedEmployeeOrAdmin() &&
+      // Update: Immutable author and creation timestamp
+      allow update: if isEmployeeOrAdmin() &&
                        isValidWorkspaceDoc(request.resource.data) &&
-                       areImmutableFieldsUnchanged(['createdBy', 'createdAt']) &&
-                       isRecent(request.resource.data.updatedAt);
+                       areImmutableFieldsUnchanged(['createdBy', 'createdAt']);
 
-      // Delete: Workspace item creator or Administrator
-      allow delete: if isVerifiedEmployeeOrAdmin() &&
+      // Delete: Item creator or Administrator
+      allow delete: if isEmployeeOrAdmin() &&
                        (resource.data.createdBy == request.auth.uid || isAdmin());
-    }
-
-    // 5. /audit_logs/{logId}
-    // Security audit trail (append-only, immutable)
-    match /audit_logs/{logId} {
-      // Read: Strictly restricted to Administrator
-      allow read: if isAdmin();
-
-      // Create: Authenticated actor logging an event; actorId must match caller UID
-      allow create: if isAuthenticated() &&
-                       isValidAuditLog(request.resource.data) &&
-                       request.resource.data.actorId == request.auth.uid;
-
-      // Update: Strictly false (immutability guarantee)
-      allow update: if false;
-
-      // Delete: Strictly false (immutability guarantee)
-      allow delete: if false;
     }
   }
 }

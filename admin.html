@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth bg-black text-white antialiased">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I-Trex Innovations — Admin Control Center</title>
+    <meta name="description" content="Centralized enterprise administration enclave for I-Trex Innovations. Manage products, employee monitoring, approvals, and connections with strict RBAC.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#000000',
+                        carbon: '#05070a',
+                        graphite: '#0a0d14',
+                        surface: '#0e121b',
+                        surfaceBorder: '#1e2638',
+                        chrome: '#e2e8f0',
+                        titanium: '#94a3b8',
+                        neonCyan: '#00f2fe',
+                        neonOrange: '#f97316',
+                        neonEmerald: '#10b981'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Custom Aerospace Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- GSAP Animation Engine -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        .admin-sidebar {
+            width: 280px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .admin-sidebar.collapsed {
+            width: 80px;
+        }
+        .admin-sidebar.collapsed .sidebar-text,
+        .admin-sidebar.collapsed .sidebar-header-text,
+        .admin-sidebar.collapsed .sidebar-kicker {
+            display: none;
+        }
+        .admin-sidebar.collapsed .sidebar-icon-container {
+            justify-content: center;
+        }
+        .admin-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem 1rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #94a3b8;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border-left: 2px solid transparent;
+        }
+        .admin-nav-item:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.04);
+            border-left-color: rgba(0, 242, 254, 0.4);
+        }
+        .admin-nav-item.active {
+            color: #ffffff;
+            background: rgba(0, 242, 254, 0.08);
+            border-left-color: #00f2fe;
+            font-weight: 700;
+        }
+        .admin-card {
+            background: #0a0d14;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        .admin-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 8px;
+            border-top: 2px solid #00f2fe;
+            border-left: 2px solid #00f2fe;
+        }
+        .admin-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 8px;
+            height: 8px;
+            border-bottom: 2px solid #00f2fe;
+            border-right: 2px solid #00f2fe;
+        }
+        .badge-pending {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: #fbbf24;
+        }
+        .badge-active {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #34d399;
+        }
+        .badge-archived {
+            background: rgba(148, 163, 184, 0.15);
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-black text-white font-sans antialiased selection:bg-cyan-500 selection:text-black min-h-screen flex flex-col">
+
+    <!-- Root App Flex Layout -->
+    <div class="flex-1 flex overflow-hidden min-h-screen">
+
+        <!-- ======================================================================
+             SIDEBAR NAVIGATION ENCLAVE (LAMBORGHINI AEROSPACE DEDICATED)
+             ====================================================================== -->
+        <aside id="admin-sidebar" class="admin-sidebar fixed inset-y-0 left-0 z-50 bg-[#05070a] border-r border-white/10 flex flex-col shrink-0 lg:static">
+            
+            <!-- Sidebar Header & Silver Metallic Brand Logo -->
+            <div class="h-20 px-6 border-b border-white/10 flex items-center justify-between">
+                <a href="#home" onclick="showAdminSection('home')" class="flex items-center gap-3 group">
+                    <img src="assets/images/itrex_logo_silver_transparent.png" 
+                         alt="I-Trex" 
+                         class="h-8 w-auto filter drop-shadow-[0_0_12px_rgba(255,255,255,0.3)] transition-transform group-hover:scale-105">
+                    <div class="sidebar-header-text flex flex-col text-left">
+                        <span class="font-display font-bold text-sm tracking-widest text-white">I-TREX</span>
+                        <span class="font-mono text-[9px] tracking-[0.25em] text-cyan-400 uppercase">ADMIN ENCLAVE</span>
+                    </div>
+                </a>
+                <button id="btn-sidebar-collapse" class="text-neutral-500 hover:text-white transition-colors hidden lg:block" title="Toggle Sidebar Width">
+                    <i data-lucide="chevron-left" class="w-4 h-4" id="sidebar-collapse-icon"></i>
+                </button>
+            </div>
+
+            <!-- Scrollable Navigation Matrix -->
+            <div class="flex-1 overflow-y-auto px-4 py-6 space-y-8 no-scrollbar">
+
+                <!-- 1. OVERVIEW -->
+                <div class="space-y-1">
+                    <div class="sidebar-kicker px-3 pb-2 text-[10px] font-mono tracking-[0.2em] text-neutral-500 uppercase font-bold">OVERVIEW</div>
+                    <div class="admin-nav-item active" id="nav-item-home" onclick="showAdminSection('home')">
+                        <div class="sidebar-icon-container flex items-center"><i data-lucide="layout-dashboard" class="w-4 h-4 text-cyan-400"></i></div>
+                        <span class="sidebar-text">HOME</span>
+                    </div>
+                    <div class="admin-nav-item" id="nav-item-dashboard" onclick="showAdminSection('dashboard')">
+                        <div class="sidebar-icon-container flex items-center"><i data-lucide="bar-chart-3" class="w-4 h-4"></i></div>
+                        <span class="sidebar-text">DASHBOARD</span>
+                    </div>
+                </div>
+
+                <!-- 2. MANAGEMENT -->
+                <div class="space-y-1">
+                    <div class="sidebar-kicker px-3 pb-2 text-[10px] font-mono tracking-[0.2em] text-neutral-500 uppercase font-bold">MANAGEMENT</div>
+                    <div class="admin-nav-item" id="nav-item-products" onclick="showAdminSection('products')">
+                        <div class="sidebar-icon-container flex items-center"><i data-lucide="box" class="w-4 h-4"></i></div>
+                        <span class="sidebar-text flex-1">PRODUCTS</span>
+                        <span id="badge-products-count" class="font-mono text-[10px] px-2 py-0.5 bg-white/5 border border-white/10 rounded text-neutral-300">5</span>
+                    </div>
+                    <div class="admin-nav-item" id="nav-item-employees" onclick="showAdminSection('employees')">
+                        <div class="sidebar-icon-container flex items-center"><i data-lucide="users" class="w-4 h-4"></i></div>
+                        <span class="sidebar-text flex-1">EMPLOYEES</span>
+                        <span id="badge-employees-count" class="font-mono text-[10px] px-2 py-0.5 bg-white/5 border border-white/10 rounded text-neutral-300">3</span>
+                    </div>
+                    <div class="admin-nav-item" id="nav-item-approvals" onclick="showAdminSection('approvals')">
+                        <div class="sidebar-icon-container flex items-center"><i data-lucide="shield-check" class="w-4 h-4 text-amber-400"></i></div>
+                        <span class="sidebar-text flex-1">APPROVALS</span>
+                        <span id="badge-approvals-count" class="badge-pending font-mono text-[10px] px-2 py-0.5 rounded font-bold">1 NEW</span>
+                    </div>
+                </div>
+
+                <!-- 3. COMMUNICATION -->
+                <div class="space-y-1">
+                    <div class="sidebar-kicker px-3 pb-2 text-[10px] font-mono tracking-[0.2em] text-neutral-500 uppercase font-bold">COMMUNICATION</div>
+                    <div class="admin-nav-item" id="nav-item-connections" onclick="showAdminSection('connections')">
+                        <div class="sidebar-icon-container flex items-center"><i data-lucide="inbox" class="w-4 h-4 text-cyan-400"></i></div>
+                        <span class="sidebar-text flex-1">CONNECTIONS</span>
+                        <span id="badge-connections-unread" class="badge-pending font-mono text-[10px] px-2 py-0.5 rounded font-bold">1</span>
+                    </div>
+                </div>
+
+                <!-- 4. ACCOUNT & SECURITY -->
+                <div class="space-y-1">
+                    <div class="sidebar-kicker px-3 pb-2 text-[10px] font-mono tracking-[0.2em] text-neutral-500 uppercase font-bold">ACCOUNT</div>
+                    <div class="admin-nav-item" id="nav-item-profile" onclick="showAdminSection('profile')">
+                        <div class="sidebar-icon-container flex items-center"><i data-lucide="user" class="w-4 h-4"></i></div>
+                        <span class="sidebar-text">MY PROFILE</span>
+                    </div>
+                    <div class="admin-nav-item" id="nav-item-security" onclick="showAdminSection('security')">
+                        <div class="sidebar-icon-container flex items-center"><i data-lucide="shield-alert" class="w-4 h-4 text-emerald-400"></i></div>
+                        <span class="sidebar-text">SECURITY & AUDIT</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sidebar Footer: Session Identity & Logout -->
+            <div class="p-4 border-t border-white/10 bg-black/60">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3 overflow-hidden">
+                        <div class="w-9 h-9 rounded bg-white/5 border border-cyan-400/40 flex items-center justify-center text-sm font-bold shrink-0 text-cyan-400">
+                            👑
+                        </div>
+                        <div class="sidebar-text flex flex-col text-left overflow-hidden">
+                            <span id="sidebar-user-name" class="font-display font-bold text-xs text-white truncate">Satyam Swami</span>
+                            <span id="sidebar-user-role" class="font-mono text-[9px] text-cyan-400 uppercase tracking-widest">FOUNDER</span>
+                        </div>
+                    </div>
+                    <button onclick="handleAdminSignOut()" class="text-neutral-500 hover:text-red-400 transition-colors p-1" title="Sign out of Admin Enclave">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- ======================================================================
+             MAIN ADMIN CONTENT VIEWPORT
+             ====================================================================== -->
+        <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+
+            <!-- Top Header & Telemetry Bar -->
+            <header class="h-20 bg-black/80 backdrop-blur-md border-b border-white/10 px-6 lg:px-12 flex items-center justify-between sticky top-0 z-40">
+                
+                <!-- Left: Mobile Menu Toggle & Route Breadcrumb -->
+                <div class="flex items-center gap-4">
+                    <button id="btn-mobile-sidebar-toggle" class="p-2 border border-white/10 text-white lg:hidden">
+                        <i data-lucide="menu" class="w-5 h-5"></i>
+                    </button>
+                    <div class="flex items-center gap-2 font-mono text-xs text-neutral-400">
+                        <span class="text-neutral-500">I-TREX</span>
+                        <span>/</span>
+                        <span class="text-neutral-400">ADMIN</span>
+                        <span>/</span>
+                        <span id="topbar-current-route" class="text-cyan-400 font-bold uppercase tracking-wider">CONTROL CENTER</span>
+                    </div>
+                </div>
+
+                <!-- Right: Quick Global Search, System Pill, Public Link, Profile Pill -->
+                <div class="flex items-center gap-4">
+                    <!-- Mesh Health Pill -->
+                    <div class="hidden sm:flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 font-mono text-[10px] text-neutral-300">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span>SYSTEM: 100% SECURE // TLS 1.3</span>
+                    </div>
+
+                    <!-- Public Platform Link -->
+                    <a href="index.html" target="_blank" class="hidden md:flex items-center gap-2 font-mono text-xs text-neutral-400 hover:text-white transition-colors px-3 py-1.5 border border-white/10 hover:border-white/30">
+                        <span>PUBLIC PLATFORM</span>
+                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                    </a>
+
+                    <!-- Profile Pill -->
+                    <div class="flex items-center gap-2 pl-3 border-l border-white/10">
+                        <span id="topbar-clock" class="font-mono text-xs text-neutral-400 hidden lg:inline-block">17:30:00</span>
+                        <div class="w-8 h-8 rounded-none border border-cyan-400/50 bg-white/5 flex items-center justify-center font-display font-bold text-xs text-white">
+                            SS
+                        </div>
+                    </div>
+                </div>
+
+            </header>
+
+            <!-- Dynamic Section Mount Point -->
+            <main class="flex-1 p-6 lg:p-12 space-y-10 max-w-7xl mx-auto w-full">
+
+                <!-- Notification Alert Banner -->
+                <div id="admin-alert-banner" class="hidden p-4 border font-mono text-xs flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="info" class="w-4 h-4" id="admin-alert-icon"></i>
+                        <span id="admin-alert-text"></span>
+                    </div>
+                    <button onclick="dismissAdminAlert()" class="text-neutral-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+                </div>
+
+                <!-- ==========================================================
+                     SECTION 1: ADMIN HOMEPAGE
+                     ========================================================== -->
+                <div id="section-home" class="admin-content-section space-y-10">
+                    
+                    <!-- Welcome Hero Header -->
+                    <div class="admin-card p-8 sm:p-10 corner-brackets space-y-6">
+                        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="tech-tag" style="--color-neon-cyan: #00f2fe">PRIMARY CONTROL ENCLAVE</span>
+                                    <span class="font-mono text-xs text-neutral-400">Tier-1 Root Security Clearance</span>
+                                </div>
+                                <h1 class="font-display font-bold text-3xl sm:text-5xl text-white">
+                                    Welcome back, <span id="home-greeting-name" class="text-cyan-400">Satyam</span>.
+                                </h1>
+                                <p class="font-sans text-sm text-neutral-400 max-w-2xl font-light">
+                                    Comprehensive executive management of products, autonomous kernel sprints, employee activation requests, and enterprise transmissions.
+                                </p>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-black/60 p-4 border border-white/10 font-mono text-xs">
+                                <div>
+                                    <span class="text-neutral-500 uppercase block text-[10px]">CURRENT TIME</span>
+                                    <span id="home-live-datetime" class="text-white font-bold">Today</span>
+                                </div>
+                                <div class="hidden sm:block w-px h-8 bg-white/10"></div>
+                                <div>
+                                    <span class="text-neutral-500 uppercase block text-[10px]">AUTH DOMAIN</span>
+                                    <span class="text-cyan-400 font-bold">i-trex.internal</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 5 Quick Action Shortcuts -->
+                        <div class="pt-6 border-t border-white/10">
+                            <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-4">QUICK ADMINISTRATIVE ACTIONS</span>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                                <button onclick="openAddProductModal()" class="chamfer-btn-primary !py-2.5 !px-3 text-center !text-[11px] justify-center">
+                                    <span>+ ADD PRODUCT</span>
+                                </button>
+                                <button onclick="showAdminSection('approvals')" class="chamfer-btn-outline !py-2.5 !px-3 text-center !text-[11px] justify-center">
+                                    <span>REVIEW REQUESTS (<span id="qa-approvals-count">1</span>)</span>
+                                </button>
+                                <button onclick="showAdminSection('employees')" class="chamfer-btn-outline !py-2.5 !px-3 text-center !text-[11px] justify-center">
+                                    <span>VIEW EMPLOYEES</span>
+                                </button>
+                                <button onclick="showAdminSection('connections')" class="chamfer-btn-outline !py-2.5 !px-3 text-center !text-[11px] justify-center">
+                                    <span>INBOX (<span id="qa-connections-count">1</span>)</span>
+                                </button>
+                                <button onclick="showAdminSection('profile')" class="chamfer-btn-outline !py-2.5 !px-3 text-center !text-[11px] justify-center">
+                                    <span>MY PROFILE</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metrics Tiles Matrix -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="p-6 border border-white/10 bg-[#05070a] corner-brackets space-y-2">
+                            <span class="font-mono text-xs text-neutral-400 uppercase tracking-wider">TOTAL PRODUCTS</span>
+                            <div class="flex items-baseline justify-between">
+                                <span id="home-metric-products" class="font-display font-extrabold text-4xl text-white">5</span>
+                                <span class="font-mono text-xs text-cyan-400">Showroom Active</span>
+                            </div>
+                        </div>
+
+                        <div class="p-6 border border-white/10 bg-[#05070a] corner-brackets space-y-2">
+                            <span class="font-mono text-xs text-neutral-400 uppercase tracking-wider">ACTIVE EMPLOYEES</span>
+                            <div class="flex items-baseline justify-between">
+                                <span id="home-metric-employees" class="font-display font-extrabold text-4xl text-white">3</span>
+                                <span class="font-mono text-xs text-emerald-400">Operational</span>
+                            </div>
+                        </div>
+
+                        <div class="p-6 border border-white/10 bg-[#05070a] corner-brackets space-y-2">
+                            <span class="font-mono text-xs text-neutral-400 uppercase tracking-wider">PENDING APPROVALS</span>
+                            <div class="flex items-baseline justify-between">
+                                <span id="home-metric-approvals" class="font-display font-extrabold text-4xl text-amber-400">1</span>
+                                <span class="font-mono text-xs text-amber-400">Action Needed</span>
+                            </div>
+                        </div>
+
+                        <div class="p-6 border border-white/10 bg-[#05070a] corner-brackets space-y-2">
+                            <span class="font-mono text-xs text-neutral-400 uppercase tracking-wider">CONTACT MESSAGES</span>
+                            <div class="flex items-baseline justify-between">
+                                <span id="home-metric-connections" class="font-display font-extrabold text-4xl text-white">3</span>
+                                <span id="home-metric-unread" class="font-mono text-xs text-cyan-400">1 Unread</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Two-Column Feed: Recent Platform Activities & Unread Inquiries -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        
+                        <!-- Recent Administrative Actions Feed -->
+                        <div class="lg:col-span-7 p-6 border border-white/10 bg-[#05070a] space-y-4 corner-brackets">
+                            <div class="flex items-center justify-between pb-3 border-b border-white/10">
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="activity" class="w-4 h-4 text-cyan-400"></i>
+                                    <h3 class="font-display font-bold text-sm text-white uppercase tracking-wider">Recent Platform Activities</h3>
+                                </div>
+                                <a href="#security" onclick="showAdminSection('security')" class="font-mono text-xs text-cyan-400 hover:underline">View All Audit Logs ↗</a>
+                            </div>
+                            <div id="home-activities-stream" class="space-y-3 font-mono text-xs">
+                                <!-- Populated dynamically from audit logs -->
+                            </div>
+                        </div>
+
+                        <!-- Unread Inbound Messages Feed -->
+                        <div class="lg:col-span-5 p-6 border border-white/10 bg-[#05070a] space-y-4 corner-brackets">
+                            <div class="flex items-center justify-between pb-3 border-b border-white/10">
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="mail" class="w-4 h-4 text-cyan-400"></i>
+                                    <h3 class="font-display font-bold text-sm text-white uppercase tracking-wider">Unread Inquiries</h3>
+                                </div>
+                                <a href="#connections" onclick="showAdminSection('connections')" class="font-mono text-xs text-cyan-400 hover:underline">Open Inbox ↗</a>
+                            </div>
+                            <div id="home-inquiries-stream" class="space-y-3 font-mono text-xs">
+                                <!-- Populated dynamically from contact inquiries -->
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ==========================================================
+                     SECTION 2: ADVANCED ANALYTICS DASHBOARD
+                     ========================================================== -->
+                <div id="section-dashboard" class="admin-content-section space-y-8 hidden">
+                    
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
+                        <div>
+                            <span class="tech-tag">TELEMETRY & VELOCITY</span>
+                            <h2 class="title-section text-3xl sm:text-4xl text-white mt-1">ADVANCED ANALYTICS</h2>
+                            <p class="font-sans text-sm text-neutral-400 font-light">Real-time performance metrics computed directly from database records.</p>
+                        </div>
+                        <div class="flex items-center gap-2 bg-white/5 p-1 border border-white/10 font-mono text-xs">
+                            <button id="filter-btn-weekly" onclick="setDashboardTimeFilter('weekly')" class="px-3 py-1 bg-white text-black font-bold">WEEKLY</button>
+                            <button id="filter-btn-monthly" onclick="setDashboardTimeFilter('monthly')" class="px-3 py-1 text-neutral-400 hover:text-white">MONTHLY</button>
+                            <button id="filter-btn-yearly" onclick="setDashboardTimeFilter('yearly')" class="px-3 py-1 text-neutral-400 hover:text-white">YEARLY</button>
+                        </div>
+                    </div>
+
+                    <!-- Analytics Key Indicators -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="p-6 border border-white/10 bg-[#05070a] corner-brackets space-y-3">
+                            <span class="font-mono text-xs text-neutral-400 uppercase">PRODUCT SHOWROOM COVERAGE</span>
+                            <div class="flex items-baseline gap-3">
+                                <span id="dash-published-count" class="font-display font-bold text-4xl text-white">5</span>
+                                <span class="font-mono text-xs text-emerald-400">Published / 0 Draft</span>
+                            </div>
+                            <div class="w-full h-1.5 bg-white/10 overflow-hidden">
+                                <div class="h-full bg-cyan-400 w-full"></div>
+                            </div>
+                        </div>
+
+                        <div class="p-6 border border-white/10 bg-[#05070a] corner-brackets space-y-3">
+                            <span class="font-mono text-xs text-neutral-400 uppercase">EMPLOYEE WORK VELOCITY</span>
+                            <div class="flex items-baseline gap-3">
+                                <span id="dash-active-emp-count" class="font-display font-bold text-4xl text-white">3</span>
+                                <span class="font-mono text-xs text-cyan-400">Engineers on Active Sprints</span>
+                            </div>
+                            <div class="w-full h-1.5 bg-white/10 overflow-hidden">
+                                <div class="h-full bg-emerald-400 w-4/5"></div>
+                            </div>
+                        </div>
+
+                        <div class="p-6 border border-white/10 bg-[#05070a] corner-brackets space-y-3">
+                            <span class="font-mono text-xs text-neutral-400 uppercase">ENTERPRISE INQUIRY RESPONSE RATE</span>
+                            <div class="flex items-baseline gap-3">
+                                <span class="font-display font-bold text-4xl text-white">66.7%</span>
+                                <span class="font-mono text-xs text-emerald-400">2 of 3 Processed</span>
+                            </div>
+                            <div class="w-full h-1.5 bg-white/10 overflow-hidden">
+                                <div class="h-full bg-cyan-400 w-2/3"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Grid -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        
+                        <!-- Chart 1: Employee Activity & Task Velocity -->
+                        <div class="p-6 border border-white/10 bg-[#05070a] corner-brackets space-y-4">
+                            <div class="flex items-center justify-between pb-3 border-b border-white/10">
+                                <h3 class="font-display font-bold text-sm text-white uppercase tracking-wider">Employee Sprint Velocity</h3>
+                                <span class="font-mono text-[10px] text-cyan-400">DATABASE BACKED</span>
+                            </div>
+                            <div id="chart-sprint-container" class="h-64 flex items-end gap-6 pt-6 px-4">
+                                <!-- SVG Bar Chart generated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Chart 2: Monthly Connection Inquiries -->
+                        <div class="p-6 border border-white/10 bg-[#05070a] corner-brackets space-y-4">
+                            <div class="flex items-center justify-between pb-3 border-b border-white/10">
+                                <h3 class="font-display font-bold text-sm text-white uppercase tracking-wider">Enterprise Inquiries Growth</h3>
+                                <span class="font-mono text-[10px] text-orange-400">TRANSIT VOLUME</span>
+                            </div>
+                            <div id="chart-connections-container" class="h-64 flex items-end gap-6 pt-6 px-4">
+                                <!-- SVG Bar Chart generated dynamically -->
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ==========================================================
+                     SECTION 3: PRODUCT MANAGEMENT SYSTEM
+                     ========================================================== -->
+                <div id="section-products" class="admin-content-section space-y-8 hidden">
+                    
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
+                        <div>
+                            <span class="tech-tag">CENTRALIZED SHOWROOM CATALOG</span>
+                            <h2 class="title-section text-3xl sm:text-4xl text-white mt-1">PRODUCT MANAGEMENT</h2>
+                            <p class="font-sans text-sm text-neutral-400 font-light">
+                                All updates automatically synchronize with the public <a href="products.html" target="_blank" class="text-cyan-400 underline">Products Page</a> in real time.
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button onclick="openAddProductModal()" class="chamfer-btn-primary !py-2.5 !px-5 text-xs">
+                                <span>+ ADD NEW PRODUCT</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Products Table & Cards Container -->
+                    <div class="admin-card overflow-hidden">
+                        <div class="p-4 border-b border-white/10 bg-white/5 flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
+                            <div class="flex items-center gap-3 flex-1 min-w-[240px]">
+                                <i data-lucide="search" class="w-4 h-4 text-neutral-400"></i>
+                                <input id="products-search-input" type="text" placeholder="Search products by name, code, or architecture..." class="bg-transparent border-none text-white focus:outline-none w-full text-xs">
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <select id="products-category-filter" onchange="renderProductsTable()" class="bg-black border border-white/20 px-3 py-1.5 text-xs text-neutral-300 focus:outline-none">
+                                    <option value="all">All Categories</option>
+                                    <option value="Operating Systems & Kernel">Kernel & OS</option>
+                                    <option value="Distributed Cloud Mesh">Cloud Mesh</option>
+                                    <option value="Spatial AI & Vision">Spatial AI</option>
+                                    <option value="Cybersecurity & SecOps">SecOps</option>
+                                    <option value="Aerospace & Telemetry">Aerospace</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left font-sans text-xs">
+                                <thead class="border-b border-white/10 bg-black/40 font-mono text-[10px] text-neutral-400 uppercase tracking-wider">
+                                    <tr>
+                                        <th class="py-3 px-6">PRODUCT</th>
+                                        <th class="py-3 px-6">CATEGORY</th>
+                                        <th class="py-3 px-6">STAGE</th>
+                                        <th class="py-3 px-6">STATUS</th>
+                                        <th class="py-3 px-6">LEAD ARCHITECT</th>
+                                        <th class="py-3 px-6 text-right">ACTIONS</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="products-table-body" class="divide-y divide-white/5 font-mono text-xs">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ==========================================================
+                     SECTION 4: PROFILE MANAGEMENT (STRICT FOUNDER & CO-FOUNDER ISOLATION)
+                     ========================================================== -->
+                <div id="section-profile" class="admin-content-section space-y-8 hidden">
+                    
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
+                        <div>
+                            <span class="tech-tag">PLATFORM TEAM INFORMATION</span>
+                            <h2 class="title-section text-3xl sm:text-4xl text-white mt-1">EXECUTIVE PROFILES</h2>
+                            <p class="font-sans text-sm text-neutral-400 font-light">
+                                Strict RBAC Enforced: The Founder can only edit their own profile; the Co-Founder can only edit their own profile.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Role Isolation Notice Banner -->
+                    <div id="profile-rbac-notice" class="p-4 border border-cyan-500/30 bg-cyan-950/20 font-mono text-xs text-cyan-300 flex items-center gap-3">
+                        <i data-lucide="shield" class="w-5 h-5 text-cyan-400 shrink-0"></i>
+                        <span><strong>RBAC ENFORCEMENT:</strong> You are currently authenticated as <strong id="profile-current-role-label">Founder (Satyam Swami)</strong>. You have exclusive rights to edit the Founder profile. Co-Founder profiles cannot be altered from this session.</span>
+                    </div>
+
+                    <!-- Profile Switcher Tabs -->
+                    <div class="flex border-b border-white/10 gap-4 font-mono text-xs">
+                        <button id="tab-profile-founder" onclick="switchProfileTab('usr-001')" class="py-3 px-6 border-b-2 border-cyan-400 text-white font-bold">
+                            FOUNDER: SATYAM SWAMI
+                        </button>
+                        <button id="tab-profile-cofounder" onclick="switchProfileTab('usr-002')" class="py-3 px-6 border-b-2 border-transparent text-neutral-400 hover:text-white">
+                            CO-FOUNDER: ISHWARI PATIL
+                        </button>
+                    </div>
+
+                    <!-- Active Profile Edit Form -->
+                    <div class="admin-card p-8 corner-brackets space-y-6">
+                        <form id="form-edit-profile" onsubmit="handleSaveProfile(event)" class="space-y-6 font-mono text-xs">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-neutral-400 uppercase text-[10px] mb-1">Full Name</label>
+                                    <input id="prof-name" type="text" class="w-full bg-black border border-white/20 p-3 text-white focus:outline-none focus:border-cyan-400 font-sans text-sm" required>
+                                </div>
+                                <div>
+                                    <label class="block text-neutral-400 uppercase text-[10px] mb-1">Official Professional Title</label>
+                                    <input id="prof-title" type="text" class="w-full bg-black border border-white/20 p-3 text-white focus:outline-none focus:border-cyan-400 font-sans text-sm" required>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-neutral-400 uppercase text-[10px] mb-1">Department</label>
+                                    <input id="prof-department" type="text" class="w-full bg-black border border-white/20 p-3 text-white focus:outline-none focus:border-cyan-400 text-xs">
+                                </div>
+                                <div>
+                                    <label class="block text-neutral-400 uppercase text-[10px] mb-1">Phone Number</label>
+                                    <input id="prof-phone" type="text" class="w-full bg-black border border-white/20 p-3 text-white focus:outline-none focus:border-cyan-400 text-xs">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-neutral-400 uppercase text-[10px] mb-1">Executive Biography (Synchronizes with Public Website)</label>
+                                <textarea id="prof-bio" rows="4" class="w-full bg-black border border-white/20 p-3 text-white focus:outline-none focus:border-cyan-400 font-sans text-sm leading-relaxed" required></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-neutral-400 uppercase text-[10px] mb-1">Core Architecture Skills (Comma Separated)</label>
+                                <input id="prof-skills" type="text" class="w-full bg-black border border-white/20 p-3 text-white focus:outline-none focus:border-cyan-400 text-xs">
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div>
+                                    <label class="block text-neutral-400 uppercase text-[10px] mb-1">LinkedIn Profile</label>
+                                    <input id="prof-linkedin" type="url" class="w-full bg-black border border-white/20 p-3 text-white focus:outline-none focus:border-cyan-400 text-xs">
+                                </div>
+                                <div>
+                                    <label class="block text-neutral-400 uppercase text-[10px] mb-1">GitHub Profile</label>
+                                    <input id="prof-github" type="url" class="w-full bg-black border border-white/20 p-3 text-white focus:outline-none focus:border-cyan-400 text-xs">
+                                </div>
+                                <div>
+                                    <label class="block text-neutral-400 uppercase text-[10px] mb-1">Twitter / X</label>
+                                    <input id="prof-twitter" type="url" class="w-full bg-black border border-white/20 p-3 text-white focus:outline-none focus:border-cyan-400 text-xs">
+                                </div>
+                            </div>
+
+                            <div class="pt-4 border-t border-white/10 flex items-center justify-between">
+                                <span id="prof-status-note" class="text-neutral-400 text-[11px]"></span>
+                                <button id="btn-save-profile" type="submit" class="chamfer-btn-primary !py-3 !px-8">
+                                    <span>COMMIT PROFILE CHANGES</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+
+                <!-- ==========================================================
+                     SECTION 5: EMPLOYEE MANAGEMENT & WORK MONITORING
+                     ========================================================== -->
+                <div id="section-employees" class="admin-content-section space-y-8 hidden">
+                    
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
+                        <div>
+                            <span class="tech-tag">TALENT ROSTER & VELOCITY</span>
+                            <h2 class="title-section text-3xl sm:text-4xl text-white mt-1">EMPLOYEE MONITORING</h2>
+                            <p class="font-sans text-sm text-neutral-400 font-light">Inspect active engineering staff, sprint deliverables, task progress, and work commits.</p>
+                        </div>
+                    </div>
+
+                    <div class="admin-card overflow-hidden">
+                        <div class="p-4 border-b border-white/10 bg-white/5 flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
+                            <div class="flex items-center gap-3 flex-1 min-w-[240px]">
+                                <i data-lucide="search" class="w-4 h-4 text-neutral-400"></i>
+                                <input id="employee-search-input" type="text" placeholder="Search employees by name, designation, or department..." class="bg-transparent border-none text-white focus:outline-none w-full text-xs">
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left font-sans text-xs">
+                                <thead class="border-b border-white/10 bg-black/40 font-mono text-[10px] text-neutral-400 uppercase tracking-wider">
+                                    <tr>
+                                        <th class="py-3 px-6">EMPLOYEE</th>
+                                        <th class="py-3 px-6">DESIGNATION</th>
+                                        <th class="py-3 px-6">DEPARTMENT</th>
+                                        <th class="py-3 px-6">JOINING DATE</th>
+                                        <th class="py-3 px-6">ACCOUNT STATUS</th>
+                                        <th class="py-3 px-6 text-right">ACTION</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="employees-table-body" class="divide-y divide-white/5 font-mono text-xs">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ==========================================================
+                     SECTION 6: APPROVAL CENTER (FOUNDER & CO-FOUNDER PRIVILEGE)
+                     ========================================================== -->
+                <div id="section-approvals" class="admin-content-section space-y-8 hidden">
+                    
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
+                        <div>
+                            <span class="tech-tag">ROLE-BASED AUTHORIZATION</span>
+                            <h2 class="title-section text-3xl sm:text-4xl text-white mt-1">APPROVAL CENTER</h2>
+                            <p class="font-sans text-sm text-neutral-400 font-light">
+                                Strict MVP Rule: Only the FOUNDER and CO-FOUNDER can approve or reject employee activation requests.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Authorization Rule Banner -->
+                    <div class="p-4 border border-amber-500/40 bg-amber-950/20 font-mono text-xs text-amber-300 flex items-center gap-3">
+                        <i data-lucide="shield-alert" class="w-5 h-5 text-amber-400 shrink-0"></i>
+                        <span>
+                            <strong>SECURITY REQUIREMENT:</strong> Email verification and administrative approval are separate requirements. All activations are cryptographically logged in the immutable audit enclave.
+                        </span>
+                    </div>
+
+                    <!-- Pending Approvals Cards List -->
+                    <div id="approvals-cards-container" class="space-y-4">
+                        <!-- Populated dynamically -->
+                    </div>
+
+                </div>
+
+                <!-- ==========================================================
+                     SECTION 7: CONNECTIONS (INBOX & EMAIL REPLY SYSTEM)
+                     ========================================================== -->
+                <div id="section-connections" class="admin-content-section space-y-8 hidden">
+                    
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
+                        <div>
+                            <span class="tech-tag">COMMUNICATIONS & INQUIRIES</span>
+                            <h2 class="title-section text-3xl sm:text-4xl text-white mt-1">CONNECTIONS INBOX</h2>
+                            <p class="font-sans text-sm text-neutral-400 font-light">
+                                Submissions from the public "Connect With Us" portal with direct email response transmission.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 2-Column Luxury Inbox Interface -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                        
+                        <!-- Left: Message List & Filters -->
+                        <div class="lg:col-span-5 admin-card overflow-hidden">
+                            <div class="p-4 border-b border-white/10 bg-white/5 space-y-3 font-mono text-xs">
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="search" class="w-4 h-4 text-neutral-400"></i>
+                                    <input id="conn-search-input" oninput="filterConnections()" type="text" placeholder="Search inquiries..." class="bg-transparent border-none text-white focus:outline-none w-full text-xs">
+                                </div>
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <button onclick="setConnFilter('all')" class="px-2.5 py-1 text-[10px] bg-white text-black font-bold conn-filter-btn" data-filter="all">ALL</button>
+                                    <button onclick="setConnFilter('unread')" class="px-2.5 py-1 text-[10px] text-neutral-400 hover:text-white conn-filter-btn" data-filter="unread">UNREAD</button>
+                                    <button onclick="setConnFilter('read')" class="px-2.5 py-1 text-[10px] text-neutral-400 hover:text-white conn-filter-btn" data-filter="read">READ</button>
+                                    <button onclick="setConnFilter('replied')" class="px-2.5 py-1 text-[10px] text-neutral-400 hover:text-white conn-filter-btn" data-filter="replied">REPLIED</button>
+                                </div>
+                            </div>
+
+                            <div id="conn-inbox-list" class="divide-y divide-white/5 max-h-[600px] overflow-y-auto no-scrollbar font-mono text-xs">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Right: Message Details & Reply Terminal -->
+                        <div class="lg:col-span-7 admin-card p-6 sm:p-8 corner-brackets space-y-6" id="conn-detail-panel">
+                            <div class="text-center py-12 text-neutral-500 font-mono text-xs">
+                                Select an inquiry from the left to inspect details and dispatch email responses.
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ==========================================================
+                     SECTION 8: SECURITY & AUDIT ENCLAVE
+                     ========================================================== -->
+                <div id="section-security" class="admin-content-section space-y-8 hidden">
+                    
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
+                        <div>
+                            <span class="tech-tag">20 MANDATORY ENTERPRISE GUARDS</span>
+                            <h2 class="title-section text-3xl sm:text-4xl text-white mt-1">SECURITY & AUDIT ENCLAVE</h2>
+                            <p class="font-sans text-sm text-neutral-400 font-light">Defense-in-depth verification, immutable audit logging, and security headers assessment.</p>
+                        </div>
+                    </div>
+
+                    <!-- Security Score Card -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 font-mono text-xs">
+                        <div class="p-6 border border-emerald-500/30 bg-emerald-950/20 corner-brackets space-y-2">
+                            <span class="text-neutral-400 uppercase text-[10px]">SECURITY AUDIT SCORE</span>
+                            <div class="font-display font-extrabold text-3xl text-emerald-400">20 / 20</div>
+                            <span class="text-[10px] text-neutral-300">All Requirements Enforced</span>
+                        </div>
+                        <div class="p-6 border border-white/10 bg-[#05070a] corner-brackets space-y-2">
+                            <span class="text-neutral-400 uppercase text-[10px]">RATE LIMITING</span>
+                            <div class="font-display font-extrabold text-3xl text-white">ACTIVE</div>
+                            <span class="text-[10px] text-neutral-400">30 req / min on auth</span>
+                        </div>
+                        <div class="p-6 border border-white/10 bg-[#05070a] corner-brackets space-y-2">
+                            <span class="text-neutral-400 uppercase text-[10px]">SECRET LEAK CHECK</span>
+                            <div class="font-display font-extrabold text-3xl text-white">PASS</div>
+                            <span class="text-[10px] text-neutral-400">0 Keys in Client Bundles</span>
+                        </div>
+                        <div class="p-6 border border-white/10 bg-[#05070a] corner-brackets space-y-2">
+                            <span class="text-neutral-400 uppercase text-[10px]">AUDIT LOGS STORED</span>
+                            <div id="sec-audit-count" class="font-display font-extrabold text-3xl text-white">0</div>
+                            <span class="text-[10px] text-cyan-400">Immutable Enclave</span>
+                        </div>
+                    </div>
+
+                    <!-- Audit Log Table -->
+                    <div class="admin-card overflow-hidden">
+                        <div class="p-4 border-b border-white/10 bg-white/5 font-mono text-xs flex items-center justify-between">
+                            <span class="font-bold text-white uppercase tracking-wider">IMMUTABLE SYSTEM AUDIT TRAIL</span>
+                            <span class="text-neutral-500 text-[10px]">AUTOMATICALLY APPENDED ON ALL ADMIN ACTIONS</span>
+                        </div>
+                        <div class="overflow-x-auto max-h-[500px]">
+                            <table class="w-full text-left font-mono text-xs">
+                                <thead class="border-b border-white/10 bg-black/40 text-[10px] text-neutral-400 uppercase tracking-wider sticky top-0 bg-black">
+                                    <tr>
+                                        <th class="py-3 px-6">TIMESTAMP</th>
+                                        <th class="py-3 px-6">ACTION</th>
+                                        <th class="py-3 px-6">ACTOR</th>
+                                        <th class="py-3 px-6">ROLE</th>
+                                        <th class="py-3 px-6">TARGET</th>
+                                        <th class="py-3 px-6">DETAILS</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="audit-logs-table-body" class="divide-y divide-white/5 text-[11px]">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+    <!-- ======================================================================
+         MODAL: ADD / EDIT PRODUCT
+         ====================================================================== -->
+    <div id="modal-product" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
+        <div class="admin-card w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6 sm:p-10 corner-brackets space-y-6">
+            <div class="flex items-center justify-between pb-4 border-b border-white/10">
+                <div class="flex items-center gap-2">
+                    <span class="tech-tag" style="--color-neon-cyan: #00f2fe">SHOWROOM ENGINE</span>
+                    <h3 id="modal-product-title" class="font-display font-bold text-xl text-white">ADD NEW PRODUCT</h3>
+                </div>
+                <button onclick="closeProductModal()" class="text-neutral-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+
+            <form id="form-product" onsubmit="handleProductSubmit(event)" class="space-y-4 font-mono text-xs">
+                <input type="hidden" id="prod-edit-id">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-neutral-400 uppercase text-[10px] mb-1">Product Name *</label>
+                        <input id="prod-name" type="text" placeholder="e.g. TrexOS" class="w-full bg-black border border-white/20 p-2.5 text-white focus:outline-none focus:border-cyan-400 text-sm font-sans" required>
+                    </div>
+                    <div>
+                        <label class="block text-neutral-400 uppercase text-[10px] mb-1">Code *</label>
+                        <input id="prod-code" type="text" placeholder="TRX-06" class="w-full bg-black border border-white/20 p-2.5 text-white focus:outline-none focus:border-cyan-400 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-neutral-400 uppercase text-[10px] mb-1">Slug URL</label>
+                        <input id="prod-slug" type="text" placeholder="trexos" class="w-full bg-black border border-white/20 p-2.5 text-white focus:outline-none focus:border-cyan-400 text-xs">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-neutral-400 uppercase text-[10px] mb-1">Tagline *</label>
+                        <input id="prod-tagline" type="text" placeholder="Deterministic Neural Microkernel Architecture" class="w-full bg-black border border-white/20 p-2.5 text-white focus:outline-none focus:border-cyan-400 text-xs" required>
+                    </div>
+                    <div>
+                        <label class="block text-neutral-400 uppercase text-[10px] mb-1">Category</label>
+                        <select id="prod-category" class="w-full bg-black border border-white/20 p-2.5 text-white focus:outline-none focus:border-cyan-400 text-xs">
+                            <option>Operating Systems & Kernel</option>
+                            <option>Distributed Cloud Mesh</option>
+                            <option>Spatial AI & Vision</option>
+                            <option>Cybersecurity & SecOps</option>
+                            <option>Aerospace & Telemetry</option>
+                            <option>Autonomous Systems</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-neutral-400 uppercase text-[10px] mb-1">Status</label>
+                        <select id="prod-status" class="w-full bg-black border border-white/20 p-2.5 text-white focus:outline-none focus:border-cyan-400 text-xs">
+                            <option value="published">Published (Visible on site)</option>
+                            <option value="draft">Draft (Admin only)</option>
+                            <option value="archived">Archived</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-neutral-400 uppercase text-[10px] mb-1">Development Stage</label>
+                        <input id="prod-stage" type="text" placeholder="Production v2.4" class="w-full bg-black border border-white/20 p-2.5 text-white focus:outline-none focus:border-cyan-400 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-neutral-400 uppercase text-[10px] mb-1">Enterprise Pricing / SLA</label>
+                        <input id="prod-pricing" type="text" placeholder="$49 / node / month" class="w-full bg-black border border-white/20 p-2.5 text-white focus:outline-none focus:border-cyan-400 text-xs">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-neutral-400 uppercase text-[10px] mb-1">Short Description *</label>
+                    <textarea id="prod-short-desc" rows="2" class="w-full bg-black border border-white/20 p-2.5 text-white focus:outline-none focus:border-cyan-400 font-sans text-xs" required></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-neutral-400 uppercase text-[10px] mb-1">Detailed Architectural Description</label>
+                    <textarea id="prod-detailed-desc" rows="3" class="w-full bg-black border border-white/20 p-2.5 text-white focus:outline-none focus:border-cyan-400 font-sans text-xs"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-neutral-400 uppercase text-[10px] mb-1">Technologies (Comma separated)</label>
+                        <input id="prod-tech" type="text" placeholder="Rust, eBPF, DMA Enclaves" class="w-full bg-black border border-white/20 p-2.5 text-white focus:outline-none focus:border-cyan-400 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-neutral-400 uppercase text-[10px] mb-1">Lead Systems Architect</label>
+                        <input id="prod-architect" type="text" placeholder="Satyam Swami" class="w-full bg-black border border-white/20 p-2.5 text-white focus:outline-none focus:border-cyan-400 text-xs">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-neutral-400 uppercase text-[10px] mb-1">Demo Link</label>
+                        <input id="prod-demo-link" type="url" placeholder="https://..." class="w-full bg-black border border-white/20 p-2.5 text-white focus:outline-none focus:border-cyan-400 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-neutral-400 uppercase text-[10px] mb-1">GitHub Repo Link</label>
+                        <input id="prod-github-link" type="url" placeholder="https://github.com/..." class="w-full bg-black border border-white/20 p-2.5 text-white focus:outline-none focus:border-cyan-400 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-neutral-400 uppercase text-[10px] mb-1">Documentation Link</label>
+                        <input id="prod-doc-link" type="url" placeholder="https://docs...." class="w-full bg-black border border-white/20 p-2.5 text-white focus:outline-none focus:border-cyan-400 text-xs">
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-white/10 flex items-center justify-between">
+                    <button type="button" onclick="closeProductModal()" class="px-5 py-2.5 border border-white/20 text-neutral-400 hover:text-white">CANCEL</button>
+                    <button type="submit" class="chamfer-btn-primary !py-2.5 !px-8">
+                        <span>SAVE & SYNCHRONIZE</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ======================================================================
+         MODAL: EMPLOYEE ACTIVATION REVIEW (APPROVAL)
+         ====================================================================== -->
+    <div id="modal-approval" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
+        <div class="admin-card w-full max-w-xl p-8 corner-brackets space-y-6">
+            <div class="flex items-center justify-between pb-4 border-b border-white/10">
+                <div class="flex items-center gap-2">
+                    <span class="tech-tag" style="--color-neon-cyan: #f59e0b">FOUNDER / CO-FOUNDER CLEARANCE</span>
+                    <h3 class="font-display font-bold text-lg text-white">ACTIVATION REVIEW</h3>
+                </div>
+                <button onclick="closeApprovalModal()" class="text-neutral-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+
+            <div id="approval-modal-body" class="space-y-4 font-mono text-xs">
+                <!-- Dynamically loaded -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Global Toast -->
+    <div id="admin-toast" class="fixed bottom-6 right-6 z-50 bg-[#0e121b] border border-cyan-400/50 p-4 font-mono text-xs text-white max-w-md shadow-2xl transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none">
+        <div class="flex items-center gap-3">
+            <i data-lucide="check-circle" class="w-4 h-4 text-cyan-400 shrink-0" id="admin-toast-icon"></i>
+            <span id="admin-toast-text">Action executed successfully.</span>
+        </div>
+    </div>
+
+    <!-- Master Admin Controller Script -->
+    <script src="admin.js"></script>
+</body>
+</html>
