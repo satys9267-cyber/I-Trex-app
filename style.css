@@ -590,6 +590,60 @@ html.lenis, html.lenis body {
   color: #475569;
 }
 
+/* --- Authentication & Terminal Components --- */
+.oauth-btn {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.oauth-btn:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.otp-digit {
+  width: 48px;
+  height: 56px;
+  background: rgba(10, 13, 20, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #00f2fe;
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  outline: none;
+  transition: all 0.25s ease;
+}
+.otp-digit:focus {
+  border-color: #00f2fe;
+  box-shadow: 0 0 16px rgba(0, 242, 254, 0.35);
+  background: rgba(14, 18, 27, 0.98);
+}
+
+.strength-segment {
+  height: 3px;
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background-color 0.3s ease;
+}
+
 /* --- Responsive Adjustments --- */
 @media (max-width: 1024px) {
   .title-hero {

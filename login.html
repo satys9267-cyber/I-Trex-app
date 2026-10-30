@@ -1,519 +1,472 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth bg-black text-white">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Authentication Terminal — I-Trex Innovations</title>
+    <meta name="description" content="Secure zero-trust authentication gateway for I-Trex Innovations. Identity verification, enterprise workspace access, and neural kernel telemetry.">
     
-    <!-- Link to Custom Stylesheet -->
-    <link rel="stylesheet" href="style.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <link rel="apple-touch-icon" href="assets/images/favicon.png">
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        itrex: {
-                            bg: '#ffffff',
-                            navy: '#0b0f19',
-                            navyLight: '#1e293b',
-                            gold: '#c29738', 
-                            goldLight: '#fdfcf7',
-                            neutralLight: '#fafafa',
-                            border: '#f1f1f4',
-                            trexos: '#00f2fe',
-                            trexcore: '#f97316',
-                            trexvision: '#06b6d4',
-                            trexshield: '#15803d'
-                        }
+                        void: '#000000',
+                        carbon: '#05070a',
+                        graphite: '#0a0d14',
+                        surface: '#0e121b',
+                        chrome: '#e2e8f0',
+                        titanium: '#94a3b8',
+                        neonCyan: '#00f2fe'
                     },
                     fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                        space: ['Space Grotesk', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'Syne', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
                     }
                 }
             }
         }
     </script>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+    <!-- Master Cinematic Automotive Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+
     <!-- GSAP Animation Engine -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    
-    <!-- Lenis Smooth Scroll Engine -->
-    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Google Identity Services SDK Hook -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- Firebase SDK Compat (v10.14.0) for Direct Client Auth + Custom Hybrid Backend -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
 </head>
-<body class="bg-itrex-bg dark:bg-itrex-navy text-itrex-navy dark:text-white font-sans antialiased overflow-x-hidden selection:bg-neutral-100 transition-colors duration-700 min-h-screen flex flex-col justify-between">
+<body class="bg-black text-white font-sans antialiased selection:bg-white selection:text-black min-h-screen flex flex-col justify-between overflow-x-hidden relative">
 
-    <!-- Scroll Progress Indicator -->
-    <div class="fixed top-0 left-0 w-full h-[3px] bg-neutral-100 dark:bg-neutral-800 z-50">
-        <div id="scroll-trajectory-progress" class="h-full bg-gradient-to-r from-itrex-trexos via-itrex-gold to-itrex-trexshield w-0 transition-all duration-100"></div>
-    </div>
+    <!-- Glowing Micro-Stars Canvas Background -->
+    <canvas id="login-particle-canvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
 
-    <!-- Preloader Screen -->
-    <div id="loader" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center overflow-hidden">
-        <div class="absolute inset-0 flex justify-between pointer-events-none opacity-20">
-            <div class="w-px h-full bg-neutral-200 ml-[10%]"></div>
-            <div class="w-px h-full bg-neutral-200"></div>
-            <div class="w-px h-full bg-neutral-200 mr-[10%]"></div>
-        </div>
+    <!-- Ambient Titanium Illumination Glow -->
+    <div class="fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[350px] bg-gradient-to-b from-white/10 via-cyan-500/5 to-transparent blur-[140px] pointer-events-none z-0"></div>
 
-        <div class="relative flex flex-col items-center z-10 text-center">
-            <div id="loader-logo-img" class="w-20 h-20 mb-6 rounded-2xl overflow-hidden shadow-xl border border-neutral-200 flex items-center justify-center bg-black">
-                <img src="assets/images/itrex_logo.jpg" alt="I-Trex Logo" class="w-full h-full object-cover">
-            </div>
-
-            <h1 id="loader-logo" class="font-space font-bold tracking-[0.15em] text-4xl md:text-5xl text-itrex-navy flex select-none mb-3">
-                <span class="letter loader-letter opacity-0 transform translate-y-4">I</span>
-                <span class="letter loader-letter opacity-0 transform translate-y-4">-</span>
-                <span class="letter loader-letter opacity-0 transform translate-y-4">T</span>
-                <span class="letter loader-letter opacity-0 transform translate-y-4">R</span>
-                <span class="letter loader-letter opacity-0 transform translate-y-4">E</span>
-                <span class="letter loader-letter opacity-0 transform translate-y-4">X</span>
-            </h1>
-            <p id="loader-sub" class="text-xs tracking-[0.4em] text-neutral-400 uppercase font-mono mt-1 opacity-0 transform translate-y-4">
-                Secure Security Enclave · TLS 1.3
-            </p>
-        </div>
-    </div>
-
-    <!-- Golden Light Sparkles Canvas -->
-    <canvas id="sparkle-canvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-[99] hidden lg:block"></canvas>
-
-    <!-- Background Architectural Guidelines -->
-    <div class="fixed inset-0 flex justify-between pointer-events-none opacity-20 dark:opacity-5 z-0 transition-opacity duration-700">
-        <div class="w-px h-full bg-itrex-border ml-12"></div>
-        <div class="w-px h-full bg-itrex-border hidden md:block"></div>
-        <div class="w-px h-full bg-itrex-border hidden lg:block"></div>
-        <div class="w-px h-full bg-itrex-border mr-12"></div>
-    </div>
-
-    <!-- Top Navigation Bar -->
-    <header id="navbar" class="w-full z-40 transition-all duration-300 py-6 px-6 lg:px-16 translate-y-[-100px] opacity-0 relative">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <a href="index.html" class="flex items-center space-x-3 group" data-hover="heading">
-                <div class="w-10 h-10 rounded-xl overflow-hidden bg-black border border-neutral-300 dark:border-slate-700 shadow-sm transition-transform duration-500 group-hover:rotate-6 flex items-center justify-center">
-                    <img src="assets/images/itrex_logo.jpg" alt="I-Trex" class="w-full h-full object-cover">
-                </div>
-                <div class="flex flex-col text-left">
-                    <span class="font-space font-bold tracking-tight text-base leading-none">I-Trex Innovations</span>
-                    <span class="text-[8px] tracking-[0.3em] uppercase text-neutral-400 mt-1">Autonomous OS • Founder: Satyam</span>
-                </div>
+    <!-- Minimalist Header -->
+    <header class="relative z-20 w-full border-b border-white/10 header-glass">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
+            <!-- Left: Return to Public Site -->
+            <a href="index.html" class="flex items-center gap-3 text-white hover:text-cyan-400 transition-colors group">
+                <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-display font-bold text-xs uppercase tracking-[0.2em]">RETURN HOME</span>
             </a>
 
-            <div class="flex items-center space-x-4">
-                <!-- Theme Toggle Button -->
-                <button id="theme-toggle-btn" class="w-10 h-10 rounded-full border border-itrex-border dark:border-slate-800 flex items-center justify-center bg-white dark:bg-slate-900 shadow-sm transition-all duration-500" data-hover="button" title="Toggle Light / Dark Mode">
-                    <i data-lucide="sun" class="w-4 h-4 text-itrex-gold dark:hidden"></i>
-                    <i data-lucide="moon" class="w-4 h-4 text-itrex-gold hidden dark:block"></i>
-                </button>
-
-                <!-- Return to Homepage Link -->
-                <a href="index.html" class="inline-flex items-center space-x-2 border border-itrex-border dark:border-slate-800 bg-itrex-neutralLight dark:bg-slate-900 text-itrex-navy dark:text-white text-xs font-bold uppercase tracking-wider px-5 py-2.5 rounded-full transition-all duration-300 hover:border-itrex-gold" data-hover="button">
-                    <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
-                    <span>Back to Platform</span>
+            <!-- Center: Official Silver Metallic I-Trex Logo -->
+            <div class="absolute left-1/2 -translate-x-1/2 flex items-center">
+                <a href="index.html" class="flex items-center group">
+                    <img src="assets/images/itrex_logo_silver_transparent.png" 
+                         alt="I-Trex Logo" 
+                         class="h-10 sm:h-12 w-auto transition-transform duration-300 group-hover:scale-105 filter drop-shadow-[0_0_15px_rgba(255,255,255,0.25)]">
                 </a>
+            </div>
+
+            <!-- Right: Zero-Trust Security Enclave Badge -->
+            <div class="flex items-center gap-2">
+                <span class="font-mono text-[10px] text-cyan-400 px-3 py-1 border border-cyan-400/30 uppercase tracking-widest hidden sm:flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+                    <span>TLS 1.3 // ZERO-TRUST</span>
+                </span>
             </div>
         </div>
     </header>
 
-    <!-- Main Authentication Container -->
-    <main id="main-auth-container" class="relative z-10 opacity-0 px-4 py-8 flex-1 flex items-center justify-center">
-        <div class="w-full max-w-xl mx-auto space-y-6">
-
-            <!-- ACTIVE SESSION CARD (Rendered when user is logged in) -->
-            <div id="auth-session-card" class="hidden bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-[36px] p-8 sm:p-12 shadow-2xl space-y-6 text-center">
-                <div class="w-20 h-20 rounded-full border-2 border-itrex-gold bg-slate-950 flex items-center justify-center text-4xl mx-auto shadow-lg" id="session-user-avatar">
-                    👑
-                </div>
-                <div>
-                    <span id="session-user-role" class="text-[10px] font-mono uppercase px-2.5 py-1 rounded-full bg-itrex-gold/10 text-itrex-gold border border-itrex-gold/30 font-bold tracking-widest inline-block mb-2">
-                        ADMINISTRATOR
-                    </span>
-                    <h2 id="session-user-name" class="font-space font-bold text-3xl text-itrex-navy dark:text-white">Satyam Swami</h2>
-                    <p id="session-user-email" class="text-xs font-mono text-neutral-400 mt-1">satys9267@gmail.com</p>
-                    <p id="session-user-title" class="text-xs text-itrex-trexos font-mono mt-1">Founder & Chief Architect</p>
-                </div>
-
-                <div class="p-4 rounded-2xl bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 text-xs font-mono flex items-center justify-between">
-                    <span class="text-neutral-500">Security Clearance</span>
-                    <span id="session-user-provider" class="text-emerald-500 font-bold flex items-center gap-1.5">
-                        <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Google OAuth 2.0 (Verified)
-                    </span>
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-3 pt-2">
-                    <a href="dashboard.html" class="flex-1 py-3.5 bg-itrex-gold hover:bg-amber-400 text-itrex-navy font-bold text-xs uppercase tracking-wider rounded-xl transition-all duration-300 text-center flex items-center justify-center space-x-2" data-hover="button">
-                        <span>Enter Workspace Dashboard →</span>
-                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </a>
-                    <button onclick="signOutActiveSession()" class="px-6 py-3.5 border border-itrex-border dark:border-slate-800 text-neutral-500 hover:text-rose-500 dark:hover:text-rose-400 font-bold text-xs uppercase tracking-wider rounded-xl transition-colors" data-hover="button">
-                        Sign Out
-                    </button>
-                </div>
-            </div>
-
-            <!-- AUTHENTICATION FORM CARD (Rendered when logged out) -->
-            <div id="auth-forms-card" class="bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-[36px] p-6 sm:p-12 shadow-2xl relative overflow-hidden transition-colors duration-700">
+    <!-- Main Authentication Terminal Stage -->
+    <main class="relative z-10 flex-1 flex items-center justify-center px-4 py-12 sm:py-16">
+        <div class="w-full max-w-lg">
+            
+            <!-- Terminal Container Frame -->
+            <div class="aerodynamic-frame corner-brackets p-8 sm:p-12 relative bg-black/85 backdrop-blur-xl border border-white/15 shadow-[0_0_50px_rgba(0,0,0,0.8)]">
                 
-                <!-- Card Header -->
-                <div class="text-center space-y-3 mb-8">
-                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-itrex-gold/10 border border-itrex-gold/30 text-itrex-gold text-[10px] font-mono uppercase tracking-widest">
-                        <span class="w-1.5 h-1.5 rounded-full bg-itrex-gold animate-pulse"></span>
-                        <span>Zero-Trust Enterprise Enclave</span>
+                <!-- Terminal Header -->
+                <div class="text-center mb-8 pb-6 border-b border-white/10">
+                    <div class="inline-flex items-center gap-2 mb-3">
+                        <span class="tech-tag" id="auth-kicker">IDENTITY ENCLAVE // AUTHENTICATION</span>
                     </div>
-                    <h1 class="font-space font-bold text-3xl sm:text-4xl text-itrex-navy dark:text-white">Workspace Terminal</h1>
-                    <p class="text-neutral-500 dark:text-neutral-400 text-xs sm:text-sm">Sign in to your account or initialize enterprise credentials</p>
-                </div>
-
-                <!-- GOOGLE OAUTH CONTINUATION BUTTON -->
-                <div class="space-y-3">
-                    <button type="button" onclick="openGoogleAuthModal()" class="w-full btn-google-auth py-3.5 px-4 rounded-2xl border border-neutral-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-itrex-navy dark:text-white font-semibold text-xs flex items-center justify-center space-x-3 shadow-sm hover:border-itrex-gold transition-all duration-300 group" data-hover="button">
-                        <!-- Official Google Multi-Color SVG Icon -->
-                        <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
-                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-                        </svg>
-                        <span class="font-space font-bold tracking-wide">Continue with Google Account</span>
-                    </button>
-                    <div class="flex items-center justify-center space-x-2 text-[10px] font-mono text-neutral-400">
-                        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-500"></i>
-                        <span>Google Identity Services & OAuth 2.0 Verified</span>
+                    <h1 class="font-display font-extrabold text-3xl sm:text-4xl tracking-tight text-white uppercase">
+                        I-TREX
+                    </h1>
+                    <p class="font-mono text-[11px] uppercase tracking-[0.22em] text-neutral-400 mt-1">
+                        YOUR DIGITAL EXPERIENCE STARTS HERE
+                    </p>
+                    
+                    <!-- Dynamic Subtitle Context -->
+                    <div id="auth-header-context" class="mt-4 pt-3 border-t border-white/10 text-neutral-300 font-sans text-xs">
+                        <span id="auth-context-title" class="font-bold text-white block text-sm">Welcome back</span>
+                        <span id="auth-context-desc" class="text-neutral-400">Sign in to your I-Trex account</span>
                     </div>
                 </div>
 
-                <!-- Divider -->
-                <div class="relative my-8 flex items-center justify-center">
-                    <div class="border-t border-itrex-border dark:border-slate-800 w-full"></div>
-                    <span class="bg-white dark:bg-slate-900 px-4 text-[11px] font-mono uppercase tracking-wider text-neutral-400 absolute">
-                        or enterprise credentials
-                    </span>
+                <!-- Global Feedback Alert Banner -->
+                <div id="auth-feedback-banner" class="hidden mb-6 p-4 font-mono text-xs border rounded-none flex items-start gap-3 transition-all duration-300">
+                    <i id="auth-feedback-icon" data-lucide="info" class="w-4 h-4 shrink-0 mt-0.5"></i>
+                    <div id="auth-feedback-text" class="leading-relaxed flex-1"></div>
                 </div>
 
-                <!-- Tab Headers (Sign In vs Create Account) -->
-                <div class="flex border-b border-itrex-border dark:border-slate-800 mb-6 text-xs font-space font-bold uppercase tracking-wider">
-                    <button id="tab-btn-signin" type="button" onclick="switchTab('signin')" class="flex-1 pb-3 text-center border-b-2 border-itrex-gold text-itrex-navy dark:text-white transition-all">
-                        Sign In
-                    </button>
-                    <button id="tab-btn-register" type="button" onclick="switchTab('register')" class="flex-1 pb-3 text-center border-b-2 border-transparent text-neutral-400 hover:text-itrex-navy dark:hover:text-white transition-all">
-                        Create Account
-                    </button>
-                </div>
-
-                <!-- TAB 1: SIGN IN FORM -->
-                <div id="form-signin-container">
-                    <form id="signin-form" class="space-y-4" onsubmit="handleSignInSubmit(event)">
+                <!-- ==========================================================
+                     VIEW 1: SIGN IN (EMAIL OR USERNAME + PASSWORD)
+                     ========================================================== -->
+                <div id="view-login" class="auth-view space-y-6">
+                    <form id="form-login" class="space-y-5" novalidate>
+                        <!-- Identifier Input -->
                         <div>
-                            <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-1.5">Work / Google Email</label>
+                            <label for="login-identifier" class="block font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-2">
+                                EMAIL ADDRESS OR USERNAME *
+                            </label>
                             <div class="relative">
-                                <input id="signin-email" type="email" required placeholder="name@company.com" class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl pl-10 pr-4 py-3 text-xs text-itrex-navy dark:text-white placeholder-neutral-400 focus:outline-none focus:border-itrex-gold transition-colors font-mono">
-                                <i data-lucide="mail" class="w-4 h-4 text-neutral-400 absolute left-3.5 top-3.5 pointer-events-none"></i>
+                                <input id="login-identifier" 
+                                       type="text" 
+                                       required 
+                                       placeholder="satys9267@gmail.com or username" 
+                                       autocomplete="username"
+                                       class="tech-input pl-11">
+                                <i data-lucide="user" class="w-4 h-4 text-neutral-500 absolute left-4 top-1/2 -translate-y-1/2"></i>
                             </div>
                         </div>
 
+                        <!-- Password Input -->
                         <div>
-                            <div class="flex items-center justify-between mb-1.5">
-                                <label class="text-[11px] font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Security Password</label>
-                                <button type="button" onclick="openForgotPasswordModal()" class="text-[11px] font-mono text-itrex-gold hover:underline">
-                                    Forgot password?
+                            <div class="flex items-center justify-between mb-2">
+                                <label for="login-password" class="block font-mono text-[10px] uppercase tracking-widest text-neutral-400">
+                                    PASSWORD *
+                                </label>
+                                <button type="button" id="btn-to-forgot" class="font-mono text-[10px] text-cyan-400 hover:text-white transition-colors uppercase tracking-wider">
+                                    FORGOT PASSWORD?
                                 </button>
                             </div>
                             <div class="relative">
-                                <input id="signin-password" type="password" required placeholder="••••••••" class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl pl-10 pr-10 py-3 text-xs text-itrex-navy dark:text-white placeholder-neutral-400 focus:outline-none focus:border-itrex-gold transition-colors font-mono">
-                                <i data-lucide="lock" class="w-4 h-4 text-neutral-400 absolute left-3.5 top-3.5 pointer-events-none"></i>
-                                <button type="button" onclick="togglePasswordVisibility('signin-password', this)" class="absolute right-3.5 top-3 text-neutral-400 hover:text-itrex-gold">
+                                <input id="login-password" 
+                                       type="password" 
+                                       required 
+                                       placeholder="••••••••••••" 
+                                       autocomplete="current-password"
+                                       class="tech-input pl-11 pr-11">
+                                <i data-lucide="lock" class="w-4 h-4 text-neutral-500 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                                <button type="button" id="toggle-login-pass" class="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white transition-colors" title="Toggle visibility">
                                     <i data-lucide="eye" class="w-4 h-4"></i>
                                 </button>
                             </div>
                         </div>
 
-                        <div class="flex items-center justify-between text-[11px] text-neutral-500 pt-1">
-                            <label class="flex items-center space-x-2 cursor-pointer">
-                                <input type="checkbox" checked class="rounded border-slate-700 text-itrex-gold focus:ring-0">
-                                <span>Remember this session</span>
+                        <!-- Remember Me & Session Persistence -->
+                        <div class="flex items-center justify-between text-xs font-mono text-neutral-400">
+                            <label class="flex items-center gap-2 cursor-pointer select-none">
+                                <input type="checkbox" id="login-remember" checked class="w-3.5 h-3.5 accent-cyan-400 bg-neutral-900 border-white/20">
+                                <span class="text-[11px]">Remember this device</span>
                             </label>
-                            <span class="font-mono text-[10px]">Session Token: TLS 1.3</span>
+                            <span class="text-[10px] text-neutral-500">SESSION: TLS 1.3 SECURE</span>
                         </div>
 
-                        <button id="signin-submit-btn" type="submit" class="w-full py-3.5 bg-itrex-navy dark:bg-white text-white dark:text-itrex-navy font-bold text-xs uppercase tracking-widest rounded-xl transition-all duration-300 hover:shadow-lg flex items-center justify-center space-x-2 mt-4" data-hover="button">
-                            <span>Authenticate & Enter Workspace</span>
+                        <!-- Submit Button -->
+                        <button type="submit" id="btn-submit-login" class="chamfer-btn-primary w-full !py-3.5 mt-2">
+                            <span>SIGN IN</span>
                             <i data-lucide="arrow-right" class="w-4 h-4"></i>
                         </button>
                     </form>
+
+                    <!-- Federated OAuth Divider -->
+                    <div class="relative flex py-2 items-center">
+                        <div class="flex-grow border-t border-white/10"></div>
+                        <span class="flex-shrink mx-4 font-mono text-[9px] uppercase tracking-[0.25em] text-neutral-500">OR CONTINUE WITH</span>
+                        <div class="flex-grow border-t border-white/10"></div>
+                    </div>
+
+                    <!-- OAuth Buttons -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button type="button" id="btn-oauth-google" class="oauth-btn">
+                            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                                <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.3 9 5 12 5z"/>
+                                <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z"/>
+                                <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8s.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z"/>
+                                <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2-6.4-4.8L1.9 16.4C3.7 20.4 7.5 23 12 23z"/>
+                            </svg>
+                            <span>Google</span>
+                        </button>
+
+                        <button type="button" id="btn-oauth-github" class="oauth-btn">
+                            <i data-lucide="github" class="w-4 h-4 shrink-0"></i>
+                            <span>GitHub</span>
+                        </button>
+                    </div>
+
+                    <!-- Switch to Register -->
+                    <div class="pt-4 border-t border-white/10 text-center text-xs font-mono">
+                        <span class="text-neutral-400">Don't have an account?</span>
+                        <button type="button" id="btn-to-register" class="ml-1 text-white hover:text-cyan-400 font-bold transition-colors underline underline-offset-4">
+                            Create account
+                        </button>
+                    </div>
                 </div>
 
-                <!-- TAB 2: CREATE ACCOUNT FORM -->
-                <div id="form-register-container" class="hidden space-y-4">
-                    
-                    <!-- Fast Registration via Google Identity -->
-                    <button type="button" onclick="openGoogleAuthModal()" class="w-full py-2.5 px-3 rounded-xl bg-itrex-gold/10 border border-itrex-gold/30 text-itrex-gold hover:bg-itrex-gold/20 text-xs font-mono flex items-center justify-center space-x-2 transition-colors">
-                        <i data-lucide="shield-check" class="w-4 h-4"></i>
-                        <span>Fast Registration via Google Identity</span>
-                    </button>
-
-                    <form id="register-form" class="space-y-4" onsubmit="handleRegisterSubmit(event)">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-1.5">Full Name *</label>
-                                <input id="reg-name" type="text" required placeholder="Enter your full name" class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-itrex-navy dark:text-white placeholder-neutral-400 focus:outline-none focus:border-itrex-gold transition-colors font-sans">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-1.5">Enterprise Role</label>
-                                <select id="reg-role" class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold transition-colors font-sans">
-                                    <option value="employee">Systems Engineer</option>
-                                    <option value="employee">AI Research Specialist</option>
-                                    <option value="admin">Platform Administrator</option>
-                                    <option value="partner">Enterprise Partner / Client</option>
-                                </select>
-                            </div>
+                <!-- ==========================================================
+                     VIEW 2: SIGN UP / REGISTRATION (COMPLETE ACCOUNT CREATION)
+                     ========================================================== -->
+                <div id="view-register" class="auth-view space-y-6 hidden">
+                    <form id="form-register" class="space-y-4" novalidate>
+                        <!-- Full Name -->
+                        <div>
+                            <label for="reg-name" class="block font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-1.5">
+                                FULL NAME *
+                            </label>
+                            <input id="reg-name" 
+                                   type="text" 
+                                   required 
+                                   placeholder="Satyam Swami" 
+                                   class="tech-input">
                         </div>
 
+                        <!-- Username -->
                         <div>
-                            <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-1.5">Work / Google Email *</label>
-                            <input id="reg-email" type="email" required placeholder="name@company.com" class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-itrex-navy dark:text-white placeholder-neutral-400 focus:outline-none focus:border-itrex-gold transition-colors font-mono">
-                        </div>
-
-                        <!-- Password with Real-Time Strength Meter -->
-                        <div>
-                            <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-1.5">Create Secure Password *</label>
+                            <div class="flex items-center justify-between mb-1.5">
+                                <label for="reg-username" class="block font-mono text-[10px] uppercase tracking-widest text-neutral-400">
+                                    UNIQUE USERNAME *
+                                </label>
+                                <span id="username-feedback" class="font-mono text-[9px] text-neutral-500 uppercase">3-30 ALPHANUMERIC</span>
+                            </div>
                             <div class="relative">
-                                <input id="reg-password" type="password" required placeholder="Min. 8 chars, 1 uppercase, 1 digit, 1 symbol" oninput="checkPasswordStrength(this.value)" class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl pl-4 pr-10 py-3 text-xs text-itrex-navy dark:text-white placeholder-neutral-400 focus:outline-none focus:border-itrex-gold transition-colors font-mono">
-                                <button type="button" onclick="togglePasswordVisibility('reg-password', this)" class="absolute right-3.5 top-3 text-neutral-400 hover:text-itrex-gold">
+                                <input id="reg-username" 
+                                       type="text" 
+                                       required 
+                                       placeholder="satyam_swami" 
+                                       autocomplete="username"
+                                       class="tech-input pl-11">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500 font-mono text-sm">@</span>
+                            </div>
+                        </div>
+
+                        <!-- Email Address -->
+                        <div>
+                            <label for="reg-email" class="block font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-1.5">
+                                EMAIL ADDRESS *
+                            </label>
+                            <input id="reg-email" 
+                                   type="email" 
+                                   required 
+                                   placeholder="founder@enterprise.ai" 
+                                   autocomplete="email"
+                                   class="tech-input">
+                        </div>
+
+                        <!-- Password -->
+                        <div>
+                            <label for="reg-password" class="block font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-1.5">
+                                PASSWORD *
+                            </label>
+                            <div class="relative">
+                                <input id="reg-password" 
+                                       type="password" 
+                                       required 
+                                       placeholder="••••••••••••" 
+                                       autocomplete="new-password"
+                                       class="tech-input pr-11">
+                                <button type="button" id="toggle-reg-pass" class="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white transition-colors" title="Toggle visibility">
                                     <i data-lucide="eye" class="w-4 h-4"></i>
                                 </button>
                             </div>
 
-                            <!-- Visual Strength Meter Bar -->
-                            <div class="w-full bg-neutral-200 dark:bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
-                                <div id="password-strength-bar" class="strength-bar bg-neutral-300 dark:bg-slate-700 w-0"></div>
+                            <!-- Dynamic 5-Level Password Strength Meter -->
+                            <div class="mt-2 space-y-1.5">
+                                <div class="flex items-center justify-between font-mono text-[9px]">
+                                    <span class="text-neutral-500 uppercase">SECURITY ENTROPY:</span>
+                                    <span id="pass-strength-label" class="text-neutral-400 font-bold uppercase">ENTER PASSWORD</span>
+                                </div>
+                                <div class="flex gap-1">
+                                    <div id="str-bar-1" class="strength-segment"></div>
+                                    <div id="str-bar-2" class="strength-segment"></div>
+                                    <div id="str-bar-3" class="strength-segment"></div>
+                                    <div id="str-bar-4" class="strength-segment"></div>
+                                </div>
                             </div>
-                            <span id="password-strength-text" class="text-[10px] font-mono text-neutral-400 mt-1 block">Password Strength: Unrated</span>
                         </div>
 
+                        <!-- Confirm Password -->
                         <div>
-                            <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-1.5">Confirm Password *</label>
-                            <input id="reg-confirm-password" type="password" required placeholder="••••••••" class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-itrex-navy dark:text-white placeholder-neutral-400 focus:outline-none focus:border-itrex-gold transition-colors font-mono">
+                            <label for="reg-confirm" class="block font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-1.5">
+                                CONFIRM PASSWORD *
+                            </label>
+                            <input id="reg-confirm" 
+                                   type="password" 
+                                   required 
+                                   placeholder="••••••••••••" 
+                                   autocomplete="new-password"
+                                   class="tech-input">
                         </div>
 
-                        <div class="flex items-start space-x-2 text-[11px] text-neutral-500 pt-1">
-                            <input type="checkbox" required class="rounded mt-0.5 border-slate-700 text-itrex-gold focus:ring-0">
-                            <span>I agree to the Zero-Trust Enterprise Security Protocol & Data Enclave Agreement.</span>
+                        <!-- Legal Consents -->
+                        <div class="pt-2 space-y-2 font-mono text-xs text-neutral-400">
+                            <label class="flex items-start gap-2.5 cursor-pointer">
+                                <input type="checkbox" id="reg-terms" required class="mt-1 w-3.5 h-3.5 accent-cyan-400 bg-neutral-900 border-white/20">
+                                <span class="text-[11px] leading-relaxed">
+                                    I accept the <a href="#" class="text-white underline">Terms & Conditions</a> and consent to the <a href="#" class="text-white underline">Privacy Policy</a>.
+                                </span>
+                            </label>
                         </div>
 
-                        <button type="submit" class="w-full py-3.5 bg-itrex-gold hover:bg-amber-400 text-itrex-navy font-bold text-xs uppercase tracking-widest rounded-xl transition-all duration-300 flex items-center justify-center space-x-2 mt-4" data-hover="button">
-                            <span>Create Enterprise Account & Verify</span>
+                        <!-- Submit Button -->
+                        <button type="submit" id="btn-submit-register" class="chamfer-btn-primary w-full !py-3.5 mt-2">
+                            <span>INITIALIZE SECURE ACCOUNT</span>
                             <i data-lucide="shield-check" class="w-4 h-4"></i>
                         </button>
                     </form>
+
+                    <!-- Switch to Login -->
+                    <div class="pt-4 border-t border-white/10 text-center text-xs font-mono">
+                        <span class="text-neutral-400">Already registered?</span>
+                        <button type="button" id="btn-to-login" class="ml-1 text-white hover:text-cyan-400 font-bold transition-colors underline underline-offset-4">
+                            Sign in here
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ==========================================================
+                     VIEW 3: FORGOT PASSWORD / ACCOUNT RECOVERY
+                     ========================================================== -->
+                <div id="view-forgot" class="auth-view space-y-6 hidden">
+                    <p class="font-sans text-xs text-neutral-300 leading-relaxed font-light">
+                        Enter your verified account email. If an account is associated with this address, a cryptographic, single-use password reset link will be dispatched immediately.
+                    </p>
+
+                    <form id="form-forgot" class="space-y-5" novalidate>
+                        <div>
+                            <label for="forgot-email" class="block font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-2">
+                                REGISTERED EMAIL ADDRESS *
+                            </label>
+                            <div class="relative">
+                                <input id="forgot-email" 
+                                       type="email" 
+                                       required 
+                                       placeholder="satys9267@gmail.com" 
+                                       class="tech-input pl-11">
+                                <i data-lucide="mail" class="w-4 h-4 text-neutral-500 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="btn-submit-forgot" class="chamfer-btn-primary w-full !py-3.5">
+                            <span>DISPATCH RECOVERY LINK</span>
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                        </button>
+                    </form>
+
+                    <div class="pt-4 border-t border-white/10 text-center text-xs font-mono">
+                        <button type="button" id="btn-forgot-to-login" class="text-neutral-400 hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto">
+                            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+                            <span>Return to Sign In</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ==========================================================
+                     VIEW 4: EMAIL VERIFICATION PENDING
+                     ========================================================== -->
+                <div id="view-verify" class="auth-view space-y-6 text-center hidden">
+                    <div class="w-16 h-16 rounded-none border border-cyan-400/50 bg-cyan-950/40 text-cyan-400 mx-auto flex items-center justify-center shadow-[0_0_25px_rgba(0,242,254,0.2)]">
+                        <i data-lucide="mail-check" class="w-8 h-8"></i>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h3 class="font-display font-bold text-xl text-white uppercase tracking-wider">Verification Required</h3>
+                        <p class="font-sans text-xs text-neutral-300 leading-relaxed font-light">
+                            We have transmitted an authorized verification payload to:
+                        </p>
+                        <span id="verify-target-email" class="font-mono text-sm font-bold text-cyan-400 block break-all">user@example.com</span>
+                    </div>
+
+                    <p class="font-sans text-[11px] text-neutral-400 leading-relaxed">
+                        Please open your inbox and click the verification link to elevate your status to verified enterprise access.
+                    </p>
+
+                    <div class="pt-2 space-y-3">
+                        <button type="button" id="btn-check-verified" class="chamfer-btn-primary w-full !py-3 text-xs">
+                            <span>I'VE VERIFIED MY EMAIL · REFRESH STATE</span>
+                        </button>
+                        <button type="button" id="btn-resend-verification" class="chamfer-btn-outline w-full !py-2.5 text-xs">
+                            <span>RESEND VERIFICATION LINK</span>
+                        </button>
+                        <button type="button" id="btn-verify-signout" class="font-mono text-[10px] text-neutral-400 hover:text-white transition-colors block mx-auto pt-2">
+                            Sign Out / Change Account
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ==========================================================
+                     VIEW 5: TWO-FACTOR AUTHENTICATION (2FA OTP)
+                     ========================================================== -->
+                <div id="view-2fa" class="auth-view space-y-6 text-center hidden">
+                    <div class="w-16 h-16 rounded-none border border-emerald-400/50 bg-emerald-950/40 text-emerald-400 mx-auto flex items-center justify-center shadow-[0_0_25px_rgba(16,185,129,0.2)]">
+                        <i data-lucide="shield-alert" class="w-8 h-8"></i>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h3 class="font-display font-bold text-xl text-white uppercase tracking-wider">Two-Factor Authentication</h3>
+                        <p class="font-sans text-xs text-neutral-300 leading-relaxed font-light">
+                            Enter the 6-digit authentication token generated by your device:
+                        </p>
+                    </div>
+
+                    <form id="form-2fa" class="space-y-6" novalidate>
+                        <!-- 6 OTP Input Boxes -->
+                        <div class="flex items-center justify-center gap-2 sm:gap-3">
+                            <input type="text" maxlength="1" class="otp-digit" data-idx="0" autofocus>
+                            <input type="text" maxlength="1" class="otp-digit" data-idx="1">
+                            <input type="text" maxlength="1" class="otp-digit" data-idx="2">
+                            <span class="text-neutral-500 font-mono">-</span>
+                            <input type="text" maxlength="1" class="otp-digit" data-idx="3">
+                            <input type="text" maxlength="1" class="otp-digit" data-idx="4">
+                            <input type="text" maxlength="1" class="otp-digit" data-idx="5">
+                        </div>
+
+                        <button type="submit" id="btn-submit-2fa" class="chamfer-btn-primary w-full !py-3.5">
+                            <span>VERIFY IDENTITY & PROCEED</span>
+                            <i data-lucide="key" class="w-4 h-4"></i>
+                        </button>
+                    </form>
+
+                    <div class="pt-2 text-center text-xs font-mono">
+                        <button type="button" id="btn-2fa-cancel" class="text-neutral-400 hover:text-white transition-colors">
+                            Cancel & Return to Login
+                        </button>
+                    </div>
                 </div>
 
             </div>
 
-            <!-- Security Badges Footer -->
-            <div class="flex flex-wrap items-center justify-center gap-6 text-[10px] font-mono text-neutral-400 text-center">
-                <span class="flex items-center gap-1.5">
-                    <i data-lucide="lock" class="w-3.5 h-3.5 text-itrex-gold"></i> TLS 1.3 Encrypted
-                </span>
-                <span class="flex items-center gap-1.5">
-                    <i data-lucide="shield" class="w-3.5 h-3.5 text-emerald-500"></i> FIPS 140-2 Level 3
-                </span>
-                <span class="flex items-center gap-1.5">
-                    <i data-lucide="key" class="w-3.5 h-3.5 text-itrex-trexos"></i> Hardware Enclave Active
-                </span>
+            <!-- Bottom Security Hardware Telemetry Badge -->
+            <div class="mt-8 text-center space-y-2">
+                <div class="flex flex-wrap items-center justify-center gap-4 text-neutral-500 font-mono text-[10px] uppercase tracking-widest">
+                    <span>ENCLAVE: AES-256-GCM</span>
+                    <span>·</span>
+                    <span class="text-cyan-400">OWASP RBAC HARDENED</span>
+                    <span>·</span>
+                    <span>RING 0 ATTESTATION</span>
+                </div>
+                <div class="text-neutral-600 font-mono text-[9px]">
+                    © 2026 I-TREX INNOVATIONS INC · ALL RIGHTS RESERVED
+                </div>
             </div>
 
         </div>
     </main>
 
-
-    <!-- ============================================================== -->
-    <!-- MODAL 1: GOOGLE ACCOUNT CHOOSER (Authentic Google OAuth Dialog) -->
-    <!-- ============================================================== -->
-    <div id="google-account-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 auth-modal-backdrop hidden">
-        <div class="max-w-md w-full bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-[32px] p-6 sm:p-8 shadow-2xl relative space-y-6">
-            <button onclick="closeGoogleAuthModal()" class="absolute top-6 right-6 text-neutral-400 hover:text-itrex-navy dark:hover:text-white text-lg font-bold">
-                &times;
-            </button>
-
-            <div class="text-center space-y-2">
-                <!-- Google G Logo -->
-                <svg class="w-8 h-8 mx-auto" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-                </svg>
-                <h3 class="font-space font-bold text-xl text-itrex-navy dark:text-white">Choose a Google Account</h3>
-                <p class="text-xs text-neutral-400">to continue to <strong class="text-itrex-gold">I-Trex Innovations</strong></p>
-            </div>
-
-            <!-- Google Sign-In Input Flow (Secure, zero leaked third-party or example credentials) -->
-            <form id="google-auth-direct-form" onsubmit="handleGoogleAuthDirect(event)" class="space-y-4">
-                <div class="text-left">
-                    <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-1.5">Google Email or Phone</label>
-                    <input id="google-auth-input" type="email" required placeholder="Enter your Google Account email" class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-itrex-navy dark:text-white placeholder-neutral-400 focus:outline-none focus:border-itrex-gold transition-colors font-mono">
-                </div>
-
-                <div class="flex items-center justify-between text-[11px] text-neutral-400 font-mono">
-                    <span class="text-[10px]">Google Identity Services • Zero-Trust</span>
-                    <a href="https://accounts.google.com" target="_blank" class="text-itrex-gold hover:underline">Help</a>
-                </div>
-
-                <button type="submit" id="btn-google-dialog-submit" class="w-full py-3.5 bg-itrex-navy dark:bg-white text-white dark:text-itrex-navy font-bold text-xs uppercase tracking-widest rounded-xl transition-all duration-300 hover:shadow-lg flex items-center justify-center space-x-2" data-hover="button">
-                    <span>Continue with Google</span>
-                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </button>
-            </form>
-
-            <p class="text-[10px] text-neutral-400 text-center leading-relaxed">
-                By continuing, Google shares your name, email address, language preference, and profile picture with I-Trex Innovations.
-            </p>
-        </div>
-    </div>
-
-
-    <!-- ============================================================== -->
-    <!-- MODAL 2: 6-DIGIT SECURITY TOKEN VERIFICATION SCREEN (OTP)     -->
-    <!-- ============================================================== -->
-    <div id="verification-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 auth-modal-backdrop hidden">
-        <div class="max-w-md w-full bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-[36px] p-8 shadow-2xl relative space-y-6 text-center">
-            <button onclick="closeVerificationModal()" class="absolute top-6 right-6 text-neutral-400 hover:text-itrex-navy dark:hover:text-white text-lg font-bold">
-                &times;
-            </button>
-
-            <div class="w-16 h-16 rounded-2xl bg-itrex-gold/10 border border-itrex-gold/40 flex items-center justify-center text-itrex-gold mx-auto">
-                <i data-lucide="shield-check" class="w-8 h-8"></i>
-            </div>
-
-            <div class="space-y-1">
-                <h3 class="font-space font-bold text-2xl text-itrex-navy dark:text-white">Verify Your Identity</h3>
-                <p class="text-xs text-neutral-500 dark:text-neutral-400">
-                    Enter the 6-digit cryptographic token sent to:
-                </p>
-                <p id="verify-modal-email" class="text-xs font-mono font-bold text-itrex-gold">user@company.com</p>
-            </div>
-
-            <!-- 6 Auto-jumping OTP digit boxes -->
-            <div class="flex items-center justify-center gap-2 sm:gap-3 py-2">
-                <input type="text" maxlength="1" id="otp-box-1" class="otp-digit-box bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 text-itrex-navy dark:text-white">
-                <input type="text" maxlength="1" id="otp-box-2" class="otp-digit-box bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 text-itrex-navy dark:text-white">
-                <input type="text" maxlength="1" id="otp-box-3" class="otp-digit-box bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 text-itrex-navy dark:text-white">
-                <input type="text" maxlength="1" id="otp-box-4" class="otp-digit-box bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 text-itrex-navy dark:text-white">
-                <input type="text" maxlength="1" id="otp-box-5" class="otp-digit-box bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 text-itrex-navy dark:text-white">
-                <input type="text" maxlength="1" id="otp-box-6" class="otp-digit-box bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 text-itrex-navy dark:text-white">
-            </div>
-
-            <!-- Countdown and Resend -->
-            <div class="flex items-center justify-between text-xs font-mono text-neutral-400 px-2">
-                <span>Code expires in: <strong id="otp-timer-display" class="text-itrex-gold">00:45</strong></span>
-                <button id="btn-resend-otp" onclick="resendVerificationToken()" disabled class="text-itrex-gold hover:underline disabled:opacity-40 disabled:hover:no-underline">
-                    Resend Code
-                </button>
-            </div>
-
-            <button type="button" onclick="confirmOtpVerification()" class="w-full py-3.5 bg-itrex-navy dark:bg-white text-white dark:text-itrex-navy font-bold text-xs uppercase tracking-widest rounded-xl transition-all duration-300 hover:shadow-lg flex items-center justify-center space-x-2" data-hover="button">
-                <span>Verify Security Token</span>
-                <i data-lucide="check" class="w-4 h-4"></i>
-            </button>
-        </div>
-    </div>
-
-
-    <!-- ============================================================== -->
-    <!-- MODAL 3: FORGOT PASSWORD 3-STEP RECOVERY FLOW                 -->
-    <!-- ============================================================== -->
-    <div id="forgot-password-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 auth-modal-backdrop hidden">
-        <div class="max-w-md w-full bg-white dark:bg-slate-900 border border-itrex-border dark:border-slate-800 rounded-[36px] p-8 shadow-2xl relative space-y-6">
-            <button onclick="closeForgotPasswordModal()" class="absolute top-6 right-6 text-neutral-400 hover:text-itrex-navy dark:hover:text-white text-lg font-bold">
-                &times;
-            </button>
-
-            <!-- STEP 1: Enter Email -->
-            <div id="forgot-step-1" class="space-y-4">
-                <div class="text-center space-y-2">
-                    <div class="w-12 h-12 rounded-2xl bg-itrex-gold/10 border border-itrex-gold/30 flex items-center justify-center text-itrex-gold mx-auto">
-                        <i data-lucide="key-round" class="w-6 h-6"></i>
-                    </div>
-                    <h3 class="font-space font-bold text-2xl text-itrex-navy dark:text-white">Password Recovery</h3>
-                    <p class="text-xs text-neutral-400">Enter your registered email address to receive a secure password reset token.</p>
-                </div>
-
-                <form onsubmit="handleForgotStep1(event)" class="space-y-4">
-                    <div>
-                        <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Registered Email Address</label>
-                        <input id="forgot-email" type="email" required placeholder="name@company.com" class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold font-mono">
-                    </div>
-                    <button type="submit" class="w-full py-3.5 bg-itrex-navy dark:bg-white text-white dark:text-itrex-navy font-bold text-xs uppercase tracking-widest rounded-xl transition-all duration-300">
-                        Send Recovery Code →
-                    </button>
-                </form>
-            </div>
-
-            <!-- STEP 2: Enter Code -->
-            <div id="forgot-step-2" class="space-y-4 hidden">
-                <div class="text-center space-y-2">
-                    <h3 class="font-space font-bold text-2xl text-itrex-navy dark:text-white">Enter Security Token</h3>
-                    <p class="text-xs text-neutral-400">
-                        We sent a 6-digit recovery code to: <br><strong id="forgot-verify-email-display" class="text-itrex-gold font-mono"></strong>
-                    </p>
-                </div>
-
-                <form onsubmit="handleForgotStep2(event)" class="space-y-4">
-                    <div>
-                        <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1.5">6-Digit Code</label>
-                        <input id="forgot-otp-input" type="text" maxlength="6" required placeholder="e.g. 482910" class="w-full text-center tracking-widest text-lg font-bold font-mono bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold">
-                    </div>
-                    <button type="submit" class="w-full py-3.5 bg-itrex-navy dark:bg-white text-white dark:text-itrex-navy font-bold text-xs uppercase tracking-widest rounded-xl transition-all duration-300">
-                        Verify Code →
-                    </button>
-                </form>
-            </div>
-
-            <!-- STEP 3: Set New Password -->
-            <div id="forgot-step-3" class="space-y-4 hidden">
-                <div class="text-center space-y-2">
-                    <h3 class="font-space font-bold text-2xl text-itrex-navy dark:text-white">Create New Password</h3>
-                    <p class="text-xs text-neutral-400">Choose a new, hardened password for your enterprise account.</p>
-                </div>
-
-                <form onsubmit="handleForgotStep3(event)" class="space-y-4">
-                    <div>
-                        <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1.5">New Password</label>
-                        <input id="forgot-new-password" type="password" required placeholder="••••••••" class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold font-mono">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Confirm New Password</label>
-                        <input id="forgot-confirm-password" type="password" required placeholder="••••••••" class="w-full bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-itrex-navy dark:text-white focus:outline-none focus:border-itrex-gold font-mono">
-                    </div>
-                    <button type="submit" class="w-full py-3.5 bg-itrex-gold hover:bg-amber-400 text-itrex-navy font-bold text-xs uppercase tracking-widest rounded-xl transition-all duration-300">
-                        Update Password & Sign In →
-                    </button>
-                </form>
-            </div>
-
-        </div>
-    </div>
-
-
-    <!-- Floating Toast Notification Container -->
-    <div id="toast-container" class="fixed top-20 right-6 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
-
-    <!-- Scripts -->
+    <!-- Master Authentication Engine Script -->
     <script src="auth.js"></script>
 </body>
 </html>
