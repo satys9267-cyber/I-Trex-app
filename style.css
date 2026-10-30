@@ -555,6 +555,13 @@ html.lenis, html.lenis body {
   pointer-events: none;
 }
 
+/* GPU acceleration for cinematic text transitions */
+.tech-tag, .title-section, blockquote, .arch-pillar-card {
+  will-change: transform, opacity, filter;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
 /* --- Founder Signature & Stamp --- */
 .founder-stamp {
   border: 1px solid rgba(226, 232, 240, 0.2);

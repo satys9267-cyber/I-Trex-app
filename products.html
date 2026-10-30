@@ -98,8 +98,10 @@
     </div>
 
     <!-- Hero Title Stage -->
-    <section class="relative pt-36 pb-20 px-6 lg:px-12 border-b border-white/10 bg-gradient-to-b from-black via-[#05070a] to-black">
-        <div class="max-w-7xl mx-auto text-center space-y-6">
+    <section class="relative pt-36 pb-20 px-6 lg:px-12 border-b border-white/10 bg-gradient-to-b from-black via-[#05070a] to-black overflow-hidden">
+        <!-- Glowing Micro-Stars Particle Canvas -->
+        <canvas id="hero-particle-canvas"></canvas>
+        <div class="relative z-10 max-w-7xl mx-auto text-center space-y-6">
             <span class="tech-tag">PRODUCT SHOWROOM & BENCHMARKS</span>
             <h1 class="title-hero text-5xl sm:text-7xl md:text-8xl text-white">
                 PURPOSE-BUILT<br>
@@ -520,18 +522,7 @@ int trace_syscall(struct trace_event_raw_sys_enter *ctx) {
         </div>
     </footer>
 
-    <script>
-        if (window.lucide && typeof window.lucide.createIcons === 'function') {
-            window.lucide.createIcons();
-        }
-        if (typeof Lenis !== 'undefined') {
-            const lenis = new Lenis({ duration: 1.2, smooth: true });
-            function raf(time) {
-                lenis.raf(time);
-                requestAnimationFrame(raf);
-            }
-            requestAnimationFrame(raf);
-        }
-    </script>
+    <!-- Master Application Script with Thematic Animations -->
+    <script src="app.js"></script>
 </body>
 </html>

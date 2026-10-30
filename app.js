@@ -215,7 +215,7 @@ function triggerHeroHeadlineAnimation() {
 }
 
 /* ==========================================================================
-   3. HERO INTERACTIVE CANVAS (Autonomous Neural Matrix)
+   3. HERO INTERACTIVE CANVAS (Autonomous Neural Matrix — Glowing Micro-Stars)
    ========================================================================== */
 function initHeroCanvas() {
     const canvas = document.getElementById('hero-particle-canvas');
@@ -242,19 +242,71 @@ function initHeroCanvas() {
         mouse.active = false;
     });
 
-    // Particle nodes representing autonomous distributed microkernels
+    // Particle nodes converted into celestial glowing micro-stars
+    // Matching exact original count, distribution, and colors
     const particles = [];
-    const count = Math.min(65, Math.floor(width / 22));
+    const count = Math.min(68, Math.floor(width / 20));
 
     for (let i = 0; i < count; i++) {
+        const rand = Math.random();
+        // Exact original colors: 20% Cyan (#00f2fe), 45% Silver/White (#e2e8f0), 35% Slate/Titanium (#64748b)
+        const isCyan = rand > 0.8;
+        const isSilver = rand > 0.35;
+        const color = isCyan ? '#00f2fe' : (isSilver ? '#e2e8f0' : '#64748b');
+        
+        // Steady subtle glow (constant blur, no twinkling)
+        const glowColor = isCyan 
+            ? 'rgba(0, 242, 254, 0.75)' 
+            : (isSilver ? 'rgba(255, 255, 255, 0.55)' : 'rgba(100, 116, 139, 0.45)');
+
         particles.push({
             x: Math.random() * width,
             y: Math.random() * height,
-            vx: (Math.random() - 0.5) * 0.45,
-            vy: (Math.random() - 0.5) * 0.45,
-            radius: Math.random() * 1.6 + 0.8,
-            color: Math.random() > 0.8 ? '#00f2fe' : (Math.random() > 0.5 ? '#e2e8f0' : '#475569')
+            vx: (Math.random() - 0.5) * 0.36,
+            vy: (Math.random() - 0.5) * 0.36,
+            // Radius matches original dots: 0.9px - 2.2px
+            size: Math.random() * 1.3 + 0.9,
+            color: color,
+            glowColor: glowColor,
+            angle: Math.random() * Math.PI * 2,
+            vRot: (Math.random() - 0.5) * 0.002 // Very slow, imperceptible cosmic alignment (strictly not twinkling)
         });
+    }
+
+    /**
+     * Draws a 4-pointed micro-star with steady soft glow (STRICTLY NOT TWINKLING)
+     * Exact same size as the previous circular dots.
+     */
+    function drawMicroStar(p) {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.angle);
+
+        // Subtle steady ambient glow (constant blur, no flickering or random alpha)
+        ctx.shadowColor = p.glowColor;
+        ctx.shadowBlur = 6;
+        ctx.fillStyle = p.color;
+
+        const s = p.size * 1.55; // Perceived size equals dot diameter
+
+        // 4-point concave star with elegant optical flare curves
+        ctx.beginPath();
+        ctx.moveTo(0, -s);
+        ctx.quadraticCurveTo(0, 0, s, 0);
+        ctx.quadraticCurveTo(0, 0, 0, s);
+        ctx.quadraticCurveTo(0, 0, -s, 0);
+        ctx.quadraticCurveTo(0, 0, 0, -s);
+        ctx.closePath();
+        ctx.fill();
+
+        // Pinpoint bright core for pure optical definition
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(0, 0, p.size * 0.45, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
     }
 
     function animate() {
@@ -281,34 +333,32 @@ function initHeroCanvas() {
             ctx.stroke();
         }
 
-        // Connect nearby particles
+        // Update & Render Glowing Micro-Stars
         for (let i = 0; i < particles.length; i++) {
             const p1 = particles[i];
 
             p1.x += p1.vx;
             p1.y += p1.vy;
+            p1.angle += p1.vRot;
 
             if (p1.x < 0 || p1.x > width) p1.vx *= -1;
             if (p1.y < 0 || p1.y > height) p1.vy *= -1;
 
-            // Mouse repulsion/attraction
+            // Mouse interaction (gentle deflection)
             if (mouse.active) {
                 const dx = mouse.x - p1.x;
                 const dy = mouse.y - p1.y;
                 const dist = Math.sqrt(dx * dx + dy * dy);
                 if (dist < 140) {
-                    p1.x -= dx * 0.015;
-                    p1.y -= dy * 0.015;
+                    p1.x -= dx * 0.012;
+                    p1.y -= dy * 0.012;
                 }
             }
 
-            // Draw particle
-            ctx.beginPath();
-            ctx.arc(p1.x, p1.y, p1.radius, 0, Math.PI * 2);
-            ctx.fillStyle = p1.color;
-            ctx.fill();
+            // Draw glowing micro-star (steady glow, not twinkling)
+            drawMicroStar(p1);
 
-            // Connect lines
+            // Connect constellation lines between nearby stars
             for (let j = i + 1; j < particles.length; j++) {
                 const p2 = particles[j];
                 const dx = p1.x - p2.x;
@@ -319,8 +369,9 @@ function initHeroCanvas() {
                     ctx.beginPath();
                     ctx.moveTo(p1.x, p1.y);
                     ctx.lineTo(p2.x, p2.y);
-                    const alpha = (1 - dist / 130) * 0.18;
+                    const alpha = (1 - dist / 130) * 0.16;
                     ctx.strokeStyle = `rgba(226, 232, 240, ${alpha})`;
+                    ctx.lineWidth = 0.8;
                     ctx.stroke();
                 }
             }
@@ -768,12 +819,27 @@ function initProductCanvasSimulation(type, color) {
                 }
             }
 
-            // Draw node hubs
+            // Draw node hubs as steady glowing micro-stars
             nodes.forEach(n => {
-                ctx.beginPath();
-                ctx.arc(n.x, n.y, 4, 0, Math.PI * 2);
+                ctx.save();
+                ctx.shadowColor = color;
+                ctx.shadowBlur = 8;
                 ctx.fillStyle = color;
+                const s = 4.5;
+                ctx.beginPath();
+                ctx.moveTo(n.x, n.y - s);
+                ctx.quadraticCurveTo(n.x, n.y, n.x + s, n.y);
+                ctx.quadraticCurveTo(n.x, n.y, n.x, n.y + s);
+                ctx.quadraticCurveTo(n.x, n.y, n.x - s, n.y);
+                ctx.quadraticCurveTo(n.x, n.y, n.x, n.y - s);
+                ctx.closePath();
                 ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, 1.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
             });
 
         } else if (type === 'spatial') {
@@ -1106,29 +1172,183 @@ function initNavigation() {
 }
 
 /* ==========================================================================
-   10. GSAP SCROLLTRIGGER REVEALS & TELEMETRY COUNTERS
+   10. THEMATIC BIDIRECTIONAL TEXT APPEAR & DISAPPEAR ENGINE
+   Provides unique, theme-matching entrance and exit animations for all text:
+   - Aerospace telemetry kicker tags
+   - Massive editorial section headings
+   - Technical descriptions & body paragraphs
+   - Executive & architectural quotes
+   - Architectural, capability, roadmap, and leadership cards
+   - Live telemetry number counters
    ========================================================================== */
 function initScrollAnimations() {
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
     gsap.registerPlugin(ScrollTrigger);
 
-    // Stagger in section titles
-    gsap.utils.toArray('.title-reveal').forEach(title => {
-        gsap.from(title, {
-            scrollTrigger: {
-                trigger: title,
-                start: "top 88%",
-                toggleActions: "play none none none"
-            },
-            y: 35,
-            opacity: 0,
-            duration: 0.9,
-            ease: "power3.out"
+    // 1. Kicker Tech Tags (Aerospace telemetry acquisition)
+    const techTags = document.querySelectorAll('.tech-tag');
+    techTags.forEach(tag => {
+        gsap.fromTo(tag,
+            { y: 16, opacity: 0, filter: "blur(4px)", letterSpacing: "0.14em" },
+            {
+                scrollTrigger: {
+                    trigger: tag,
+                    start: "top 90%",
+                    end: "bottom 10%",
+                    toggleActions: "play reverse play reverse"
+                },
+                y: 0,
+                opacity: 1,
+                filter: "blur(0px)",
+                letterSpacing: "0.22em",
+                duration: 0.75,
+                ease: "power2.out"
+            }
+        );
+    });
+
+    // 2. Section Titles (Editorial headings)
+    const sectionTitles = document.querySelectorAll('.title-section, section h2');
+    sectionTitles.forEach(title => {
+        // Skip hero headline which has its own word-by-word masked reveal
+        if (title.id === 'hero-headline') return;
+
+        gsap.fromTo(title,
+            { y: 35, opacity: 0, filter: "blur(6px)" },
+            {
+                scrollTrigger: {
+                    trigger: title,
+                    start: "top 88%",
+                    end: "bottom 10%",
+                    toggleActions: "play reverse play reverse"
+                },
+                y: 0,
+                opacity: 1,
+                filter: "blur(0px)",
+                duration: 0.85,
+                ease: "power3.out"
+            }
+        );
+    });
+
+    // 3. Sub-Headings (H3 and H4 inside sections)
+    const subHeadings = document.querySelectorAll('section h3:not(.hero-word-char), section h4');
+    subHeadings.forEach(sub => {
+        gsap.fromTo(sub,
+            { y: 22, opacity: 0, filter: "blur(4px)" },
+            {
+                scrollTrigger: {
+                    trigger: sub,
+                    start: "top 90%",
+                    end: "bottom 10%",
+                    toggleActions: "play reverse play reverse"
+                },
+                y: 0,
+                opacity: 1,
+                filter: "blur(0px)",
+                duration: 0.75,
+                ease: "power2.out"
+            }
+        );
+    });
+
+    // 4. Section Lead Paragraphs & Descriptions
+    const leadTexts = document.querySelectorAll('section > div > div > p, section p.text-neutral-400');
+    leadTexts.forEach(p => {
+        if (p.id === 'hero-desc') return;
+
+        gsap.fromTo(p,
+            { y: 22, opacity: 0, filter: "blur(4px)" },
+            {
+                scrollTrigger: {
+                    trigger: p,
+                    start: "top 88%",
+                    end: "bottom 10%",
+                    toggleActions: "play reverse play reverse"
+                },
+                y: 0,
+                opacity: 1,
+                filter: "blur(0px)",
+                duration: 0.8,
+                ease: "power3.out"
+            }
+        );
+    });
+
+    // 5. Quotations & Founding Manifesto Statements
+    const quotes = document.querySelectorAll('blockquote');
+    quotes.forEach(quote => {
+        gsap.fromTo(quote,
+            { x: -28, opacity: 0, filter: "blur(6px)" },
+            {
+                scrollTrigger: {
+                    trigger: quote,
+                    start: "top 88%",
+                    end: "bottom 10%",
+                    toggleActions: "play reverse play reverse"
+                },
+                x: 0,
+                opacity: 1,
+                filter: "blur(0px)",
+                duration: 0.95,
+                ease: "power3.out"
+            }
+        );
+    });
+
+    // 6. Grid Cards (Architecture Pillars, Capabilities, Roadmap, Team, Contact Cards)
+    const cardSelectors = [
+        '.arch-pillar-card',
+        '#capabilities .grid > div',
+        '#roadmap .grid > div',
+        '#team .aerodynamic-frame',
+        '#team .p-6.border',
+        '#contact .grid > div',
+        '#contact .aerodynamic-frame',
+        '#about .aerodynamic-frame'
+    ];
+
+    cardSelectors.forEach(selector => {
+        const cards = document.querySelectorAll(selector);
+        cards.forEach((card, idx) => {
+            gsap.fromTo(card,
+                { y: 28, opacity: 0, filter: "blur(4px)" },
+                {
+                    scrollTrigger: {
+                        trigger: card,
+                        start: "top 90%",
+                        end: "bottom 10%",
+                        toggleActions: "play reverse play reverse"
+                    },
+                    y: 0,
+                    opacity: 1,
+                    filter: "blur(0px)",
+                    duration: 0.8,
+                    delay: (idx % 3) * 0.05,
+                    ease: "power3.out"
+                }
+            );
         });
     });
 
-    // Telemetry number counting
+    // 7. Hero Section Exit / Re-enter Transition
+    const heroContent = document.querySelector('#home .relative.z-10');
+    if (heroContent) {
+        gsap.to(heroContent, {
+            scrollTrigger: {
+                trigger: '#home',
+                start: "center center",
+                end: "bottom 15%",
+                scrub: 1.2
+            },
+            y: -50,
+            opacity: 0,
+            filter: "blur(6px)"
+        });
+    }
+
+    // 8. Telemetry number counting
     gsap.utils.toArray('.counter-metric').forEach(el => {
         const targetVal = parseFloat(el.getAttribute('data-target') || 0);
         const prefix = el.getAttribute('data-prefix') || '';
