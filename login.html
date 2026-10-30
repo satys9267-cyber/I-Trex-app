@@ -49,12 +49,24 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Firebase SDK Compat (v10.14.0) for Direct Client Auth + Custom Hybrid Backend -->
+    <!-- Firebase SDK Compat (v10.14.0) for Direct Real Client Auth & Google/GitHub OAuth -->
     <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
+    
+    <!-- External Firebase Project Configuration File -->
+    <script src="firebase-config.js"></script>
 </head>
 <body class="bg-black text-white font-sans antialiased selection:bg-white selection:text-black min-h-screen flex flex-col justify-between overflow-x-hidden relative">
+
+    <!-- Critical Protocol Warning Banner (Displayed automatically on file:// protocol) -->
+    <div id="file-protocol-banner" class="hidden w-full bg-cyan-950/95 border-b border-cyan-400/50 text-cyan-200 text-xs py-2.5 px-4 font-mono text-center relative z-50 flex flex-wrap items-center justify-center gap-2 shadow-2xl">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+        <span>⚠️ Local File Mode Detected: For Google/GitHub OAuth, Email verification, and APIs to work, open via HTTP:</span>
+        <a href="http://localhost:10000/login.html" class="underline font-bold text-white hover:text-cyan-400 px-2 py-0.5 bg-black/60 border border-cyan-400/30">
+            Open http://localhost:10000/login.html ↗
+        </a>
+    </div>
 
     <!-- Glowing Micro-Stars Canvas Background -->
     <canvas id="login-particle-canvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
@@ -80,9 +92,14 @@
                 </a>
             </div>
 
-            <!-- Right: Zero-Trust Security Enclave Badge -->
-            <div class="flex items-center gap-2">
-                <span class="font-mono text-[10px] text-cyan-400 px-3 py-1 border border-cyan-400/30 uppercase tracking-widest hidden sm:flex items-center gap-2">
+            <!-- Right: Firebase Connection Status & Enclave Badge -->
+            <div class="flex items-center gap-3">
+                <button type="button" id="btn-open-firebase-modal" class="font-mono text-[10px] px-2.5 py-1 border transition-colors flex items-center gap-1.5" title="Configure or View Firebase Project Credentials">
+                    <span id="firebase-status-dot" class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span>
+                    <span id="firebase-status-text" class="text-neutral-300 uppercase">FIREBASE CONFIG</span>
+                </button>
+
+                <span class="font-mono text-[10px] text-cyan-400 px-3 py-1 border border-cyan-400/30 uppercase tracking-widest hidden md:flex items-center gap-2">
                     <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
                     <span>TLS 1.3 // ZERO-TRUST</span>
                 </span>
@@ -98,7 +115,7 @@
             <div class="aerodynamic-frame corner-brackets p-8 sm:p-12 relative bg-black/85 backdrop-blur-xl border border-white/15 shadow-[0_0_50px_rgba(0,0,0,0.8)]">
                 
                 <!-- Terminal Header -->
-                <div class="text-center mb-8 pb-6 border-b border-white/10">
+                <div class="text-center mb-6 pb-6 border-b border-white/10">
                     <div class="inline-flex items-center gap-2 mb-3">
                         <span class="tech-tag" id="auth-kicker">IDENTITY ENCLAVE // AUTHENTICATION</span>
                     </div>
@@ -122,10 +139,21 @@
                     <div id="auth-feedback-text" class="leading-relaxed flex-1"></div>
                 </div>
 
+                <!-- Auth Method Selector (Email/Username vs Phone SMS) -->
+                <div class="flex items-center justify-center gap-4 mb-6 border-b border-white/10 pb-3 font-mono text-xs">
+                    <button type="button" id="tab-auth-email" class="text-white border-b-2 border-cyan-400 pb-1 font-bold uppercase tracking-wider transition-colors">
+                        EMAIL / USERNAME
+                    </button>
+                    <button type="button" id="tab-auth-phone" class="text-neutral-400 hover:text-white border-b-2 border-transparent pb-1 uppercase tracking-wider transition-colors">
+                        PHONE (SMS OTP)
+                    </button>
+                </div>
+
                 <!-- ==========================================================
                      VIEW 1: SIGN IN (EMAIL OR USERNAME + PASSWORD)
                      ========================================================== -->
                 <div id="view-login" class="auth-view space-y-6">
+                    <!-- Standard Email/Username Login Form -->
                     <form id="form-login" class="space-y-5" novalidate>
                         <!-- Identifier Input -->
                         <div>
@@ -183,6 +211,32 @@
                         </button>
                     </form>
 
+                    <!-- Phone Number Authentication Form (Hidden by default) -->
+                    <form id="form-login-phone" class="space-y-5 hidden" novalidate>
+                        <div>
+                            <label for="phone-number" class="block font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-2">
+                                PHONE NUMBER (WITH COUNTRY CODE) *
+                            </label>
+                            <div class="relative">
+                                <input id="phone-number" 
+                                       type="tel" 
+                                       required 
+                                       placeholder="+91 74998 25344" 
+                                       class="tech-input pl-11">
+                                <i data-lucide="phone" class="w-4 h-4 text-neutral-500 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                            </div>
+                            <span class="font-mono text-[9px] text-neutral-500 mt-1 block">Include + and country code (e.g., +91 for India, +1 for US)</span>
+                        </div>
+
+                        <!-- Invisible Firebase Recaptcha Container -->
+                        <div id="recaptcha-container"></div>
+
+                        <button type="submit" id="btn-submit-phone" class="chamfer-btn-primary w-full !py-3.5 mt-2">
+                            <span>TRANSMIT SMS VERIFICATION CODE</span>
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                        </button>
+                    </form>
+
                     <!-- Federated OAuth Divider -->
                     <div class="relative flex py-2 items-center">
                         <div class="flex-grow border-t border-white/10"></div>
@@ -190,9 +244,9 @@
                         <div class="flex-grow border-t border-white/10"></div>
                     </div>
 
-                    <!-- OAuth Buttons -->
+                    <!-- OAuth Buttons (Google & GitHub) -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <button type="button" id="btn-oauth-google" class="oauth-btn">
+                        <button type="button" id="btn-oauth-google" class="oauth-btn group" title="Authenticate with Google Account">
                             <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                                 <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.3 9 5 12 5z"/>
                                 <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z"/>
@@ -202,7 +256,7 @@
                             <span>Google</span>
                         </button>
 
-                        <button type="button" id="btn-oauth-github" class="oauth-btn">
+                        <button type="button" id="btn-oauth-github" class="oauth-btn group" title="Authenticate with GitHub Developer Account">
                             <i data-lucide="github" class="w-4 h-4 shrink-0"></i>
                             <span>GitHub</span>
                         </button>
@@ -342,7 +396,7 @@
                      ========================================================== -->
                 <div id="view-forgot" class="auth-view space-y-6 hidden">
                     <p class="font-sans text-xs text-neutral-300 leading-relaxed font-light">
-                        Enter your verified account email. If an account is associated with this address, a cryptographic, single-use password reset link will be dispatched immediately.
+                        Enter your registered account email. If an account is associated with this address, a cryptographic, single-use password reset link will be dispatched immediately.
                     </p>
 
                     <form id="form-forgot" class="space-y-5" novalidate>
@@ -408,7 +462,7 @@
                 </div>
 
                 <!-- ==========================================================
-                     VIEW 5: TWO-FACTOR AUTHENTICATION (2FA OTP)
+                     VIEW 5: TWO-FACTOR AUTHENTICATION / SMS OTP
                      ========================================================== -->
                 <div id="view-2fa" class="auth-view space-y-6 text-center hidden">
                     <div class="w-16 h-16 rounded-none border border-emerald-400/50 bg-emerald-950/40 text-emerald-400 mx-auto flex items-center justify-center shadow-[0_0_25px_rgba(16,185,129,0.2)]">
@@ -416,9 +470,9 @@
                     </div>
 
                     <div class="space-y-2">
-                        <h3 class="font-display font-bold text-xl text-white uppercase tracking-wider">Two-Factor Authentication</h3>
-                        <p class="font-sans text-xs text-neutral-300 leading-relaxed font-light">
-                            Enter the 6-digit authentication token generated by your device:
+                        <h3 class="font-display font-bold text-xl text-white uppercase tracking-wider">Identity Verification</h3>
+                        <p id="otp-instruction-text" class="font-sans text-xs text-neutral-300 leading-relaxed font-light">
+                            Enter the 6-digit authentication token generated by your device or sent via SMS:
                         </p>
                     </div>
 
@@ -465,6 +519,67 @@
 
         </div>
     </main>
+
+    <!-- ======================================================================
+         FIREBASE PROJECT CREDENTIALS SETUP MODAL
+         ====================================================================== -->
+    <div id="modal-firebase-config" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl hidden items-center justify-center p-4">
+        <div class="aerodynamic-frame corner-brackets max-w-lg w-full p-6 sm:p-8 space-y-6 bg-black border border-white/20">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="settings" class="w-5 h-5 text-cyan-400"></i>
+                    <h3 class="font-display font-bold text-lg text-white uppercase tracking-wider">Connect Firebase Project</h3>
+                </div>
+                <button type="button" id="btn-close-firebase-modal" class="text-neutral-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <p class="font-sans text-xs text-neutral-300 leading-relaxed font-light">
+                To enable live <strong>Google Sign-In</strong>, <strong>GitHub Sign-In</strong>, and real <strong>Email Verifications / Password Resets</strong>, connect your Web App credentials from the <a href="https://console.firebase.google.com/" target="_blank" class="text-cyan-400 underline font-mono">Firebase Console ↗</a>.
+            </p>
+
+            <!-- Quick Paste Container -->
+            <div>
+                <label class="block font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-1.5">
+                    PASTE FIREBASECONFIG SNIPPET HERE (AUTO-PARSES):
+                </label>
+                <textarea id="firebase-paste-box" rows="3" placeholder="const firebaseConfig = { apiKey: 'AIza...', authDomain: '...', projectId: '...' };" class="tech-input font-mono text-xs resize-none"></textarea>
+            </div>
+
+            <!-- Individual Fields -->
+            <div class="space-y-3 font-mono text-xs">
+                <div>
+                    <label class="block text-[10px] uppercase text-neutral-400 mb-1">API Key (apiKey) *</label>
+                    <input id="cfg-apikey" type="text" placeholder="AIzaSy..." class="tech-input !py-2">
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase text-neutral-400 mb-1">Auth Domain (authDomain) *</label>
+                    <input id="cfg-authdomain" type="text" placeholder="your-project.firebaseapp.com" class="tech-input !py-2">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] uppercase text-neutral-400 mb-1">Project ID *</label>
+                        <input id="cfg-projectid" type="text" placeholder="your-project" class="tech-input !py-2">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase text-neutral-400 mb-1">App ID</label>
+                        <input id="cfg-appid" type="text" placeholder="1:123...:web:abc..." class="tech-input !py-2">
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-2 flex flex-col sm:flex-row gap-3">
+                <button type="button" id="btn-save-firebase-config" class="chamfer-btn-primary flex-1 !py-3 text-xs">
+                    <span>SAVE & CONNECT FIREBASE</span>
+                    <i data-lucide="check" class="w-4 h-4"></i>
+                </button>
+                <button type="button" id="btn-cancel-firebase-modal" class="chamfer-btn-outline !py-3 text-xs">
+                    <span>CANCEL</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Master Authentication Engine Script -->
     <script src="auth.js"></script>

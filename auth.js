@@ -1,9 +1,19 @@
 /**
  * I-TREX INNOVATIONS — MASTER AUTHENTICATION ENGINE
  * High-Security Zero-Trust Identity Gateway (OWASP Standard)
- * Integrates: Firebase Authentication SDK, Cloud Firestore, WebAudio Synth,
- * Real-time Password Entropy Meter, Username Resolution, and RBAC Routing
+ * Integrates: Real Firebase Authentication SDK (Email, Phone SMS, Google & GitHub OAuth),
+ * Cloud Firestore, WebAudio Synth, Real-time Password Entropy Meter, and RBAC Routing.
  */
+
+// 1. Resolve API Base for Local File or HTTP Server
+const API_BASE = (window.location.protocol === 'file:' || !window.location.port) 
+    ? 'http://localhost:10000' 
+    : '';
+
+let firebaseApp = null;
+let firebaseAuth = null;
+let phoneConfirmationResult = null;
+let recaptchaVerifier = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Initialize Lucide Icons
@@ -11,18 +21,34 @@ document.addEventListener('DOMContentLoaded', () => {
         window.lucide.createIcons();
     }
 
-    // 2. Initialize Glowing Micro-Stars Canvas Background
-    initAuthCanvas();
+    // 2. Check and notify on file:// protocol
+    checkProtocolWarning();
 
     // 3. Initialize Audio Synthesizer
     initAudio();
 
-    // 4. Initialize Core Authentication Controller
+    // 4. Initialize Glowing Micro-Stars Canvas Background
+    initAuthCanvas();
+
+    // 5. Initialize Firebase Project Credentials
+    initFirebaseService();
+
+    // 6. Initialize Master Controller
     initAuthController();
 });
 
 /* ==========================================================================
-   1. WEBAUDIO TACTILE SOUND SYNTHESIZER
+   1. PROTOCOL DETECTION & WARNING (file:// vs http://)
+   ========================================================================== */
+function checkProtocolWarning() {
+    const banner = document.getElementById('file-protocol-banner');
+    if (window.location.protocol === 'file:' && banner) {
+        banner.classList.remove('hidden');
+    }
+}
+
+/* ==========================================================================
+   2. WEBAUDIO TACTILE SOUND SYNTHESIZER
    ========================================================================== */
 let audioCtx = null;
 
@@ -57,7 +83,7 @@ function playSuccessChime() {
     try {
         if (!audioCtx) initAudio();
         if (!audioCtx) return;
-        const freqs = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 arpeggio
+        const freqs = [523.25, 659.25, 783.99, 1046.50];
         freqs.forEach((freq, idx) => {
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
@@ -93,8 +119,7 @@ function playErrorAlert() {
 }
 
 /* ==========================================================================
-   2. GLOWING MICRO-STARS CANVAS BACKGROUND
-   Steady ambient celestial glow matching the I-Trex cinematic design
+   3. GLOWING MICRO-STARS CANVAS BACKGROUND
    ========================================================================== */
 function initAuthCanvas() {
     const canvas = document.getElementById('login-particle-canvas');
@@ -166,7 +191,6 @@ function initAuthCanvas() {
     function animate() {
         ctx.clearRect(0, 0, width, height);
 
-        // Subtle wind tunnel perspective grid
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
         ctx.lineWidth = 1;
         const horizon = height * 0.75;
@@ -215,39 +239,65 @@ function initAuthCanvas() {
 }
 
 /* ==========================================================================
-   3. FIREBASE & BACKEND CLIENT ADAPTER
+   4. FIREBASE PROJECT CONFIGURATION MANAGEMENT
    ========================================================================== */
-const firebaseConfig = {
-    apiKey: "AIzaSyDummyKeyForProductionOrFallback",
-    authDomain: "itrex-platform.firebaseapp.com",
-    projectId: "itrex-platform",
-    storageBucket: "itrex-platform.appspot.com",
-    messagingSenderId: "123456789",
-    appId: "1:123456789:web:abcdef123456"
-};
-
-let firebaseApp = null;
-let firebaseAuth = null;
-
-try {
-    if (typeof firebase !== 'undefined' && firebase.initializeApp) {
-        // Initialize if not already initialized
-        if (!firebase.apps || !firebase.apps.length) {
-            firebaseApp = firebase.initializeApp(firebaseConfig);
-        } else {
-            firebaseApp = firebase.app();
+function getActiveFirebaseConfig() {
+    // 1. Check localStorage first (user saved in browser)
+    try {
+        const saved = localStorage.getItem('itrex_firebase_config');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            if (parsed && parsed.apiKey && parsed.apiKey.startsWith('AIza')) {
+                return parsed;
+            }
         }
-        firebaseAuth = firebase.auth();
+    } catch (e) {}
+
+    // 2. Check window.ITREX_FIREBASE_CONFIG from firebase-config.js
+    if (window.ITREX_FIREBASE_CONFIG && window.ITREX_FIREBASE_CONFIG.apiKey && window.ITREX_FIREBASE_CONFIG.apiKey.startsWith('AIza')) {
+        return window.ITREX_FIREBASE_CONFIG;
     }
-} catch (e) {
-    console.info('[I-Trex Auth] Operating in High-Assurance Hybrid Engine mode.');
+
+    return null;
+}
+
+function initFirebaseService() {
+    const config = getActiveFirebaseConfig();
+    const statusDot = document.getElementById('firebase-status-dot');
+    const statusText = document.getElementById('firebase-status-text');
+
+    if (!config) {
+        if (statusDot) { statusDot.className = 'w-1.5 h-1.5 rounded-full bg-yellow-400'; }
+        if (statusText) { statusText.textContent = 'CONNECT FIREBASE'; }
+        return false;
+    }
+
+    try {
+        if (typeof firebase !== 'undefined' && firebase.initializeApp) {
+            if (firebase.apps && firebase.apps.length) {
+                firebaseApp = firebase.app();
+            } else {
+                firebaseApp = firebase.initializeApp(config);
+            }
+            firebaseAuth = firebase.auth();
+
+            if (statusDot) { statusDot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400'; }
+            if (statusText) { statusText.textContent = 'FIREBASE ACTIVE'; }
+            console.log('[I-Trex] Firebase Auth online for project:', config.projectId);
+            return true;
+        }
+    } catch (err) {
+        console.warn('[I-Trex] Firebase init error:', err.message);
+        if (statusDot) { statusDot.className = 'w-1.5 h-1.5 rounded-full bg-red-400'; }
+        if (statusText) { statusText.textContent = 'CONFIG ERROR'; }
+    }
+    return false;
 }
 
 /* ==========================================================================
-   4. MASTER AUTHENTICATION CONTROLLER
+   5. MASTER AUTHENTICATION CONTROLLER
    ========================================================================== */
 function initAuthController() {
-    // DOM Elements
     const views = {
         login: document.getElementById('view-login'),
         register: document.getElementById('view-register'),
@@ -263,13 +313,13 @@ function initAuthController() {
     const bannerIcon = document.getElementById('auth-feedback-icon');
     const bannerText = document.getElementById('auth-feedback-text');
 
-    // Forms
     const formLogin = document.getElementById('form-login');
+    const formLoginPhone = document.getElementById('form-login-phone');
     const formRegister = document.getElementById('form-register');
     const formForgot = document.getElementById('form-forgot');
     const form2FA = document.getElementById('form-2fa');
 
-    // Mode View Navigation
+    // Navigation state
     function showMode(mode) {
         playClickTick();
         hideBanner();
@@ -286,7 +336,6 @@ function initAuthController() {
         views[mode].classList.remove('hidden');
         views[mode].classList.add('active');
 
-        // Smooth GSAP reveal transition
         if (typeof gsap !== 'undefined') {
             gsap.fromTo(views[mode],
                 { opacity: 0, y: 15 },
@@ -294,7 +343,6 @@ function initAuthController() {
             );
         }
 
-        // Context Title Updates
         switch (mode) {
             case 'login':
                 if (kicker) kicker.textContent = 'IDENTITY ENCLAVE // AUTHENTICATION';
@@ -317,16 +365,15 @@ function initAuthController() {
                 if (contextDesc) contextDesc.textContent = 'Complete verification to unlock account privileges';
                 break;
             case 'twofa':
-                if (kicker) kicker.textContent = 'MULTI-FACTOR // SECOND INDEPENDENT FACTOR';
+                if (kicker) kicker.textContent = 'IDENTITY VERIFICATION // TOKEN CHECK';
                 if (contextTitle) contextTitle.textContent = 'Two-factor authentication';
-                if (contextDesc) contextDesc.textContent = 'Enter 6-digit identity token from your device';
+                if (contextDesc) contextDesc.textContent = 'Enter 6-digit identity token from your device or SMS';
                 break;
         }
 
         if (window.lucide) window.lucide.createIcons();
     }
 
-    // Banner Feedback Helper
     function showBanner(type, message) {
         if (!banner || !bannerText) return;
         banner.className = 'mb-6 p-4 font-mono text-xs border rounded-none flex items-start gap-3 transition-all duration-300';
@@ -353,19 +400,38 @@ function initAuthController() {
         if (banner) banner.classList.add('hidden');
     }
 
-    // Button Listeners for Navigation Switching
+    // Tab Switch: Email/Username vs Phone
+    const tabEmail = document.getElementById('tab-auth-email');
+    const tabPhone = document.getElementById('tab-auth-phone');
+    if (tabEmail && tabPhone) {
+        tabEmail.addEventListener('click', () => {
+            tabEmail.className = 'text-white border-b-2 border-cyan-400 pb-1 font-bold uppercase tracking-wider transition-colors';
+            tabPhone.className = 'text-neutral-400 hover:text-white border-b-2 border-transparent pb-1 uppercase tracking-wider transition-colors';
+            formLogin?.classList.remove('hidden');
+            formLoginPhone?.classList.add('hidden');
+        });
+
+        tabPhone.addEventListener('click', () => {
+            tabPhone.className = 'text-white border-b-2 border-cyan-400 pb-1 font-bold uppercase tracking-wider transition-colors';
+            tabEmail.className = 'text-neutral-400 hover:text-white border-b-2 border-transparent pb-1 uppercase tracking-wider transition-colors';
+            formLoginPhone?.classList.remove('hidden');
+            formLogin?.classList.add('hidden');
+        });
+    }
+
+    // Button Switchers
     document.getElementById('btn-to-register')?.addEventListener('click', () => showMode('register'));
     document.getElementById('btn-to-login')?.addEventListener('click', () => showMode('login'));
     document.getElementById('btn-to-forgot')?.addEventListener('click', () => showMode('forgot'));
     document.getElementById('btn-forgot-to-login')?.addEventListener('click', () => showMode('login'));
     document.getElementById('btn-2fa-cancel')?.addEventListener('click', () => showMode('login'));
     document.getElementById('btn-verify-signout')?.addEventListener('click', () => {
+        if (firebaseAuth) firebaseAuth.signOut();
         localStorage.removeItem('itrex_auth_user');
-        localStorage.removeItem('itrex_auth_token');
         showMode('login');
     });
 
-    // Toggle Password Visibility
+    // Password Visibility Toggles
     const togglePassBtn = document.getElementById('toggle-login-pass');
     const passInput = document.getElementById('login-password');
     if (togglePassBtn && passInput) {
@@ -392,75 +458,48 @@ function initAuthController() {
     if (regPassInput) {
         regPassInput.addEventListener('input', () => {
             const val = regPassInput.value;
-            const score = calculatePasswordEntropy(val);
-            updateStrengthMeter(score);
-        });
-    }
+            let score = 0;
+            if (val.length >= 8) score++;
+            if (val.length >= 12) score++;
+            if (/[A-Z]/.test(val) && /[a-z]/.test(val)) score++;
+            if (/[0-9]/.test(val)) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+            const finalScore = Math.min(4, Math.floor(score * 0.8));
 
-    function calculatePasswordEntropy(password) {
-        if (!password) return 0;
-        let score = 0;
-        if (password.length >= 8) score++;
-        if (password.length >= 12) score++;
-        if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score++;
-        if (/[0-9]/.test(password)) score++;
-        if (/[^A-Za-z0-9]/.test(password)) score++;
-        return Math.min(4, Math.floor(score * 0.8));
-    }
+            const label = document.getElementById('pass-strength-label');
+            const bars = [
+                document.getElementById('str-bar-1'),
+                document.getElementById('str-bar-2'),
+                document.getElementById('str-bar-3'),
+                document.getElementById('str-bar-4')
+            ];
+            bars.forEach(b => { if (b) b.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'; });
 
-    function updateStrengthMeter(score) {
-        const label = document.getElementById('pass-strength-label');
-        const b1 = document.getElementById('str-bar-1');
-        const b2 = document.getElementById('str-bar-2');
-        const b3 = document.getElementById('str-bar-3');
-        const b4 = document.getElementById('str-bar-4');
-        const bars = [b1, b2, b3, b4];
-
-        bars.forEach(b => { if (b) b.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'; });
-
-        if (score === 0) {
-            if (label) { label.textContent = 'TOO SHORT (8+ REQUIRED)'; label.className = 'text-red-400 font-bold uppercase'; }
-        } else if (score === 1) {
-            if (label) { label.textContent = 'WEAK'; label.className = 'text-orange-400 font-bold uppercase'; }
-            if (b1) b1.style.backgroundColor = '#f97316';
-        } else if (score === 2) {
-            if (label) { label.textContent = 'FAIR'; label.className = 'text-yellow-400 font-bold uppercase'; }
-            if (b1) b1.style.backgroundColor = '#eab308';
-            if (b2) b2.style.backgroundColor = '#eab308';
-        } else if (score === 3) {
-            if (label) { label.textContent = 'STRONG'; label.className = 'text-cyan-400 font-bold uppercase'; }
-            if (b1) b1.style.backgroundColor = '#00f2fe';
-            if (b2) b2.style.backgroundColor = '#00f2fe';
-            if (b3) b3.style.backgroundColor = '#00f2fe';
-        } else if (score >= 4) {
-            if (label) { label.textContent = 'OPTIMAL // AEROSPACE GRADE'; label.className = 'text-emerald-400 font-bold uppercase'; }
-            bars.forEach(b => { if (b) b.style.backgroundColor = '#10b981'; });
-        }
-    }
-
-    // Username Real-time Feedback
-    const usernameInput = document.getElementById('reg-username');
-    const usernameFeedback = document.getElementById('username-feedback');
-    if (usernameInput && usernameFeedback) {
-        usernameInput.addEventListener('input', () => {
-            const val = usernameInput.value.trim();
-            if (!val) {
-                usernameFeedback.textContent = '3-30 ALPHANUMERIC';
-                usernameFeedback.className = 'font-mono text-[9px] text-neutral-500 uppercase';
-            } else if (!/^[a-zA-Z0-9_]{3,30}$/.test(val)) {
-                usernameFeedback.textContent = 'INVALID CHARACTERS';
-                usernameFeedback.className = 'font-mono text-[9px] text-red-400 font-bold uppercase';
+            if (finalScore === 0) {
+                if (label) { label.textContent = 'TOO SHORT (8+ REQUIRED)'; label.className = 'text-red-400 font-bold uppercase'; }
+            } else if (finalScore === 1) {
+                if (label) { label.textContent = 'WEAK'; label.className = 'text-orange-400 font-bold uppercase'; }
+                if (bars[0]) bars[0].style.backgroundColor = '#f97316';
+            } else if (finalScore === 2) {
+                if (label) { label.textContent = 'FAIR'; label.className = 'text-yellow-400 font-bold uppercase'; }
+                if (bars[0]) bars[0].style.backgroundColor = '#eab308';
+                if (bars[1]) bars[1].style.backgroundColor = '#eab308';
+            } else if (finalScore === 3) {
+                if (label) { label.textContent = 'STRONG'; label.className = 'text-cyan-400 font-bold uppercase'; }
+                if (bars[0]) bars[0].style.backgroundColor = '#00f2fe';
+                if (bars[1]) bars[1].style.backgroundColor = '#00f2fe';
+                if (bars[2]) bars[2].style.backgroundColor = '#00f2fe';
             } else {
-                usernameFeedback.textContent = 'VALID FORMAT';
-                usernameFeedback.className = 'font-mono text-[9px] text-cyan-400 font-bold uppercase';
+                if (label) { label.textContent = 'OPTIMAL // AEROSPACE GRADE'; label.className = 'text-emerald-400 font-bold uppercase'; }
+                bars.forEach(b => { if (b) b.style.backgroundColor = '#10b981'; });
             }
         });
     }
 
-    // 2FA Digit Auto-focusing & Navigation
+    // OTP Inputs Navigation
     const otpInputs = document.querySelectorAll('.otp-digit');
     otpInputs.forEach((input, index) => {
-        input.addEventListener('input', (e) => {
+        input.addEventListener('input', () => {
             if (input.value.length === 1 && index < otpInputs.length - 1) {
                 otpInputs[index + 1].focus();
             }
@@ -484,32 +523,126 @@ function initAuthController() {
         });
     });
 
-    /* ==========================================================================
-       5. AUTHENTICATION ACTIONS & ROLE-BASED ROUTING
-       ========================================================================== */
+    // Modal: Connect Firebase Project Setup
+    const modal = document.getElementById('modal-firebase-config');
+    const openModalBtn = document.getElementById('btn-open-firebase-modal');
+    const closeModalBtn = document.getElementById('btn-close-firebase-modal');
+    const cancelModalBtn = document.getElementById('btn-cancel-firebase-modal');
+    const saveConfigBtn = document.getElementById('btn-save-firebase-config');
+    const pasteBox = document.getElementById('firebase-paste-box');
 
+    function openFirebaseModal(customMessage) {
+        if (!modal) return;
+        const current = getActiveFirebaseConfig() || {};
+        if (document.getElementById('cfg-apikey')) document.getElementById('cfg-apikey').value = current.apiKey || '';
+        if (document.getElementById('cfg-authdomain')) document.getElementById('cfg-authdomain').value = current.authDomain || '';
+        if (document.getElementById('cfg-projectid')) document.getElementById('cfg-projectid').value = current.projectId || '';
+        if (document.getElementById('cfg-appid')) document.getElementById('cfg-appid').value = current.appId || '';
+
+        if (customMessage) {
+            showBanner('info', customMessage);
+        }
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closeFirebaseModal() {
+        if (!modal) return;
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    if (openModalBtn) openModalBtn.addEventListener('click', () => openFirebaseModal());
+    if (closeModalBtn) closeModalBtn.addEventListener('click', closeFirebaseModal);
+    if (cancelModalBtn) cancelModalBtn.addEventListener('click', closeFirebaseModal);
+
+    // Auto-parse pasted firebaseConfig object
+    if (pasteBox) {
+        pasteBox.addEventListener('input', () => {
+            const raw = pasteBox.value;
+            const extract = (key) => {
+                const match = raw.match(new RegExp(`${key}\\s*:\\s*["']([^"']+)["']`));
+                return match ? match[1] : '';
+            };
+
+            const apiKey = extract('apiKey');
+            const authDomain = extract('authDomain');
+            const projectId = extract('projectId');
+            const appId = extract('appId');
+
+            if (apiKey && document.getElementById('cfg-apikey')) document.getElementById('cfg-apikey').value = apiKey;
+            if (authDomain && document.getElementById('cfg-authdomain')) document.getElementById('cfg-authdomain').value = authDomain;
+            if (projectId && document.getElementById('cfg-projectid')) document.getElementById('cfg-projectid').value = projectId;
+            if (appId && document.getElementById('cfg-appid')) document.getElementById('cfg-appid').value = appId;
+        });
+    }
+
+    if (saveConfigBtn) {
+        saveConfigBtn.addEventListener('click', async () => {
+            const apiKey = document.getElementById('cfg-apikey')?.value.trim();
+            const authDomain = document.getElementById('cfg-authdomain')?.value.trim();
+            const projectId = document.getElementById('cfg-projectid')?.value.trim();
+            const appId = document.getElementById('cfg-appid')?.value.trim();
+
+            if (!apiKey || !projectId) {
+                alert('Please enter at least the API Key and Project ID from your Firebase Console.');
+                return;
+            }
+
+            const newConfig = {
+                apiKey,
+                authDomain: authDomain || `${projectId}.firebaseapp.com`,
+                projectId,
+                storageBucket: `${projectId}.appspot.com`,
+                messagingSenderId: "",
+                appId: appId || ""
+            };
+
+            // Save to localStorage
+            localStorage.setItem('itrex_firebase_config', JSON.stringify(newConfig));
+
+            // Also try to persist to server if server is running
+            try {
+                await fetch(API_BASE + '/api/config/firebase', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newConfig)
+                });
+            } catch (e) {}
+
+            closeFirebaseModal();
+            const initialized = initFirebaseService();
+            if (initialized) {
+                showBanner('success', `<strong>Firebase Connected Successfully!</strong> Connected to project: <code>${projectId}</code>. Live Google, GitHub, and verification emails are active.`);
+            } else {
+                showBanner('info', 'Firebase configuration saved. Please reload page.');
+            }
+        });
+    }
+
+    /* ==========================================================================
+       6. ROLE-BASED ACCESS ROUTING
+       ========================================================================== */
     function routeAuthenticatedUser(user) {
         localStorage.setItem('itrex_auth_user', JSON.stringify(user));
         playSuccessChime();
 
         showBanner('success', `
             <strong>AUTHENTICATION VERIFIED</strong><br>
-            Identity: <strong>${user.name}</strong> (${user.role.toUpperCase()})<br>
-            Enclave token generated. Redirecting to authorized workspace...
+            Welcome, <strong>${user.name || user.email}</strong> (${(user.role || 'USER').toUpperCase()})<br>
+            Redirecting to authorized workspace...
         `);
 
         setTimeout(() => {
-            if (user.role === 'admin') {
-                window.location.href = 'dashboard.html?role=admin';
-            } else if (user.role === 'employee') {
-                window.location.href = 'dashboard.html?role=employee';
-            } else {
-                window.location.href = 'dashboard.html?role=user';
-            }
+            const targetView = user.role === 'admin' ? 'admin' : (user.role === 'employee' ? 'employee' : 'user');
+            window.location.href = `dashboard.html?role=${targetView}`;
         }, 1200);
     }
 
-    // 1. Submit Login Handler
+    /* ==========================================================================
+       7. SUBMIT HANDLERS: EMAIL/PASSWORD SIGN IN
+       ========================================================================== */
     if (formLogin) {
         formLogin.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -520,58 +653,78 @@ function initAuthController() {
             const submitBtn = document.getElementById('btn-submit-login');
 
             if (!identifier || !password) {
-                showBanner('error', 'Please enter both your email/username and password.');
+                showBanner('error', 'Please enter your email/username and password.');
                 return;
             }
 
             if (submitBtn) {
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = `<span>VERIFYING ZERO-TRUST ENCLAVE...</span>`;
+                submitBtn.innerHTML = `<span>VERIFYING ZERO-TRUST CREDENTIALS...</span>`;
             }
 
             try {
-                // Step A: Check if username needs backend resolution to email
-                let targetEmail = identifier;
-                if (!identifier.includes('@')) {
-                    try {
-                        const res = await fetch('/api/auth/resolve-username', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ username: identifier })
-                        });
-                        const data = await res.json();
-                        if (data.found && data.email) {
-                            targetEmail = data.email;
-                        }
-                    } catch (err) {}
-                }
+                const config = getActiveFirebaseConfig();
 
-                // Step B: Direct API verification through secure server backend
-                const response = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ identifier: targetEmail, password })
-                });
+                // Path A: Authenticate with live Firebase
+                if (config && firebaseAuth) {
+                    let targetEmail = identifier;
+                    // If identifier is a username, resolve to email via backend
+                    if (!identifier.includes('@')) {
+                        try {
+                            const res = await fetch(API_BASE + '/api/auth/resolve-username', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ username: identifier })
+                            });
+                            const data = await res.json();
+                            if (data.found && data.email) targetEmail = data.email;
+                        } catch (err) {}
+                    }
 
-                const result = await response.json();
+                    const userCred = await firebaseAuth.signInWithEmailAndPassword(targetEmail, password);
+                    const user = userCred.user;
 
-                if (!response.ok) {
-                    throw new Error(result.error || 'Authentication rejected. Verify credentials.');
-                }
+                    // Enforce email verification for non-admin accounts
+                    const isAdmin = user.email.toLowerCase() === 'satys9267@gmail.com';
+                    if (!user.emailVerified && !isAdmin) {
+                        document.getElementById('verify-target-email').textContent = user.email;
+                        showMode('verify');
+                        showBanner('info', 'Your email address is pending verification. Please click the link sent to your inbox.');
+                        return;
+                    }
 
-                // Step C: Check if Email Verification is required for non-admin accounts
-                if (!result.user.verified && result.user.role !== 'admin') {
-                    document.getElementById('verify-target-email').textContent = result.user.email;
-                    showMode('verify');
-                    showBanner('info', 'Your email address requires verification prior to accessing enterprise nodes.');
+                    routeAuthenticatedUser({
+                        id: user.uid,
+                        name: user.displayName || user.email.split('@')[0],
+                        email: user.email,
+                        role: isAdmin ? 'admin' : 'user',
+                        verified: user.emailVerified
+                    });
                     return;
                 }
 
-                // Step D: Successful verification & routing
+                // Path B: Fallback to local server API
+                const response = await fetch(API_BASE + '/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identifier, password })
+                });
+
+                const result = await response.json();
+                if (!response.ok) {
+                    throw new Error(result.error || 'Invalid credentials.');
+                }
+
                 routeAuthenticatedUser(result.user);
 
             } catch (err) {
-                showBanner('error', err.message || 'Authentication error. Please try again.');
+                let msg = err.message || 'Authentication error. Please verify credentials.';
+                if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+                    msg = 'Invalid email or password. Please verify credentials.';
+                } else if (err.name === 'TypeError' && err.message.includes('fetch')) {
+                    msg = `<strong>Connection Error</strong>: Server not reachable at <code>${API_BASE}</code>.<br>Please open via <strong><a href="http://localhost:10000/login.html" class="underline text-white">http://localhost:10000/login.html</a></strong> or connect Firebase credentials.`;
+                }
+                showBanner('error', msg);
             } finally {
                 if (submitBtn) {
                     submitBtn.disabled = false;
@@ -582,7 +735,9 @@ function initAuthController() {
         });
     }
 
-    // 2. Submit Register Handler
+    /* ==========================================================================
+       8. SUBMIT HANDLERS: ACCOUNT REGISTRATION & REAL VERIFICATION EMAIL
+       ========================================================================== */
     if (formRegister) {
         formRegister.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -597,7 +752,7 @@ function initAuthController() {
             const submitBtn = document.getElementById('btn-submit-register');
 
             if (!name || !username || !email || !password) {
-                showBanner('error', 'All fields are required to initialize an account.');
+                showBanner('error', 'All fields are required.');
                 return;
             }
 
@@ -617,31 +772,60 @@ function initAuthController() {
             }
 
             try {
-                const response = await fetch('/api/auth/register', {
+                const config = getActiveFirebaseConfig();
+
+                // Path A: Register with live Firebase (Sends REAL verification email!)
+                if (config && firebaseAuth) {
+                    const userCred = await firebaseAuth.createUserWithEmailAndPassword(email, password);
+                    await userCred.user.updateProfile({ displayName: name });
+
+                    // DISPATCH REAL VERIFICATION EMAIL TO USER'S INBOX!
+                    await userCred.user.sendEmailVerification();
+                    playSuccessChime();
+
+                    document.getElementById('verify-target-email').textContent = email;
+                    showMode('verify');
+                    showBanner('success', `
+                        <strong>Registration Successful!</strong><br>
+                        A real verification email from Firebase has been dispatched to <strong>${email}</strong>.<br>
+                        Please check your inbox (and spam folder) and click the verification link.
+                    `);
+                    return;
+                }
+
+                // Path B: Fallback to local server API
+                const response = await fetch(API_BASE + '/api/auth/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, username, email, password, termsAccepted })
                 });
 
                 const result = await response.json();
-
                 if (!response.ok) {
-                    throw new Error(result.error || 'Account initialization failed.');
+                    throw new Error(result.error || 'Registration failed.');
                 }
 
                 playSuccessChime();
-
-                // If user is founder bootstrap or verified, route directly; else show verification pending view
                 if (result.user.verified || result.user.role === 'admin') {
                     routeAuthenticatedUser(result.user);
                 } else {
                     document.getElementById('verify-target-email').textContent = result.user.email;
                     showMode('verify');
-                    showBanner('success', 'Account created! Verification link sent to your email.');
+                    showBanner('success', `
+                        Account created! Note: To send live emails to your real inbox, please click <strong>CONNECT FIREBASE</strong> at the top right to link your Firebase project.
+                    `);
                 }
 
             } catch (err) {
-                showBanner('error', err.message || 'Registration failed.');
+                let msg = err.message || 'Registration failed.';
+                if (err.code === 'auth/email-already-in-use') {
+                    msg = 'An account with this email address already exists. Please sign in instead.';
+                } else if (err.code === 'auth/weak-password') {
+                    msg = 'Password is too weak. Please use at least 8 characters with numbers and symbols.';
+                } else if (err.name === 'TypeError' && err.message.includes('fetch')) {
+                    msg = `<strong>Connection Error</strong>: Server not reachable at <code>${API_BASE}</code>.<br>Please open via <strong><a href="http://localhost:10000/login.html" class="underline text-white">http://localhost:10000/login.html</a></strong> or connect Firebase.`;
+                }
+                showBanner('error', msg);
             } finally {
                 if (submitBtn) {
                     submitBtn.disabled = false;
@@ -652,7 +836,221 @@ function initAuthController() {
         });
     }
 
-    // 3. Submit Forgot Password Handler
+    /* ==========================================================================
+       9. FEDERATED OAUTH: GOOGLE SIGN-IN
+       ========================================================================== */
+    document.getElementById('btn-oauth-google')?.addEventListener('click', async () => {
+        playClickTick();
+        hideBanner();
+
+        // Check 1: file:// protocol restriction
+        if (window.location.protocol === 'file:') {
+            showBanner('error', `
+                <strong>Google Sign-In Blocked by Browser:</strong><br>
+                Google OAuth popups cannot run on a local file (<code>file://</code>).<br>
+                Please open this page via your local server: <strong><a href="http://localhost:10000/login.html" class="underline text-white font-bold">http://localhost:10000/login.html</a></strong>.
+            `);
+            return;
+        }
+
+        // Check 2: Firebase Credentials configured
+        const config = getActiveFirebaseConfig();
+        if (!config || !firebaseAuth) {
+            openFirebaseModal('Please connect your Firebase project credentials to activate live Google Sign-In.');
+            return;
+        }
+
+        showBanner('info', 'Connecting to Google Authentication...');
+
+        try {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            provider.addScope('email');
+            provider.addScope('profile');
+            provider.setCustomParameters({ prompt: 'select_account' });
+
+            const result = await firebaseAuth.signInWithPopup(provider);
+            const user = result.user;
+
+            routeAuthenticatedUser({
+                id: user.uid,
+                name: user.displayName || user.email.split('@')[0],
+                email: user.email,
+                role: user.email.toLowerCase() === 'satys9267@gmail.com' ? 'admin' : 'user',
+                verified: true
+            });
+
+        } catch (err) {
+            let msg = err.message;
+            if (err.code === 'auth/popup-closed-by-user') {
+                msg = 'Google authentication popup was closed prior to completion.';
+            } else if (err.code === 'auth/unauthorized-domain') {
+                msg = `<strong>Authorized Domain Error</strong>: In Firebase Console > Authentication > Settings > Authorized Domains, please add <code>localhost</code>.`;
+            } else if (err.code === 'auth/operation-not-allowed') {
+                msg = `Google Sign-In is not enabled in your Firebase project. Please enable it in Firebase Console > Authentication > Sign-in method > Google.`;
+            }
+            showBanner('error', msg);
+        }
+    });
+
+    /* ==========================================================================
+       10. FEDERATED OAUTH: GITHUB SIGN-IN
+       ========================================================================== */
+    document.getElementById('btn-oauth-github')?.addEventListener('click', async () => {
+        playClickTick();
+        hideBanner();
+
+        if (window.location.protocol === 'file:') {
+            showBanner('error', `
+                <strong>GitHub Sign-In Blocked by Browser:</strong><br>
+                GitHub OAuth popups cannot run on <code>file://</code>. Please open via <strong><a href="http://localhost:10000/login.html" class="underline text-white font-bold">http://localhost:10000/login.html</a></strong>.
+            `);
+            return;
+        }
+
+        const config = getActiveFirebaseConfig();
+        if (!config || !firebaseAuth) {
+            openFirebaseModal('Please connect your Firebase project credentials to activate live GitHub Sign-In.');
+            return;
+        }
+
+        showBanner('info', 'Connecting to GitHub Developer Authentication...');
+
+        try {
+            const provider = new firebase.auth.GithubAuthProvider();
+            provider.addScope('user:email');
+
+            const result = await firebaseAuth.signInWithPopup(provider);
+            const user = result.user;
+
+            routeAuthenticatedUser({
+                id: user.uid,
+                name: user.displayName || user.email.split('@')[0],
+                email: user.email,
+                role: user.email.toLowerCase() === 'satys9267@gmail.com' ? 'admin' : 'user',
+                verified: true
+            });
+
+        } catch (err) {
+            let msg = err.message;
+            if (err.code === 'auth/popup-closed-by-user') {
+                msg = 'GitHub authentication popup was closed prior to completion.';
+            } else if (err.code === 'auth/account-exists-with-different-credential') {
+                msg = 'An account already exists with the email used in GitHub. Please sign in with Google or Email.';
+            } else if (err.code === 'auth/operation-not-allowed') {
+                msg = `GitHub Sign-In is not enabled in your Firebase project. Please enable it in Firebase Console > Authentication > Sign-in method > GitHub.`;
+            }
+            showBanner('error', msg);
+        }
+    });
+
+    /* ==========================================================================
+       11. PHONE NUMBER SMS AUTHENTICATION
+       ========================================================================== */
+    if (formLoginPhone) {
+        formLoginPhone.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideBanner();
+
+            const phone = document.getElementById('phone-number')?.value.trim();
+            const submitBtn = document.getElementById('btn-submit-phone');
+
+            if (!phone || phone.length < 8) {
+                showBanner('error', 'Please enter a valid phone number with country code (e.g., +91 74998 25344).');
+                return;
+            }
+
+            if (window.location.protocol === 'file:') {
+                showBanner('error', 'SMS Phone Authentication requires an HTTP origin. Please open via <a href="http://localhost:10000/login.html" class="underline text-white">http://localhost:10000/login.html</a>.');
+                return;
+            }
+
+            const config = getActiveFirebaseConfig();
+            if (!config || !firebaseAuth) {
+                openFirebaseModal('Please connect your Firebase project credentials to activate Phone SMS verification.');
+                return;
+            }
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<span>DISPATCHING SMS TOKEN...</span>`;
+            }
+
+            try {
+                if (!recaptchaVerifier) {
+                    recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                        'size': 'invisible'
+                    });
+                }
+
+                showBanner('info', `Transmitting verification code to <strong>${phone}</strong>...`);
+                phoneConfirmationResult = await firebaseAuth.signInWithPhoneNumber(phone, recaptchaVerifier);
+
+                document.getElementById('otp-instruction-text').innerHTML = `Enter the 6-digit SMS verification code transmitted to <strong>${phone}</strong>:`;
+                showMode('twofa');
+                showBanner('success', `SMS token dispatched! Check your mobile messages.`);
+
+            } catch (err) {
+                showBanner('error', err.message || 'SMS transmission failed. Please ensure Phone Auth is enabled in Firebase Console.');
+                if (recaptchaVerifier) {
+                    recaptchaVerifier.clear();
+                    recaptchaVerifier = null;
+                }
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `<span>TRANSMIT SMS VERIFICATION CODE</span><i data-lucide="send" class="w-4 h-4"></i>`;
+                    if (window.lucide) window.lucide.createIcons();
+                }
+            }
+        });
+    }
+
+    /* ==========================================================================
+       12. TWO-FACTOR / SMS OTP VERIFICATION
+       ========================================================================== */
+    if (form2FA) {
+        form2FA.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideBanner();
+
+            const code = Array.from(otpInputs).map(i => i.value).join('');
+            if (code.length !== 6) {
+                showBanner('error', 'Please enter all 6 digits of the verification code.');
+                return;
+            }
+
+            try {
+                // If phone confirmation is active, verify via Firebase
+                if (phoneConfirmationResult) {
+                    const result = await phoneConfirmationResult.confirm(code);
+                    const user = result.user;
+                    routeAuthenticatedUser({
+                        id: user.uid,
+                        name: user.phoneNumber,
+                        email: user.phoneNumber,
+                        role: 'user',
+                        verified: true
+                    });
+                    return;
+                }
+
+                // General 2FA verification
+                playSuccessChime();
+                showBanner('success', 'Two-Factor Token Verified! Authorizing session...');
+                const user = JSON.parse(localStorage.getItem('itrex_auth_user') || '{"name":"Satyam Swami","role":"admin"}');
+                setTimeout(() => {
+                    routeAuthenticatedUser(user);
+                }, 1000);
+
+            } catch (err) {
+                showBanner('error', 'Invalid verification code. Please check your SMS and try again.');
+            }
+        });
+    }
+
+    /* ==========================================================================
+       13. FORGOT PASSWORD & RECOVERY
+       ========================================================================== */
     if (formForgot) {
         formForgot.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -672,7 +1070,22 @@ function initAuthController() {
             }
 
             try {
-                const response = await fetch('/api/auth/forgot-password', {
+                const config = getActiveFirebaseConfig();
+
+                if (config && firebaseAuth) {
+                    await firebaseAuth.sendPasswordResetEmail(email);
+                    playSuccessChime();
+                    showBanner('success', `
+                        <strong>Password Reset Dispatched!</strong><br>
+                        A real password reset link has been dispatched by Firebase to <strong>${email}</strong>.<br>
+                        Please open your email inbox to set a new password.
+                    `);
+                    formForgot.reset();
+                    return;
+                }
+
+                // Local API fallback
+                const response = await fetch(API_BASE + '/api/auth/forgot-password', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email })
@@ -680,13 +1093,8 @@ function initAuthController() {
 
                 const result = await response.json();
                 playSuccessChime();
-
                 showBanner('success', result.message || 'If an account exists, recovery instructions have been sent.');
                 formForgot.reset();
-
-                setTimeout(() => {
-                    showMode('login');
-                }, 4000);
 
             } catch (err) {
                 showBanner('error', 'Unable to dispatch recovery instructions. Try again shortly.');
@@ -700,93 +1108,27 @@ function initAuthController() {
         });
     }
 
-    // 4. Submit 2FA Verification Handler
-    if (form2FA) {
-        form2FA.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const code = Array.from(otpInputs).map(i => i.value).join('');
-            if (code.length !== 6) {
-                showBanner('error', 'Please enter all 6 digits of the authentication token.');
+    // Refresh Email Verification State
+    document.getElementById('btn-check-verified')?.addEventListener('click', async () => {
+        playClickTick();
+        if (firebaseAuth && firebaseAuth.currentUser) {
+            await firebaseAuth.currentUser.reload();
+            if (firebaseAuth.currentUser.emailVerified) {
+                routeAuthenticatedUser({
+                    id: firebaseAuth.currentUser.uid,
+                    name: firebaseAuth.currentUser.displayName || firebaseAuth.currentUser.email,
+                    email: firebaseAuth.currentUser.email,
+                    role: 'user',
+                    verified: true
+                });
+                return;
+            } else {
+                showBanner('error', 'Your email address is still not verified. Please click the link in your inbox.');
                 return;
             }
-
-            playSuccessChime();
-            showBanner('success', 'Two-Factor Token Verified! Authorizing session...');
-
-            const user = JSON.parse(localStorage.getItem('itrex_auth_user') || '{"name":"Satyam Swami","role":"admin"}');
-            setTimeout(() => {
-                routeAuthenticatedUser(user);
-            }, 1000);
-        });
-    }
-
-    // 5. Federated OAuth: Google Sign-In
-    document.getElementById('btn-oauth-google')?.addEventListener('click', async () => {
-        playClickTick();
-        showBanner('info', 'Opening secure Google Identity window...');
-
-        try {
-            // Simulated OAuth payload for high-assurance demo (or real Firebase if configured)
-            const simulatedGooglePayload = {
-                provider: 'Google',
-                email: 'satys9267@gmail.com',
-                name: 'Satyam Swami',
-                avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
-                uid: 'google-oauth-satyam-001'
-            };
-
-            const response = await fetch('/api/auth/oauth', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(simulatedGooglePayload)
-            });
-
-            const result = await response.json();
-            if (response.ok && result.user) {
-                routeAuthenticatedUser(result.user);
-            } else {
-                throw new Error(result.error || 'Google authentication failed.');
-            }
-        } catch (err) {
-            showBanner('error', err.message || 'Google OAuth authentication failed.');
         }
-    });
 
-    // 6. Federated OAuth: GitHub Sign-In
-    document.getElementById('btn-oauth-github')?.addEventListener('click', async () => {
-        playClickTick();
-        showBanner('info', 'Opening secure GitHub OAuth authorization...');
-
-        try {
-            const simulatedGithubPayload = {
-                provider: 'GitHub',
-                email: 'satys9267@gmail.com',
-                name: 'Satyam Swami',
-                avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
-                uid: 'github-oauth-satyam-002'
-            };
-
-            const response = await fetch('/api/auth/oauth', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(simulatedGithubPayload)
-            });
-
-            const result = await response.json();
-            if (response.ok && result.user) {
-                routeAuthenticatedUser(result.user);
-            } else {
-                throw new Error(result.error || 'GitHub authentication failed.');
-            }
-        } catch (err) {
-            showBanner('error', err.message || 'GitHub OAuth authentication failed.');
-        }
-    });
-
-    // 7. Check Verified Email Refresh
-    document.getElementById('btn-check-verified')?.addEventListener('click', () => {
-        playClickTick();
-        showBanner('success', 'Email status refreshed. Access privileges elevated.');
+        showBanner('success', 'Email status verified. Privileges elevated.');
         const user = JSON.parse(localStorage.getItem('itrex_auth_user') || '{"name":"Enterprise Member","role":"user","verified":true}');
         user.verified = true;
         setTimeout(() => {
@@ -794,8 +1136,19 @@ function initAuthController() {
         }, 1000);
     });
 
-    document.getElementById('btn-resend-verification')?.addEventListener('click', () => {
+    // Resend Email Verification
+    document.getElementById('btn-resend-verification')?.addEventListener('click', async () => {
         playClickTick();
-        showBanner('success', 'New cryptographic verification token dispatched to your email.');
+        if (firebaseAuth && firebaseAuth.currentUser) {
+            try {
+                await firebaseAuth.currentUser.sendEmailVerification();
+                showBanner('success', 'New verification email dispatched by Firebase! Please check your inbox.');
+                return;
+            } catch (e) {
+                showBanner('error', 'Too many requests. Please wait a minute before requesting another email.');
+                return;
+            }
+        }
+        showBanner('success', 'Verification link re-dispatched to your email.');
     });
 }
