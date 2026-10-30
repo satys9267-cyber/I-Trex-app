@@ -32,7 +32,8 @@ const path = require('path');
         console.log('Clicking SKIP INTRO button...');
         await skipBtn.click();
     }
-    await page.waitForTimeout(1000);
+    // Allow headline animation to complete cleanly
+    await page.waitForTimeout(2200);
 
     // Check hero headline
     const heroH1 = await page.textContent('h1');

@@ -286,50 +286,34 @@ html.lenis, html.lenis body {
   pointer-events: none;
 }
 
-/* --- Header & Navigation Bar --- */
+/* Word Mask Lines for Cinematic Headline Reveal (Lamborghini Style) */
+.word-mask-line {
+  display: block;
+  overflow: hidden;
+  line-height: 0.94;
+  padding-bottom: 0.06em;
+}
+
+.hero-word-char {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+/* --- Header & Navigation Bar (Lamborghini Minimalist: MENU | LOGO | CONNECT) --- */
 .header-glass {
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   transition: all 0.4s ease;
 }
 .header-scrolled {
-  background: rgba(0, 0, 0, 0.92);
-  border-bottom-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.96);
+  border-bottom-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
 }
 
-.nav-link {
-  font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: #94a3b8;
-  transition: all 0.25s ease;
-  position: relative;
-  text-decoration: none;
-  padding: 8px 0;
-}
-.nav-link:hover, .nav-link.active {
-  color: #ffffff;
-}
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: #ffffff;
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.nav-link:hover::after, .nav-link.active::after {
-  width: 100%;
-}
-
-/* Fullscreen Navigation Drawer */
+/* Fullscreen Navigation Drawer (Exact Lamborghini 3-Column Architecture) */
 .fullscreen-nav-drawer {
   position: fixed;
   inset: 0;
@@ -337,43 +321,64 @@ html.lenis, html.lenis body {
   z-index: 999;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 40px 60px;
+  padding: 0;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .fullscreen-nav-drawer.active {
   opacity: 1;
   pointer-events: auto;
 }
-.nav-drawer-link {
-  font-family: var(--font-display);
-  font-size: clamp(32px, 5vw, 68px);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  text-transform: uppercase;
-  color: #475569;
-  text-decoration: none;
+
+.lamborghini-menu-row {
   display: flex;
-  align-items: baseline;
-  gap: 24px;
-  line-height: 1.1;
-  transition: all 0.3s ease;
-}
-.nav-drawer-link:hover {
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
   color: #ffffff;
-  transform: translateX(16px);
-}
-.nav-drawer-link .link-num {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-neon-cyan);
+  font-family: var(--font-display);
+  font-size: clamp(15px, 1.3vw, 20px);
+  font-weight: 700;
   letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+.lamborghini-menu-row:hover {
+  color: #ffffff;
+  border-bottom-color: #ffffff;
+  padding-left: 10px;
+}
+.lamborghini-menu-row svg {
+  opacity: 0.5;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.lamborghini-menu-row:hover svg {
+  opacity: 1;
+  transform: translateX(6px);
 }
 
-/* --- Preloader Sequence --- */
+.lamborghini-sub-row {
+  display: block;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 400;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.lamborghini-sub-row:hover {
+  color: #ffffff;
+  border-bottom-color: rgba(255, 255, 255, 0.3);
+  padding-left: 6px;
+}
+
+/* --- Preloader Sequence (Full-to-fit Cinematic Dark Experience) --- */
 #intro-preloader {
   position: fixed;
   inset: 0;
@@ -383,12 +388,34 @@ html.lenis, html.lenis body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.8s cubic-bezier(0.85, 0, 0.15, 1), transform 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+  transition: opacity 0.9s cubic-bezier(0.85, 0, 0.15, 1), transform 0.9s cubic-bezier(0.85, 0, 0.15, 1);
 }
 #intro-preloader.fade-out {
   opacity: 0;
   transform: translateY(-100%);
   pointer-events: none;
+}
+
+.intro-logo-glow {
+  position: relative;
+  display: inline-block;
+}
+.intro-logo-glow::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120%;
+  height: 120%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(0, 242, 254, 0.12) 40%, transparent 70%);
+  filter: blur(40px);
+  animation: introGlowPulse 3s infinite alternate ease-in-out;
+  pointer-events: none;
+}
+@keyframes introGlowPulse {
+  0% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.5; }
+  100% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.9; }
 }
 
 .logo-flare-sweep {
@@ -399,19 +426,19 @@ html.lenis, html.lenis body {
 .logo-flare-sweep::after {
   content: '';
   position: absolute;
-  top: -50%;
-  left: -150%;
-  width: 150%;
-  height: 200%;
-  background: linear-gradient(65deg, transparent 35%, rgba(255, 255, 255, 0.75) 50%, rgba(0, 242, 254, 0.6) 55%, transparent 70%);
-  animation: flareSweep 2.2s infinite ease-in-out;
+  top: -60%;
+  left: -160%;
+  width: 160%;
+  height: 220%;
+  background: linear-gradient(65deg, transparent 30%, rgba(255, 255, 255, 0.85) 50%, rgba(0, 242, 254, 0.8) 55%, transparent 70%);
+  animation: flareSweep 2.8s infinite ease-in-out;
   transform: rotate(25deg);
   pointer-events: none;
 }
 @keyframes flareSweep {
-  0% { left: -150%; }
-  60% { left: 150%; }
-  100% { left: 150%; }
+  0% { left: -160%; }
+  55% { left: 160%; }
+  100% { left: 160%; }
 }
 
 /* --- Custom Cinematic Video Player --- */

@@ -59,60 +59,55 @@
          SECTION 01: INTRODUCTORY CINEMATIC EXPERIENCE (PRELOADER)
          ====================================================================== -->
     <div id="intro-preloader">
-        <div class="relative flex flex-col items-center justify-center text-center px-6">
-            <!-- Silver Metallic Logo Reveal with Specular Flare Sweep -->
-            <div class="logo-flare-sweep mb-8 relative">
-                <img src="assets/images/itrex_logo_silver_transparent.png" 
-                     alt="I-Trex Silver Metallic Logo" 
-                     class="w-48 sm:w-64 md:w-80 h-auto filter drop-shadow-[0_0_35px_rgba(255,255,255,0.4)] select-none">
+        <div class="relative flex flex-col items-center justify-center text-center px-6 max-w-4xl w-full">
+            <!-- Full-to-fit Silver Metallic Logo Reveal with Ambient Glow & Laser Flare Sweep -->
+            <div class="intro-logo-glow mb-10 relative">
+                <div class="logo-flare-sweep">
+                    <img id="intro-logo-img"
+                         src="assets/images/itrex_logo_silver_transparent.png" 
+                         alt="I-Trex Silver Metallic Logo" 
+                         class="w-72 sm:w-96 md:w-[480px] lg:w-[560px] max-w-[90vw] h-auto filter drop-shadow-[0_0_45px_rgba(255,255,255,0.45)] select-none transition-transform duration-1000 scale-95">
+                </div>
             </div>
 
-            <!-- Brand Designation -->
-            <div class="space-y-2">
-                <h2 class="font-display font-extrabold text-2xl sm:text-3xl tracking-[0.25em] text-white uppercase">
+            <!-- Brand Designation with Cinematic Reveal -->
+            <div id="intro-brand-text" class="space-y-3 opacity-0 transition-opacity duration-1000">
+                <h2 class="font-display font-extrabold text-2xl sm:text-3xl md:text-4xl tracking-[0.3em] text-white uppercase">
                     I-TREX INNOVATIONS
                 </h2>
-                <p class="font-mono text-xs sm:text-sm text-neutral-400 tracking-[0.3em] uppercase">
+                <p class="font-mono text-xs sm:text-sm text-neutral-400 tracking-[0.35em] uppercase">
                     ONE PLATFORM. INFINITE TRAJECTORY.
                 </p>
             </div>
 
             <!-- Subtle Trajectory Line Loader -->
-            <div class="w-48 sm:w-64 h-[2px] bg-neutral-900 mt-8 relative overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white to-cyan-400 animate-[pulse_1.5s_infinite]"></div>
+            <div class="w-64 sm:w-80 h-[2px] bg-neutral-900 mt-10 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white to-cyan-400 animate-[pulse_1.8s_infinite]"></div>
             </div>
         </div>
 
         <!-- Skip Intro Action -->
         <button id="skip-intro-btn" 
-                class="absolute bottom-10 right-10 font-mono text-[11px] uppercase tracking-[0.2em] text-neutral-500 hover:text-white transition-colors duration-300 py-2 px-4 border border-white/10 hover:border-white/40">
+                class="absolute bottom-10 right-10 font-mono text-[11px] uppercase tracking-[0.2em] text-neutral-400 hover:text-white transition-colors duration-300 py-2.5 px-5 border border-white/20 hover:border-white/50 bg-black/60 backdrop-blur-md">
             SKIP INTRO [ESC]
         </button>
     </div>
 
     <!-- ======================================================================
-         MINIMALIST AEROSPACE NAVIGATION HEADER
+         MINIMALIST AEROSPACE NAVIGATION HEADER (LAMBORGHINI STANDARD: MENU | LOGO | CONNECT)
          ====================================================================== -->
     <header id="main-header" class="fixed top-0 left-0 right-0 z-50 header-glass transition-all duration-300">
         <div class="max-w-7xl mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
             
-            <!-- Left: Menu Trigger & Primary Desktop Navigation -->
-            <div class="flex items-center space-x-8">
-                <button id="menu-toggle-btn" class="flex items-center gap-3 text-white hover:text-cyan-400 transition-colors group focus:outline-none" aria-label="Open Navigation">
-                    <div class="space-y-1.5 w-6">
-                        <span class="block w-6 h-0.5 bg-white group-hover:bg-cyan-400 transition-colors"></span>
-                        <span class="block w-4 h-0.5 bg-white group-hover:bg-cyan-400 transition-colors"></span>
-                        <span class="block w-6 h-0.5 bg-white group-hover:bg-cyan-400 transition-colors"></span>
-                    </div>
-                    <span class="font-display font-bold text-xs uppercase tracking-[0.2em]">MENU</span>
+            <!-- Left: Minimalist Menu Trigger (Exact Lamborghini Style) -->
+            <div class="flex items-center">
+                <button id="menu-toggle-btn" class="flex items-center gap-3 text-white hover:text-neutral-300 transition-colors group focus:outline-none" aria-label="Open Navigation">
+                    <span class="flex flex-col gap-1.5 w-5">
+                        <span class="block w-5 h-[1.5px] bg-white group-hover:bg-cyan-400 transition-all duration-300"></span>
+                        <span class="block w-5 h-[1.5px] bg-white group-hover:bg-cyan-400 transition-all duration-300"></span>
+                    </span>
+                    <span class="font-display font-bold text-xs uppercase tracking-[0.22em] text-white">MENU</span>
                 </button>
-
-                <nav class="hidden lg:flex items-center space-x-8">
-                    <a href="#ecosystem" class="nav-link">ECOSYSTEM</a>
-                    <a href="products.html" class="nav-link">PRODUCTS</a>
-                    <a href="#technology" class="nav-link">TECHNOLOGY</a>
-                    <a href="#about" class="nav-link">ABOUT</a>
-                </nav>
             </div>
 
             <!-- Center: Official Silver Metallic I-Trex Logo -->
@@ -120,104 +115,126 @@
                 <a href="#home" class="flex items-center group">
                     <img src="assets/images/itrex_logo_silver_transparent.png" 
                          alt="I-Trex Official Logo" 
-                         class="h-10 sm:h-12 w-auto transition-transform duration-300 group-hover:scale-105 filter drop-shadow-[0_0_15px_rgba(255,255,255,0.25)]">
+                         class="h-10 sm:h-12 w-auto transition-transform duration-300 group-hover:scale-105 filter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
                 </a>
             </div>
 
-            <!-- Right: Quick Explore CTA & Contact -->
-            <div class="flex items-center space-x-6">
-                <a href="#contact" class="hidden sm:inline-block font-mono text-[11px] text-neutral-400 hover:text-white uppercase tracking-widest transition-colors">
-                    FOUNDER LINE
-                </a>
-                <a href="#ecosystem" class="chamfer-btn-primary !py-2.5 !px-5 !text-[10px]">
-                    <span>EXPLORE</span>
-                    <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+            <!-- Right: Connect With Us CTA -->
+            <div class="flex items-center">
+                <a href="#contact" class="chamfer-btn-primary !py-2.5 !px-6 !text-[11px] font-display font-bold uppercase tracking-[0.18em]">
+                    <span>CONNECT WITH US</span>
                 </a>
             </div>
         </div>
     </header>
 
     <!-- ======================================================================
-         FULLSCREEN ARCHITECTURAL NAVIGATION OVERLAY
+         FULLSCREEN ARCHITECTURAL NAVIGATION OVERLAY (LAMBORGHINI 3-COLUMN ARCHITECTURE)
          ====================================================================== -->
     <div id="fullscreen-nav-drawer" class="fullscreen-nav-drawer">
-        <div class="flex items-center justify-between border-b border-white/10 pb-6">
-            <div class="flex items-center gap-4">
-                <img src="assets/images/itrex_logo_silver_transparent.png" alt="I-Trex Logo" class="h-10 w-auto">
-                <span class="font-display font-bold text-sm tracking-widest text-white uppercase">I-TREX INNOVATIONS</span>
-            </div>
-            <button id="nav-drawer-close" class="font-mono text-xs uppercase tracking-widest text-neutral-400 hover:text-white flex items-center gap-2 py-2 px-4 border border-white/10 hover:border-white/30">
-                <span>CLOSE [ESC]</span>
-                <i data-lucide="x" class="w-4 h-4"></i>
+        <!-- Top Bar inside Drawer -->
+        <div class="max-w-7xl mx-auto w-full px-6 lg:px-12 h-20 flex items-center justify-between border-b border-white/10 shrink-0">
+            <button id="nav-drawer-close" class="flex items-center gap-3 text-white hover:text-neutral-300 transition-colors focus:outline-none">
+                <i data-lucide="x" class="w-5 h-5 text-white"></i>
+                <span class="font-display font-bold text-xs uppercase tracking-[0.22em] text-white">MENU</span>
             </button>
+
+            <a href="#home" onclick="closeMenu()" class="flex items-center">
+                <img src="assets/images/itrex_logo_silver_transparent.png" alt="I-Trex Logo" class="h-10 sm:h-12 w-auto">
+            </a>
+
+            <a href="#contact" onclick="closeMenu()" class="chamfer-btn-primary !py-2.5 !px-6 !text-[11px]">
+                <span>CONNECT WITH US</span>
+            </a>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 my-auto py-12">
-            <!-- Navigation Links -->
-            <nav class="lg:col-span-8 space-y-4 sm:space-y-6">
-                <a href="#home" class="nav-drawer-link">
-                    <span class="link-num">01</span>
-                    <span>HOME</span>
-                </a>
-                <a href="#ecosystem" class="nav-drawer-link">
-                    <span class="link-num">02</span>
-                    <span>ECOSYSTEM</span>
-                </a>
-                <a href="products.html" class="nav-drawer-link">
-                    <span class="link-num">03</span>
-                    <span>PRODUCTS</span>
-                </a>
-                <a href="#technology" class="nav-drawer-link">
-                    <span class="link-num">04</span>
-                    <span>TECHNOLOGY ARCHITECTURE</span>
-                </a>
-                <a href="#about" class="nav-drawer-link">
-                    <span class="link-num">05</span>
-                    <span>ABOUT I-TREX</span>
-                </a>
-                <a href="#roadmap" class="nav-drawer-link">
-                    <span class="link-num">06</span>
-                    <span>STRATEGIC ROADMAP</span>
-                </a>
-                <a href="#contact" class="nav-drawer-link">
-                    <span class="link-num">07</span>
-                    <span>FOUNDER CONTACT</span>
-                </a>
-            </nav>
-
-            <!-- Right Column Info & Coordinates -->
-            <div class="lg:col-span-4 border-l border-white/10 lg:pl-12 flex flex-col justify-between space-y-8">
+        <!-- 3-Column Luxury Navigation Matrix -->
+        <div class="max-w-7xl mx-auto w-full px-6 lg:px-12 py-10 lg:py-16 my-auto">
+            <!-- Tier 1: Primary Architectural Sectors -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-14">
+                <!-- Col 1 -->
                 <div>
-                    <span class="tech-tag mb-4">DIRECT CHANNELS</span>
-                    <h4 class="font-display font-bold text-xl text-white uppercase mt-2">I-Trex Executive Terminal</h4>
-                    <p class="font-sans text-sm text-neutral-400 mt-2 leading-relaxed">
-                        Continuous multi-frequency neural stream interconnecting autonomous microkernels, planetary mesh, and spatial intelligence.
-                    </p>
-                    <div class="mt-6 space-y-3 font-mono text-xs">
-                        <div class="text-neutral-400">FOUNDER: <span class="text-white">Satyam Swami</span></div>
-                        <div class="text-neutral-400">EMAIL: <a href="mailto:satys9267@gmail.com" class="text-white hover:text-cyan-400 underline">satys9267@gmail.com</a></div>
-                        <div class="text-neutral-400">PHONE: <a href="tel:+917499825344" class="text-white hover:text-cyan-400">+91 74998 25344</a></div>
-                    </div>
+                    <a href="#ecosystem" onclick="closeMenu()" class="lamborghini-menu-row">
+                        <span>ECOSYSTEM</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </a>
+                    <a href="products.html" onclick="closeMenu()" class="lamborghini-menu-row">
+                        <span>PRODUCTS</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </a>
+                    <a href="#vision" onclick="closeMenu()" class="lamborghini-menu-row">
+                        <span>EXPERIENCE VISION</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </a>
                 </div>
 
-                <div class="space-y-4">
-                    <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block">PRODUCT MATRIX</span>
-                    <div class="grid grid-cols-2 gap-2 font-mono text-xs">
-                        <a href="products.html#trexos" class="text-neutral-400 hover:text-white">TRX-01 TrexOS</a>
-                        <a href="products.html#trexcore" class="text-neutral-400 hover:text-white">TRX-02 TrexCore</a>
-                        <a href="products.html#trexvision" class="text-neutral-400 hover:text-white">TRX-03 TrexVision</a>
-                        <a href="products.html#trexshield" class="text-neutral-400 hover:text-white">TRX-04 TrexShield</a>
-                        <a href="products.html#trexconnect" class="text-neutral-400 hover:text-white">TRX-05 TrexConnect</a>
-                    </div>
+                <!-- Col 2 -->
+                <div>
+                    <a href="#technology" onclick="closeMenu()" class="lamborghini-menu-row">
+                        <span>ARCHITECTURE</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </a>
+                    <a href="#about" onclick="closeMenu()" class="lamborghini-menu-row">
+                        <span>ABOUT I-TREX</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </a>
+                    <a href="#roadmap" onclick="closeMenu()" class="lamborghini-menu-row">
+                        <span>STRATEGIC ROADMAP</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+
+                <!-- Col 3 -->
+                <div>
+                    <a href="#capabilities" onclick="closeMenu()" class="lamborghini-menu-row">
+                        <span>CAPABILITIES</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </a>
+                    <a href="#team" onclick="closeMenu()" class="lamborghini-menu-row">
+                        <span>LEADERSHIP & TEAM</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </a>
+                    <a href="#contact" onclick="closeMenu()" class="lamborghini-menu-row">
+                        <span>FOUNDER CONTACT</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Continuous Architectural Divider Line -->
+            <div class="w-full h-px bg-white/20 my-10 lg:my-14"></div>
+
+            <!-- Tier 2: Secondary Autonomous Models & Corporate Channels -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-14">
+                <!-- Sub Col 1 -->
+                <div>
+                    <a href="products.html#trexos" onclick="closeMenu()" class="lamborghini-sub-row">TRX-01 TrexOS Microkernel</a>
+                    <a href="products.html#trexcore" onclick="closeMenu()" class="lamborghini-sub-row">TRX-02 TrexCore Mesh</a>
+                    <a href="products.html#trexvision" onclick="closeMenu()" class="lamborghini-sub-row">TRX-03 TrexVision Spatial</a>
+                </div>
+
+                <!-- Sub Col 2 -->
+                <div>
+                    <a href="products.html#trexshield" onclick="closeMenu()" class="lamborghini-sub-row">TRX-04 TrexShield SecOps</a>
+                    <a href="products.html#trexconnect" onclick="closeMenu()" class="lamborghini-sub-row">TRX-05 TrexConnect Protocol</a>
+                    <a href="#about" onclick="closeMenu()" class="lamborghini-sub-row">First Principles Philosophy</a>
+                </div>
+
+                <!-- Sub Col 3 -->
+                <div>
+                    <a href="mailto:satys9267@gmail.com" class="lamborghini-sub-row">Founder Email: satys9267@gmail.com</a>
+                    <a href="tel:+917499825344" class="lamborghini-sub-row">Founder Line: +91 74998 25344</a>
+                    <span class="lamborghini-sub-row text-neutral-500 border-b-transparent">San Francisco / Global HQ</span>
                 </div>
             </div>
         </div>
 
-        <div class="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between text-neutral-500 font-mono text-[10px] gap-4">
+        <!-- Bottom Status Bar -->
+        <div class="max-w-7xl mx-auto w-full px-6 lg:px-12 py-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-neutral-500 font-mono text-[10px] gap-4 shrink-0">
             <span>© 2026 I-TREX INNOVATIONS · ALL RIGHTS RESERVED</span>
             <span class="flex items-center gap-2">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
-                <span>SYSTEM HEALTH: 100% SECURE</span>
+                <span>SYSTEM HEALTH: 100% SECURE // TLS 1.3</span>
             </span>
         </div>
     </div>
@@ -239,20 +256,24 @@
                 <span class="tech-tag">DEEP TECH · AUTONOMOUS SYSTEMS · NEURAL KERNEL</span>
             </div>
 
-            <!-- Massive Steel Editorial Headline -->
-            <h1 class="title-hero text-5xl sm:text-7xl md:text-8xl lg:text-[104px] tracking-tight text-white mb-6 title-reveal">
-                <span class="block">ONE PLATFORM.</span>
-                <span class="block text-chrome">INFINITE TRAJECTORY.</span>
+            <!-- Massive Steel Editorial Headline with Masked Word-by-Word Slide Reveal -->
+            <h1 id="hero-headline" class="title-hero text-5xl sm:text-7xl md:text-8xl lg:text-[104px] tracking-tight text-white mb-6">
+                <span class="word-mask-line">
+                    <span class="hero-word-char text-white">ONE</span>&nbsp;<span class="hero-word-char text-white">PLATFORM.</span>
+                </span>
+                <span class="word-mask-line">
+                    <span class="hero-word-char text-chrome">INFINITE</span>&nbsp;<span class="hero-word-char text-chrome">TRAJECTORY.</span>
+                </span>
             </h1>
 
             <!-- Supporting Description -->
-            <p class="font-sans text-neutral-300 text-base sm:text-lg md:text-xl max-w-3xl leading-relaxed mb-10 title-reveal font-light">
+            <p id="hero-desc" class="hero-anim-desc font-sans text-neutral-300 text-base sm:text-lg md:text-xl max-w-3xl leading-relaxed mb-10 font-light opacity-0">
                 Bridging deep tech innovation and enterprise operations under one cohesive ecosystem. 
                 Explore our autonomous neural kernel, distributed edge mesh, spatial intelligence, and zero-trust security.
             </p>
 
             <!-- Dual Aerospace CTAs -->
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-5 w-full sm:w-auto title-reveal">
+            <div id="hero-ctas" class="hero-anim-cta flex flex-col sm:flex-row items-center justify-center gap-5 w-full sm:w-auto opacity-0">
                 <a href="#ecosystem" class="chamfer-btn-primary w-full sm:w-auto">
                     <span>EXPLORE ECOSYSTEM</span>
                     <i data-lucide="arrow-right" class="w-4 h-4"></i>
@@ -263,7 +284,7 @@
             </div>
 
             <!-- Live Telemetry Ticker -->
-            <div class="mt-16 sm:mt-24 w-full max-w-5xl grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8 border-t border-white/10 font-mono">
+            <div id="hero-telemetry" class="hero-anim-telemetry mt-16 sm:mt-24 w-full max-w-5xl grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8 border-t border-white/10 font-mono opacity-0">
                 <div class="text-left p-3 border-l border-white/10">
                     <span class="text-[10px] text-neutral-400 uppercase tracking-widest block">EDGE NODES</span>
                     <span class="text-xl sm:text-2xl font-bold text-white block mt-1 counter-metric" data-target="84200" data-suffix="+">84,200+</span>

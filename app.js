@@ -81,24 +81,49 @@ function initSmoothScroll() {
 }
 
 /* ==========================================================================
-   2. INTRO PRELOADER & METALLIC LOGO REVEAL
+   2. INTRO PRELOADER & METALLIC LOGO REVEAL (FULL-TO-FIT CINEMATIC)
    ========================================================================== */
 function initPreloader() {
     const preloader = document.getElementById('intro-preloader');
     const skipBtn = document.getElementById('skip-intro-btn');
-    if (!preloader) return;
+    const brandText = document.getElementById('intro-brand-text');
+    const logoImg = document.getElementById('intro-logo-img');
+
+    if (!preloader) {
+        triggerHeroHeadlineAnimation();
+        return;
+    }
 
     const hasSeenIntro = sessionStorage.getItem('itrex_intro_seen');
     if (hasSeenIntro) {
         preloader.classList.add('fade-out');
-        setTimeout(() => preloader.remove(), 800);
+        setTimeout(() => {
+            if (preloader.parentNode) preloader.remove();
+            triggerHeroHeadlineAnimation();
+        }, 350);
         return;
     }
 
-    // Auto dismiss after cinematic duration
+    // Step 1: Smooth subtle scale-in of the metallic logo
+    if (logoImg) {
+        setTimeout(() => {
+            logoImg.classList.remove('scale-95');
+            logoImg.classList.add('scale-100');
+        }, 300);
+    }
+
+    // Step 2: Fade-in of brand typography with wide letter spacing
+    if (brandText) {
+        setTimeout(() => {
+            brandText.classList.remove('opacity-0');
+            brandText.classList.add('opacity-100');
+        }, 1500);
+    }
+
+    // Step 3: Extended cinematic duration (4.5 seconds for majestic supercar pacing)
     const dismissTimer = setTimeout(() => {
         dismissPreloader();
-    }, 2800);
+    }, 4500);
 
     if (skipBtn) {
         skipBtn.addEventListener('click', () => {
@@ -107,13 +132,86 @@ function initPreloader() {
         });
     }
 
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && preloader && !preloader.classList.contains('fade-out')) {
+            clearTimeout(dismissTimer);
+            dismissPreloader();
+        }
+    });
+
     function dismissPreloader() {
         sessionStorage.setItem('itrex_intro_seen', 'true');
         preloader.classList.add('fade-out');
         setTimeout(() => {
             if (preloader.parentNode) preloader.remove();
+            triggerHeroHeadlineAnimation();
         }, 850);
     }
+}
+
+/* ==========================================================================
+   HERO HEADLINE MASKED WORD-BY-WORD ANIMATION (LAMBORGHINI STANDARD)
+   ========================================================================== */
+function triggerHeroHeadlineAnimation() {
+    const chars = document.querySelectorAll('.hero-word-char');
+    const desc = document.getElementById('hero-desc');
+    const ctas = document.getElementById('hero-ctas');
+    const telemetry = document.getElementById('hero-telemetry');
+
+    if (typeof gsap === 'undefined' || !chars.length) {
+        if (desc) desc.style.opacity = '1';
+        if (ctas) ctas.style.opacity = '1';
+        if (telemetry) telemetry.style.opacity = '1';
+        return;
+    }
+
+    const tl = gsap.timeline();
+
+    // 1. Words slide up out of hidden overflow masks with momentum
+    tl.fromTo(chars,
+        { yPercent: 120, opacity: 0 },
+        {
+            yPercent: 0,
+            opacity: 1,
+            duration: 1.15,
+            stagger: 0.12,
+            ease: "power4.out",
+            clearProps: "all"
+        }
+    )
+    // 2. Supporting description glides up
+    .fromTo(desc,
+        { y: 30, opacity: 0 },
+        {
+            y: 0,
+            opacity: 1,
+            duration: 0.9,
+            ease: "power3.out"
+        },
+        "-=0.6"
+    )
+    // 3. Aerospace CTAs reveal
+    .fromTo(ctas,
+        { y: 25, opacity: 0 },
+        {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: "power3.out"
+        },
+        "-=0.6"
+    )
+    // 4. Telemetry status bar fades in
+    .fromTo(telemetry,
+        { y: 20, opacity: 0 },
+        {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: "power2.out"
+        },
+        "-=0.5"
+    );
 }
 
 /* ==========================================================================
@@ -940,36 +1038,42 @@ function initNavigation() {
     const drawer = document.getElementById('fullscreen-nav-drawer');
     const header = document.getElementById('main-header');
 
-    if (menuToggle && drawer) {
-        menuToggle.addEventListener('click', () => {
+    window.openMenu = function() {
+        if (drawer) {
             drawer.classList.add('active');
             if (lenis) lenis.stop();
-        });
+        }
+    };
+
+    window.closeMenu = function() {
+        if (drawer) {
+            drawer.classList.remove('active');
+            if (lenis) lenis.start();
+        }
+    };
+
+    if (menuToggle) {
+        menuToggle.addEventListener('click', window.openMenu);
     }
 
-    if (menuClose && drawer) {
-        menuClose.addEventListener('click', closeMenu);
+    if (menuClose) {
+        menuClose.addEventListener('click', window.closeMenu);
     }
 
-    // Close on link click
-    const drawerLinks = document.querySelectorAll('.nav-drawer-link');
-    drawerLinks.forEach(link => {
+    // Close on any menu link click
+    const menuLinks = document.querySelectorAll('.lamborghini-menu-row, .lamborghini-sub-row, .nav-drawer-link');
+    menuLinks.forEach(link => {
         link.addEventListener('click', () => {
-            closeMenu();
+            window.closeMenu();
         });
     });
 
     // Close on Escape key
     window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && drawer && drawer.classList.contains('active')) {
-            closeMenu();
+            window.closeMenu();
         }
     });
-
-    function closeMenu() {
-        if (drawer) drawer.classList.remove('active');
-        if (lenis) lenis.start();
-    }
 
     // Header scroll background morph
     window.addEventListener('scroll', () => {
@@ -990,6 +1094,7 @@ function initNavigation() {
             const targetEl = document.querySelector(targetId);
             if (targetEl) {
                 e.preventDefault();
+                window.closeMenu();
                 if (lenis) {
                     lenis.scrollTo(targetEl, { offset: -70 });
                 } else {
