@@ -13,7 +13,7 @@
       "provider": "Google OAuth (Verified)",
       "verified": true,
       "totalShiftHours": "142.5",
-      "lastLoginAt": "2026-10-30T16:31:19.883Z",
+      "lastLoginAt": "2026-10-30T17:47:40.530Z",
       "skills": [
         "Microkernel Systems",
         "eBPF Security Enclaves",
@@ -208,6 +208,54 @@
   "shifts": [],
   "activity_logs": [],
   "change_logs": [
+    {
+      "id": "clog-mvv9m2r7-bjup",
+      "user_id": "usr-001",
+      "user_name": "Satyam Swami",
+      "action_type": "LOGIN_SUCCESS",
+      "target_entity": "auth",
+      "target_id": "usr-001",
+      "change_details": "{\"role\":\"founder\"}",
+      "ip_address": "::1",
+      "level": "INFO",
+      "created_at": "2026-10-30T17:47:40.533Z"
+    },
+    {
+      "id": "clog-mvv9k1ec-03n7",
+      "user_id": "guest",
+      "user_name": "Visitor",
+      "action_type": "PASSWORD_RESET_REQUESTED",
+      "target_entity": "auth",
+      "target_id": "satys9267@gmail.com",
+      "change_details": "{}",
+      "ip_address": "::1",
+      "level": "INFO",
+      "created_at": "2026-10-30T17:46:05.462Z"
+    },
+    {
+      "id": "clog-mvv8zjm6-i36u",
+      "user_id": "guest",
+      "user_name": "Anonymous",
+      "action_type": "LOGIN_FAILED_NOT_FOUND",
+      "target_entity": "auth",
+      "target_id": "satys9267@gmailcom",
+      "change_details": "{}",
+      "ip_address": "::1",
+      "level": "WARN",
+      "created_at": "2026-10-30T17:30:09.294Z"
+    },
+    {
+      "id": "clog-mvv8zhsh-iw5q",
+      "user_id": "guest",
+      "user_name": "Anonymous",
+      "action_type": "LOGIN_FAILED_NOT_FOUND",
+      "target_entity": "auth",
+      "target_id": "satys9267@gmailcom",
+      "change_details": "{}",
+      "ip_address": "::1",
+      "level": "WARN",
+      "created_at": "2026-10-30T17:30:06.930Z"
+    },
     {
       "id": "clog-mvv6s147-1pcc",
       "user_id": "guest",
