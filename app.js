@@ -1,1649 +1,1049 @@
 /**
- * I-Trex Innovations — Advanced Animation Engine & Synthesizer
- * Built to exactly replicate the Safar Saathi experience for Satyam's Startup
+ * I-TREX INNOVATIONS — MASTER CINEMATIC ENGINE
+ * Inspired by Lamborghini's Digital Experience (lamborghini.com)
+ * Integrates: Lenis Smooth Scrolling, GSAP 3, ScrollTrigger, Interactive Canvas Visualizers,
+ * Bespoke Product Showcases, 4-Pillar Neural Stream, Custom Video Theater HUD
  */
 
-// Initialize line icons
-lucide.createIcons();
-
-// ==============================================================
-// 1. MASTER STARTUP CONFIGURATION OBJECT
-// ==============================================================
-const siteConfig = {
-    brand: {
-        name: "I-Trex Innovations",
-        tagline: "One Platform. Infinite Trajectory.",
-        credit: "Founded by Satyam",
-        sub: "Autonomous Operating System & Edge Platform",
-        category: "Deep Tech & Enterprise Cloud"
-    },
-    contact: {
-        email: "satys9267@gmail.com",
-        phone: "+91 74998 25344",
-        phoneRaw: "+917499825344"
-    },
-    socials: {
-        linkedin: "https://linkedin.com/in/satyam-swami",
-        github: "https://github.com/satyam-swami",
-        instagram: "https://instagram.com/satyam",
-        email: "mailto:satys9267@gmail.com"
-    },
-    team: [
-        {
-            name: "Satyam Swami",
-            role: "Founder & Chief Systems Architect",
-            badge: "Founder",
-            initials: "SS",
-            avatarEmoji: "👑",
-            bio: "Founding visionary of I-Trex Innovations. Leading autonomous microkernel architectures, eBPF security enclaves, and distributed state consensus.",
-            specialties: ["Microkernel Systems", "eBPF Security Enclaves", "Consensus Protocols"],
-            socials: {
-                linkedin: "https://linkedin.com/in/satyam-swami",
-                github: "https://github.com/satyam-swami",
-                email: "mailto:satys9267@gmail.com"
-            }
-        },
-        {
-            name: "Ishwari Patil",
-            role: "Co-Founder & AI Systems Lead",
-            badge: "Co-Founder",
-            initials: "IP",
-            avatarEmoji: "🔬",
-            bio: "Co-founder leading cognitive spatial perception engines, 120 FPS WebGPU neural acceleration, and low-latency edge inference models.",
-            specialties: ["Spatial Perception", "WebGPU Engines", "Edge Neural Inference"],
-            socials: {
-                linkedin: "https://linkedin.com/in/ishwari-patil",
-                github: "https://github.com/ishwari-patil",
-                email: "mailto:ishwari@itrex.internal"
-            }
-        }
-    ]
-};
-
-// Populate Team & Contact structures dynamically on load
-function populateSiteData() {
-    const grid = document.getElementById("team-grid");
-    if (grid) {
-        grid.innerHTML = "";
-        siteConfig.team.forEach(member => {
-            const card = document.createElement("div");
-            card.className = "bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-itrex-border dark:border-slate-800 p-8 sm:p-10 rounded-[36px] flex flex-col justify-between transition-all duration-500 relative group overflow-hidden shadow-lg hover:shadow-2xl tilt-card";
-            card.setAttribute("data-hover", "card");
-            
-            const accentGradient = member.badge === 'Founder' 
-                ? 'from-itrex-gold/10 via-transparent to-transparent' 
-                : 'from-cyan-500/10 via-transparent to-transparent';
-
-            const badgeColor = member.badge === 'Founder'
-                ? 'bg-itrex-gold/10 text-itrex-gold border-itrex-gold/30'
-                : 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30';
-
-            card.innerHTML = `
-                <!-- Background visual trail lines animating on hover -->
-                <div class="absolute inset-0 bg-gradient-to-tr ${accentGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-
-                <div>
-                    <!-- Header with Verified Badge and Avatar -->
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="relative">
-                            <div class="w-16 h-16 rounded-full border-2 border-itrex-border dark:border-slate-800 flex items-center justify-center font-space font-bold text-itrex-gold text-lg bg-itrex-neutralLight dark:bg-slate-950 relative shadow-inner">
-                                <span class="relative z-10">${member.initials}</span>
-                                <i data-lucide="compass" class="w-16 h-16 text-itrex-border/40 dark:text-slate-800/60 absolute inset-0 orbit-spin-slow pointer-events-none"></i>
-                            </div>
-                            <span class="absolute -bottom-1 -right-1 text-sm bg-white dark:bg-slate-900 rounded-full p-0.5 shadow-sm">${member.avatarEmoji}</span>
-                        </div>
-
-                        <div class="text-right">
-                            <span class="text-[9px] font-mono uppercase px-3 py-1 rounded-full font-bold tracking-widest border ${badgeColor} inline-block">
-                                ${member.badge}
-                            </span>
-                            <div class="flex items-center justify-end space-x-1.5 mt-2 text-[10px] font-mono text-emerald-500">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                <span>Verified Enclave</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Member Title & Role -->
-                    <h3 class="font-space font-bold text-2xl text-itrex-navy dark:text-white leading-tight">${member.name}</h3>
-                    <p class="text-xs font-mono uppercase text-itrex-gold mt-1 tracking-wider">${member.role}</p>
-
-                    <!-- Bio -->
-                    <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-4 leading-relaxed font-sans">${member.bio}</p>
-
-                    <!-- Specialties Tags -->
-                    <div class="flex flex-wrap gap-2 mt-5">
-                        ${member.specialties.map(spec => `
-                            <span class="text-[10px] font-mono px-2.5 py-1 rounded-lg bg-neutral-100 dark:bg-slate-800/80 text-neutral-600 dark:text-neutral-300 border border-neutral-200/50 dark:border-slate-700/50">
-                                ${spec}
-                            </span>
-                        `).join('')}
-                    </div>
-                </div>
-
-                <!-- Footer with Social / Enclave Connections -->
-                <div class="pt-6 mt-6 border-t border-itrex-border dark:border-slate-800/80 flex items-center justify-between">
-                    <span class="text-[10px] font-mono text-neutral-400">Direct Workspace Link</span>
-                    <div class="flex items-center space-x-3 text-neutral-400">
-                        <a href="${member.socials.linkedin}" target="_blank" class="hover:text-itrex-gold transition-colors" title="LinkedIn"><i data-lucide="linkedin" class="w-4 h-4"></i></a>
-                        <a href="${member.socials.github}" target="_blank" class="hover:text-itrex-gold transition-colors" title="GitHub"><i data-lucide="github" class="w-4 h-4"></i></a>
-                        <a href="${member.socials.email}" class="hover:text-itrex-gold transition-colors" title="Email"><i data-lucide="mail" class="w-4 h-4"></i></a>
-                    </div>
-                </div>
-            `;
-            grid.appendChild(card);
-        });
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Initialize Lucide icons if available
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
     }
 
-    // Populate Contact links
-    const footerConnect = document.getElementById("footer-connect-list");
-    if (footerConnect) {
-        footerConnect.innerHTML = `
-            <li><a href="mailto:${siteConfig.contact.email}" class="hover:text-itrex-navy dark:hover:text-white transition-colors flex items-center gap-1.5"><i data-lucide="mail" class="w-3.5 h-3.5 text-itrex-gold"></i> ${siteConfig.contact.email}</a></li>
-            <li><a href="tel:${siteConfig.contact.phoneRaw}" class="hover:text-itrex-navy dark:hover:text-white transition-colors flex items-center gap-1.5"><i data-lucide="phone" class="w-3.5 h-3.5 text-itrex-gold"></i> ${siteConfig.contact.phone}</a></li>
-            <li><a href="#contact" class="hover:text-itrex-navy dark:hover:text-white transition-colors">Founder Direct Line</a></li>
-            <li><a href="#about" class="hover:text-itrex-navy dark:hover:text-white transition-colors">Investor Relations</a></li>
-        `;
-    }
-    lucide.createIcons(); // refresh icons
-}
+    // 2. Initialize Lenis Smooth Scroll
+    initSmoothScroll();
 
-window.addEventListener("DOMContentLoaded", populateSiteData);
+    // 3. Initialize Preloader & Logo Reveal
+    initPreloader();
 
-// ==========================================
-// 2. HIGH-END SYNTHESIZED SOUND SYSTEM (Web Audio API)
-// ==========================================
-let audioCtx = null;
+    // 4. Initialize Interactive Hero Background Canvas
+    initHeroCanvas();
 
-function initAudio() {
-    if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-}
+    // 5. Initialize Custom Cinematic Video Theater
+    initVideoTheater();
 
-// Tick sound on hover
-function playHoverTick() {
-    try {
-        initAudio();
-        if (!audioCtx) return;
+    // 6. Initialize 5-Product Ecosystem Showcase
+    initProductShowcase();
 
-        const osc = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
+    // 7. Initialize 4-Pillar Architectural Neural Engine
+    initArchitecturePillars();
 
-        osc.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
+    // 8. Initialize Team & Roadmap Interactive Elements
+    initRoadmapAndTeam();
 
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(1500, audioCtx.currentTime); 
-        osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.04);
+    // 9. Initialize Direct Founder Communication Terminal
+    initContactTerminal();
 
-        gainNode.gain.setValueAtTime(0.015, audioCtx.currentTime); 
-        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.04);
+    // 10. Initialize Fullscreen Navigation & Header Behavior
+    initNavigation();
 
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.04);
-    } catch (e) {}
-}
-
-// Chime sound on node click / theme toggle
-function playNodeChime() {
-    try {
-        initAudio();
-        if (!audioCtx) return;
-
-        const osc1 = audioCtx.createOscillator();
-        const osc2 = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-
-        osc1.connect(gainNode);
-        osc2.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-
-        osc1.type = "sine";
-        osc1.frequency.setValueAtTime(659.25, audioCtx.currentTime); // E5
-        osc2.type = "sine";
-        osc2.frequency.setValueAtTime(880, audioCtx.currentTime);    // A5
-
-        gainNode.gain.setValueAtTime(0.03, audioCtx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.8); 
-
-        osc1.start();
-        osc2.start();
-        osc1.stop(audioCtx.currentTime + 0.8);
-        osc2.stop(audioCtx.currentTime + 0.8);
-    } catch (e) {}
-}
-
-// ==========================================
-// 3. PRELOADER & SCROLL CONTROLLERS
-// ==========================================
-window.addEventListener('load', () => {
-    const tl = gsap.timeline();
-    
-    tl.to("#loader-logo-img", {
-        scale: 1.1,
-        rotate: 360,
-        duration: 1.1,
-        ease: "power3.inOut"
-    });
-
-    tl.to(".loader-letter", {
-        opacity: 1,
-        y: 0,
-        stagger: 0.06,
-        duration: 0.5,
-        ease: "power2.out"
-    }, "-=0.6");
-
-    tl.to("#loader-sub", {
-        opacity: 1,
-        y: 0,
-        duration: 0.5
-    }, "-=0.2");
-
-    tl.to("#loader", {
-        y: "-100%",
-        duration: 0.8,
-        ease: "power4.inOut",
-        onStart: () => {
-            const loader = document.getElementById("loader");
-            if (loader) loader.style.pointerEvents = "none";
-        },
-        onComplete: () => {
-            const loader = document.getElementById("loader");
-            if (loader) loader.style.display = "none";
-        }
-    }, "+=0.3");
-
-    tl.to("#main-content", {
-        opacity: 1,
-        duration: 0.6,
-        onComplete: () => {
-            gsap.to("#navbar", {
-                y: 0,
-                opacity: 1,
-                duration: 0.8,
-                ease: "power4.out"
-            });
-            playHeroEntranceSequence();
-            initScrollTriggers();
-            loadPillarConfig();
-            initProductCarousel();
-        }
-    }, "-=0.4");
+    // 11. Initialize GSAP ScrollTrigger Animations
+    initScrollAnimations();
 });
 
-// Orchestrated Hero Sequence Execution
-function playHeroEntranceSequence() {
-    const heroTl = gsap.timeline({ delay: 0.1 });
-
-    // 1. Reveal pill badge
-    heroTl.to("#hero-badge", {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: "power3.out"
-    });
-
-    // 2. Staggered headline reveal
-    heroTl.to(".hero-reveal-line", {
-        y: 0,
-        opacity: 1,
-        stagger: 0.16,
-        duration: 0.85,
-        ease: "power4.out"
-    }, "-=0.3");
-
-    // 3. Supporting subtext reveal
-    heroTl.to("#hero-subtext", {
-        y: 0,
-        opacity: 1,
-        duration: 0.65,
-        ease: "power3.out"
-    }, "-=0.35");
-
-    // 4. Primary CTA enters from opposite axis (-X offset) & settles
-    heroTl.to("#hero-primary-cta", {
-        x: 0,
-        opacity: 1,
-        duration: 0.75,
-        ease: "back.out(1.2)"
-    }, "-=0.3");
-
-    // 5. Secondary CTA enters from +X offset
-    heroTl.to("#hero-secondary-cta", {
-        x: 0,
-        opacity: 1,
-        duration: 0.75,
-        ease: "power3.out"
-    }, "-=0.6");
-}
-
+/* ==========================================================================
+   1. LENIS SMOOTH SCROLLING
+   ========================================================================== */
 let lenis = null;
-function initLenisScroll() {
+
+function initSmoothScroll() {
     if (typeof Lenis !== 'undefined') {
         lenis = new Lenis({
             duration: 1.2,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            orientation: 'vertical',
-            smoothWheel: true,
-        });
-        window.lenis = lenis;
-
-        lenis.on('scroll', ScrollTrigger.update);
-
-        gsap.ticker.add((time) => {
-            lenis.raf(time * 1000);
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 1.0,
+            smoothTouch: false,
+            touchMultiplier: 2,
+            infinite: false
         });
 
-        gsap.ticker.lagSmoothing(0);
+        // Synchronize Lenis with GSAP ScrollTrigger
+        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+            lenis.on('scroll', ScrollTrigger.update);
 
-        lenis.on('scroll', (e) => {
-            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-            if (docHeight > 0) {
-                const progress = (e.scroll / docHeight) * 100;
-                const bar = document.getElementById("scroll-trajectory-progress");
-                if (bar) bar.style.width = Math.min(100, Math.max(0, progress)) + "%";
-            }
-        });
-    }
-}
-
-function initScrollTriggers() {
-    gsap.registerPlugin(ScrollTrigger);
-    initLenisScroll();
-    ScrollTrigger.refresh();
-
-    // Swap floating transparent navigation bar into solid glass on scroll
-    ScrollTrigger.create({
-        start: "top -10%",
-        onEnter: () => {
-            const nav = document.getElementById("navbar");
-            nav.classList.add("bg-white/90", "dark:bg-slate-950/90", "backdrop-blur-md", "shadow-sm", "py-3");
-            nav.classList.remove("py-6");
-        },
-        onLeaveBack: () => {
-            const nav = document.getElementById("navbar");
-            nav.classList.remove("bg-white/90", "dark:bg-slate-950/90", "backdrop-blur-md", "shadow-sm", "py-3");
-            nav.classList.add("py-6");
-        }
-    });
-
-    // Product Carousel Stage Entrance ScrollTrigger (scale & opacity reveal)
-    gsap.fromTo("#product-carousel-stage",
-        { scale: 0.96, opacity: 0 },
-        {
-            scale: 1,
-            opacity: 1,
-            duration: 0.85,
-            ease: "power2.out",
-            scrollTrigger: {
-                trigger: "#products-highlight",
-                start: "top 80%",
-                toggleActions: "play none none reverse"
-            }
-        }
-    );
-
-    // Four Pillars Cyber-Neural Stream ScrollTrigger sequence
-    initNeuralStreamScrollTrigger();
-
-    // Dual-Trigger Scroll Zoom for Cinematic Video Card
-    gsap.fromTo("#video-card-container", 
-        { scale: 0.9, opacity: 0.85 },
-        { 
-            scale: 1.0, 
-            opacity: 1.0,
-            scrollTrigger: {
-                trigger: "#video-card-container",
-                start: "top 80%",
-                end: "top 40%",
-                scrub: true
-            }
-        }
-    );
-
-    // Progress Scroll bound line drawing
-    gsap.to("#vision-progress-fill", {
-        width: "100%",
-        scrollTrigger: {
-            trigger: "#vision-mission",
-            start: "top 60%",
-            end: "bottom 50%",
-            scrub: true
-        }
-    });
-
-    // Horizon Trajectory drawing in footer
-    gsap.to("#horizon-line-fill", {
-        width: "100%",
-        scrollTrigger: {
-            trigger: "footer",
-            start: "top 95%",
-            end: "bottom 95%",
-            scrub: true
-        }
-    });
-
-    gsap.to("#horizon-dot", {
-        left: "100%",
-        scrollTrigger: {
-            trigger: "footer",
-            start: "top 95%",
-            end: "bottom 95%",
-            scrub: true
-        }
-    });
-
-    // Scroll progress flight tracker
-    window.addEventListener("scroll", () => {
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const progress = (window.pageYOffset / docHeight) * 100;
-        document.getElementById("scroll-trajectory-progress").style.width = progress + "%";
-    });
-}
-
-// ==========================================
-// 4. SOLAR ECLIPSE THEME SWAPPER (Light/Dark)
-// ==========================================
-const themeToggleBtn = document.getElementById("theme-toggle-btn");
-if (themeToggleBtn) {
-    themeToggleBtn.addEventListener("click", () => {
-        document.documentElement.classList.toggle("dark");
-        playNodeChime();
-        const isDark = document.documentElement.classList.contains("dark");
-        localStorage.setItem("itrex-theme", isDark ? "dark" : "light");
-    });
-}
-
-// Restore saved theme preference
-if (localStorage.getItem("itrex-theme") === "dark") {
-    document.documentElement.classList.add("dark");
-}
-
-// =======================================================
-// 5. CURSOR-FOLLOWING GOLDEN LIGHT & TWINKLING SPARKLES SYSTEM
-// =======================================================
-const canvas = document.getElementById("sparkle-canvas");
-const ctx = canvas.getContext("2d");
-
-let particlesArray = [];
-const mouse = { x: null, y: null, lastX: 0, lastY: 0, speed: 0 };
-const lightGlow = { x: 0, y: 0, targetX: 0, targetY: 0, ease: 0.35 };
-let activeHoverType = "normal"; // normal, heading, button, card
-
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-window.addEventListener("resize", resizeCanvas, { passive: true });
-resizeCanvas();
-
-class Sparkle {
-    constructor(x, y, vx, vy) {
-        this.x = x;
-        this.y = y;
-        
-        // Multi-directional velocity with slight physics friction
-        this.speedX = (Math.random() - 0.5) * 1.5 + (vx * 0.08);
-        this.speedY = (Math.random() - 0.5) * 1.5 + (vy * 0.08);
-        
-        // Elongated star structural metrics
-        this.baseSize = activeHoverType === "heading" ? 12 : (activeHoverType === "button" ? 14 : 7);
-        this.size = Math.random() * this.baseSize + 3;
-        this.angle = Math.random() * Math.PI;
-        this.spin = (Math.random() - 0.5) * 0.05;
-        this.alpha = 0.9;
-        this.decay = Math.random() * 0.02 + 0.015;
-    }
-
-    draw() {
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.rotate(this.angle);
-        ctx.globalAlpha = this.alpha;
-        
-        // Draw elegant four-point stars
-        ctx.fillStyle = `rgba(194, 151, 56, ${this.alpha})`; 
-        ctx.beginPath();
-        for (let i = 0; i < 4; i++) {
-            ctx.rotate(Math.PI / 2);
-            ctx.lineTo(0, this.size);
-            ctx.lineTo(this.size * 0.18, this.size * 0.18);
-        }
-        ctx.closePath();
-        ctx.fill();
-        ctx.restore();
-    }
-
-    update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        this.angle += this.spin;
-
-        // Apply friction
-        this.speedX *= 0.96;
-        this.speedY *= 0.96;
-
-        this.alpha -= this.decay;
-        if (this.size > 0.1) this.size -= 0.05;
-    }
-}
-
-// Parallax quickTo helper for hero background art (zero GC allocation)
-let heroParallaxX = null;
-let heroParallaxY = null;
-if (typeof gsap !== 'undefined' && document.getElementById("hero-bg-art")) {
-    heroParallaxX = gsap.quickTo("#hero-bg-art", "x", { duration: 0.6, ease: "power2.out" });
-    heroParallaxY = gsap.quickTo("#hero-bg-art", "y", { duration: 0.6, ease: "power2.out" });
-}
-
-let mouseMoveCounter = 0;
-
-// Track mouse positioning + Swift Parallax with passive event listener
-window.addEventListener("mousemove", (e) => {
-    const vx = e.clientX - mouse.lastX;
-    const vy = e.clientY - mouse.lastY;
-    mouse.speed = Math.sqrt(vx * vx + vy * vy);
-
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-    
-    lightGlow.targetX = e.clientX;
-    lightGlow.targetY = e.clientY;
-
-    mouse.lastX = e.clientX;
-    mouse.lastY = e.clientY;
-
-    // Smooth, efficient parallax on hero art
-    if (heroParallaxX && heroParallaxY) {
-        heroParallaxX((e.clientX - window.innerWidth / 2) * 0.015);
-        heroParallaxY((e.clientY - window.innerHeight / 2) * 0.015);
-    }
-
-    // Spawn sparkles sparingly to maintain 60-120fps smooth performance
-    mouseMoveCounter++;
-    if (mouseMoveCounter % 4 === 0 && particlesArray.length < 14 && mouse.speed > 3) {
-        particlesArray.push(new Sparkle(mouse.x, mouse.y, vx, vy));
-    }
-}, { passive: true });
-
-// Click ripple event
-window.addEventListener("mousedown", (e) => {
-    playNodeChime(); 
-    if (particlesArray.length < 24) {
-        for (let i = 0; i < 6; i++) {
-            const angle = Math.random() * Math.PI * 2;
-            const speed = Math.random() * 2 + 1;
-            particlesArray.push(new Sparkle(e.clientX, e.clientY, Math.cos(angle) * speed, Math.sin(angle) * speed));
-        }
-    }
-}, { passive: true });
-
-function handleGlowAndSparkles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Apply interpolation for golden light inertia
-    lightGlow.x += (lightGlow.targetX - lightGlow.x) * lightGlow.ease;
-    lightGlow.y += (lightGlow.targetY - lightGlow.y) * lightGlow.ease;
-
-    // Draw the cursor-following golden light gradient
-    if (mouse.x !== null) {
-        ctx.save();
-        const gradient = ctx.createRadialGradient(lightGlow.x, lightGlow.y, 2, lightGlow.x, lightGlow.y, 65);
-        gradient.addColorStop(0, "rgba(253, 252, 247, 0.45)"); 
-        gradient.addColorStop(0.3, "rgba(194, 151, 56, 0.15)"); 
-        gradient.addColorStop(1, "rgba(255, 255, 255, 0)"); 
-        ctx.fillStyle = gradient;
-        ctx.beginPath();
-        ctx.arc(lightGlow.x, lightGlow.y, 65, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-    }
-
-    // Render the star collection
-    for (let i = 0; i < particlesArray.length; i++) {
-        particlesArray[i].update();
-        particlesArray[i].draw();
-
-        if (particlesArray[i].alpha <= 0 || particlesArray[i].size <= 0.1) {
-            particlesArray.splice(i, 1);
-            i--;
-        }
-    }
-    requestAnimationFrame(handleGlowAndSparkles);
-}
-handleGlowAndSparkles();
-
-// Hover interactions + micro-tick trigger
-const hoverElements = document.querySelectorAll("[data-hover='heading'], [data-hover='button'], [data-hover='card'], a, button");
-hoverElements.forEach(elem => {
-    elem.addEventListener("mouseenter", () => {
-        if (elem.getAttribute("data-hover") === "heading") {
-            activeHoverType = "heading";
-        } else if (elem.getAttribute("data-hover") === "button") {
-            activeHoverType = "button";
-        }
-        playHoverTick(); 
-    });
-    elem.addEventListener("mouseleave", () => {
-        activeHoverType = "normal";
-    });
-});
-
-// ==========================================
-// 6. CINEMATIC VIDEO CONTROLS & CURSOR HOVER ZOOM
-// ==========================================
-const video = document.getElementById("cinematic-video");
-const videoCard = document.getElementById("video-card-container");
-const playPlaceholder = document.getElementById("video-placeholder");
-const playBtn = document.getElementById("custom-play-btn");
-const hudPlayPause = document.getElementById("hud-play-pause");
-const hudPlayIcon = document.getElementById("hud-play-icon");
-const hudMute = document.getElementById("hud-mute");
-const hudVolumeIcon = document.getElementById("hud-volume-icon");
-const hudFullscreen = document.getElementById("hud-fullscreen");
-const progressBar = document.getElementById("hud-progress-bar");
-const progressFill = document.getElementById("hud-progress-fill");
-const timeDisplay = document.getElementById("hud-time-display");
-
-// Magnetic scale zoom on cursor hover
-if (videoCard) {
-    videoCard.addEventListener("mouseenter", () => {
-        gsap.to(videoCard, {
-            scale: 1.05,
-            boxShadow: "0 25px 60px rgba(194, 151, 56, 0.18)",
-            duration: 0.6,
-            ease: "power2.out"
-        });
-    });
-
-    videoCard.addEventListener("mouseleave", () => {
-        gsap.to(videoCard, {
-            scale: 1.0,
-            boxShadow: "0 8px 30px rgba(0, 0, 0, 0.02)",
-            duration: 0.6,
-            ease: "power2.out"
-        });
-    });
-}
-
-if (playBtn) {
-    playBtn.addEventListener("click", () => {
-        playPlaceholder.classList.add("opacity-0", "pointer-events-none");
-        if (video) {
-            video.play().catch(() => {
-                console.log("Simulating cinematic demo presentation.");
+            gsap.ticker.add((time) => {
+                lenis.raf(time * 1000);
             });
-        }
-    });
-}
 
-if (hudPlayPause) {
-    hudPlayPause.addEventListener("click", () => {
-        if (video) {
-            if (video.paused) {
-                video.play();
-                hudPlayIcon.setAttribute("data-lucide", "pause");
-            } else {
-                video.pause();
-                hudPlayIcon.setAttribute("data-lucide", "play");
+            gsap.ticker.lagSmoothing(0);
+        } else {
+            function raf(time) {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
             }
-            lucide.createIcons();
+            requestAnimationFrame(raf);
         }
-    });
+    }
 }
 
-if (hudMute) {
-    hudMute.addEventListener("click", () => {
-        if (video) {
-            video.muted = !video.muted;
-            if (video.muted) {
-                hudVolumeIcon.setAttribute("data-lucide", "volume-x");
-            } else {
-                hudVolumeIcon.setAttribute("data-lucide", "volume-2");
+/* ==========================================================================
+   2. INTRO PRELOADER & METALLIC LOGO REVEAL
+   ========================================================================== */
+function initPreloader() {
+    const preloader = document.getElementById('intro-preloader');
+    const skipBtn = document.getElementById('skip-intro-btn');
+    if (!preloader) return;
+
+    const hasSeenIntro = sessionStorage.getItem('itrex_intro_seen');
+    if (hasSeenIntro) {
+        preloader.classList.add('fade-out');
+        setTimeout(() => preloader.remove(), 800);
+        return;
+    }
+
+    // Auto dismiss after cinematic duration
+    const dismissTimer = setTimeout(() => {
+        dismissPreloader();
+    }, 2800);
+
+    if (skipBtn) {
+        skipBtn.addEventListener('click', () => {
+            clearTimeout(dismissTimer);
+            dismissPreloader();
+        });
+    }
+
+    function dismissPreloader() {
+        sessionStorage.setItem('itrex_intro_seen', 'true');
+        preloader.classList.add('fade-out');
+        setTimeout(() => {
+            if (preloader.parentNode) preloader.remove();
+        }, 850);
+    }
+}
+
+/* ==========================================================================
+   3. HERO INTERACTIVE CANVAS (Autonomous Neural Matrix)
+   ========================================================================== */
+function initHeroCanvas() {
+    const canvas = document.getElementById('hero-particle-canvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    let mouse = { x: width / 2, y: height / 2, active: false };
+
+    window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+        mouse.active = true;
+    });
+
+    window.addEventListener('mouseleave', () => {
+        mouse.active = false;
+    });
+
+    // Particle nodes representing autonomous distributed microkernels
+    const particles = [];
+    const count = Math.min(65, Math.floor(width / 22));
+
+    for (let i = 0; i < count; i++) {
+        particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 0.45,
+            vy: (Math.random() - 0.5) * 0.45,
+            radius: Math.random() * 1.6 + 0.8,
+            color: Math.random() > 0.8 ? '#00f2fe' : (Math.random() > 0.5 ? '#e2e8f0' : '#475569')
+        });
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, width, height);
+
+        // Perspective Horizon Grid Lines (Subtle Automotive Wind Tunnel vibe)
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.025)';
+        ctx.lineWidth = 1;
+        const horizon = height * 0.72;
+        const vanishingX = width * 0.5;
+
+        for (let i = -width; i <= width * 2; i += 120) {
+            ctx.beginPath();
+            ctx.moveTo(vanishingX, horizon);
+            ctx.lineTo(i, height);
+            ctx.stroke();
+        }
+
+        // Horizontal grid depths
+        for (let y = horizon; y <= height; y += (height - horizon) / 8) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(width, y);
+            ctx.stroke();
+        }
+
+        // Connect nearby particles
+        for (let i = 0; i < particles.length; i++) {
+            const p1 = particles[i];
+
+            p1.x += p1.vx;
+            p1.y += p1.vy;
+
+            if (p1.x < 0 || p1.x > width) p1.vx *= -1;
+            if (p1.y < 0 || p1.y > height) p1.vy *= -1;
+
+            // Mouse repulsion/attraction
+            if (mouse.active) {
+                const dx = mouse.x - p1.x;
+                const dy = mouse.y - p1.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 140) {
+                    p1.x -= dx * 0.015;
+                    p1.y -= dy * 0.015;
+                }
             }
-            lucide.createIcons();
+
+            // Draw particle
+            ctx.beginPath();
+            ctx.arc(p1.x, p1.y, p1.radius, 0, Math.PI * 2);
+            ctx.fillStyle = p1.color;
+            ctx.fill();
+
+            // Connect lines
+            for (let j = i + 1; j < particles.length; j++) {
+                const p2 = particles[j];
+                const dx = p1.x - p2.x;
+                const dy = p1.y - p2.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < 130) {
+                    ctx.beginPath();
+                    ctx.moveTo(p1.x, p1.y);
+                    ctx.lineTo(p2.x, p2.y);
+                    const alpha = (1 - dist / 130) * 0.18;
+                    ctx.strokeStyle = `rgba(226, 232, 240, ${alpha})`;
+                    ctx.stroke();
+                }
+            }
         }
-    });
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
 }
 
-if (video) {
-    video.addEventListener("timeupdate", () => {
+/* ==========================================================================
+   4. CINEMATIC VIDEO THEATER CONTROLLER
+   ========================================================================== */
+function initVideoTheater() {
+    const video = document.getElementById('vision-main-video');
+    const playBtn = document.getElementById('video-play-btn');
+    const playIcon = document.getElementById('video-play-icon');
+    const scrubTrack = document.getElementById('video-scrub-track');
+    const scrubProgress = document.getElementById('video-scrub-progress');
+    const timeDisplay = document.getElementById('video-timecode');
+    const muteBtn = document.getElementById('video-mute-btn');
+    const muteIcon = document.getElementById('video-mute-icon');
+    const fsBtn = document.getElementById('video-fullscreen-btn');
+    const theaterWrapper = document.getElementById('video-theater-wrapper');
+
+    if (!video) return;
+
+    // Play/Pause toggle
+    if (playBtn) {
+        playBtn.addEventListener('click', togglePlay);
+    }
+    video.addEventListener('click', togglePlay);
+
+    function togglePlay() {
+        if (video.paused || video.ended) {
+            video.play();
+            if (playIcon) playIcon.setAttribute('data-lucide', 'pause');
+        } else {
+            video.pause();
+            if (playIcon) playIcon.setAttribute('data-lucide', 'play');
+        }
+        if (window.lucide) window.lucide.createIcons();
+    }
+
+    // Time update & scrubber progress
+    video.addEventListener('timeupdate', () => {
         if (video.duration) {
             const percent = (video.currentTime / video.duration) * 100;
-            progressFill.style.width = percent + "%";
-            timeDisplay.textContent = formatTime(video.currentTime) + " / " + formatTime(video.duration);
-        }
-    });
-}
-
-if (progressBar && video) {
-    progressBar.addEventListener("click", (e) => {
-        const rect = progressBar.getBoundingClientRect();
-        const pos = (e.clientX - rect.left) / rect.width;
-        video.currentTime = pos * video.duration;
-    });
-}
-
-if (hudFullscreen && video) {
-    hudFullscreen.addEventListener("click", () => {
-        if (video.requestFullscreen) {
-            video.requestFullscreen();
-        } else if (video.webkitRequestFullscreen) {
-            video.webkitRequestFullscreen();
-        }
-    });
-}
-
-function formatTime(seconds) {
-    const min = Math.floor(seconds / 60);
-    const sec = Math.floor(seconds % 60);
-    return min + ":" + (sec < 10 ? "0" : "") + sec;
-}
-
-// ==============================================================
-// 7. ARCHITECTURE VECTOR PATH TRACING WITH DYNAMIC CLICK ROUTE
-// ==============================================================
-const drawnPath = document.getElementById("journey-vector-path-drawn");
-
-// Offset points along path to partially color path based on clicked node
-const nodeOffsets = {
-    "1": 1150, // Node 1: TrexOS Neural Kernel (Cyan #00f2fe)
-    "2": 850,  // Node 2: TrexCore Edge Cloud (Amber #f97316)
-    "3": 450,  // Node 3: TrexVision Spatial AI (Violet #8b5cf6)
-    "4": 0     // Node 4: TrexShield SecOps (Emerald #10b981)
-};
-
-document.querySelectorAll("[data-popup]").forEach(node => {
-    const popupId = node.getAttribute("data-popup");
-    const popup = document.getElementById(popupId);
-    
-    const targetOffset = nodeOffsets[node.getAttribute("data-node")];
-    const targetColor = node.getAttribute("data-color");
-
-    // Dynamic hover sequence
-    node.addEventListener("mouseenter", () => {
-        if (popup) {
-            popup.style.opacity = "1";
-            popup.style.transform = "translateY(-5px)";
-        }
-        
-        if (drawnPath) {
-            gsap.to(drawnPath, {
-                strokeDashoffset: targetOffset,
-                stroke: targetColor,
-                duration: 1.2,
-                ease: "power2.out"
-            });
-        }
-    });
-
-    node.addEventListener("mouseleave", () => {
-        if (popup) {
-            popup.style.opacity = "0";
-            popup.style.transform = "translateY(0px)";
-        }
-    });
-
-    // Clicking an architecture node permanently alters drawn route color
-    node.addEventListener("click", () => {
-        playNodeChime();
-        if (drawnPath) {
-            gsap.to(drawnPath, {
-                strokeDashoffset: targetOffset,
-                stroke: targetColor,
-                duration: 1.5,
-                ease: "power3.out"
-            });
-        }
-    });
-});
-
-// ==========================================
-// 8. 3D CARD TILT ON HOVER
-// ==========================================
-const cards = document.querySelectorAll("[data-hover='card']");
-cards.forEach(card => {
-    card.addEventListener("mousemove", (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-
-        const rotateX = (centerY - y) / 12;
-        const rotateY = (x - centerX) / 12;
-
-        gsap.to(card, {
-            rotateX: rotateX,
-            rotateY: rotateY,
-            transformPerspective: 600,
-            scale: 1.02,
-            duration: 0.3,
-            ease: "power2.out"
-        });
-    });
-
-    card.addEventListener("mouseleave", () => {
-        gsap.to(card, {
-            rotateX: 0,
-            rotateY: 0,
-            scale: 1,
-            duration: 0.5,
-            ease: "power2.out"
-        });
-    });
-});
-
-// ==========================================
-// 9. INTERACTIVE CONTACT & COPY TO CLIPBOARD
-// ==========================================
-function copyToClipboard(text, btnElement) {
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(() => {
-            const originalText = btnElement.textContent;
-            btnElement.textContent = "Copied!";
-            btnElement.classList.add("bg-emerald-500", "text-black");
-            playHoverTick();
-            setTimeout(() => {
-                btnElement.textContent = originalText;
-                btnElement.classList.remove("bg-emerald-500", "text-black");
-            }, 2000);
-        });
-    }
-}
-
-function handleContactSubmit(e) {
-    e.preventDefault();
-    const btn = document.getElementById("contact-submit-btn");
-    const alertBox = document.getElementById("contact-status-alert");
-    const name = document.getElementById("contact-name").value;
-    const email = document.getElementById("contact-email").value;
-    const category = document.getElementById("contact-category").value;
-    const message = document.getElementById("contact-message").value;
-
-    btn.disabled = true;
-    btn.innerHTML = `
-        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-itrex-navy" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-        </svg>
-        <span>Encrypting & Transmitting...</span>
-    `;
-
-    setTimeout(() => {
-        playNodeChime();
-        btn.disabled = false;
-        btn.innerHTML = `
-            <span>Message Delivered Successfully</span>
-            <i data-lucide="check-circle" class="w-4 h-4 text-emerald-800"></i>
-        `;
-        lucide.createIcons();
-
-        alertBox.className = "p-4 rounded-xl text-xs font-mono bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 block space-y-1";
-        alertBox.innerHTML = `
-            <div class="font-bold flex items-center gap-1.5 text-emerald-200">
-                <span>&check; Transmission Confirmed</span>
-            </div>
-            <p>Thank you, <strong>${name}</strong>. Your inquiry (${category}) has been logged directly into Satyam's review terminal. We will follow up at <strong>${email}</strong>.</p>
-        `;
-
-        // Reset form after short delay
-        setTimeout(() => {
-            document.getElementById("contact-form").reset();
-            btn.innerHTML = `
-                <span>Transmit Secure Transmission</span>
-                <i data-lucide="send" class="w-4 h-4"></i>
-            `;
-            lucide.createIcons();
-        }, 5000);
-    }, 1200);
-}
-
-// Smooth scroll and focus for "Connect With Us"
-const navConnectBtn = document.getElementById("nav-connect-btn");
-if (navConnectBtn) {
-    navConnectBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        const contactSection = document.getElementById("contact");
-        if (contactSection) {
-            contactSection.scrollIntoView({ behavior: "smooth" });
-            const card = document.getElementById("contact-form-card");
-            if (card) {
-                gsap.fromTo(card, 
-                    { scale: 0.98, borderColor: "#c29738" },
-                    { scale: 1, borderColor: "rgba(194, 151, 56, 0.8)", duration: 0.8, yoyo: true, repeat: 1 }
-                );
-                setTimeout(() => {
-                    document.getElementById("contact-name").focus();
-                }, 800);
+            if (scrubProgress) scrubProgress.style.width = `${percent}%`;
+            if (timeDisplay) {
+                const curM = Math.floor(video.currentTime / 60);
+                const curS = Math.floor(video.currentTime % 60).toString().padStart(2, '0');
+                const durM = Math.floor(video.duration / 60);
+                const durS = Math.floor(video.duration % 60).toString().padStart(2, '0');
+                timeDisplay.textContent = `${curM}:${curS} / ${durM}:${durS}`;
             }
         }
     });
-}
 
-// ==============================================================
-// 12. FOUR PILLARS: CYBER-NEURAL DATA STREAM ENGINE & SCHEMA
-// ==============================================================
-
-const DEFAULT_PILLARS = [
-    {
-        id: "pillar-1",
-        pillarNumber: "01",
-        title: "TrexOS Kernel",
-        description: "Deterministic microkernel with sub-0.35ms scheduling.",
-        badge: "01",
-        glowColor: "#00f0ff",
-        position: "top",
-        xPercent: 20,
-        graphicType: "cube"
-    },
-    {
-        id: "pillar-2",
-        pillarNumber: "02",
-        title: "TrexCore Mesh",
-        description: "Geo-distributed state sync with sub-12ms latency.",
-        badge: "02",
-        glowColor: "#9d4edd",
-        position: "bottom",
-        xPercent: 40,
-        graphicType: "neural"
-    },
-    {
-        id: "pillar-3",
-        pillarNumber: "03",
-        title: "TrexShield SecOps",
-        description: "eBPF behavioral quarantine & attestations.",
-        badge: "03",
-        glowColor: "#e0aaff",
-        position: "top",
-        xPercent: 65,
-        graphicType: "shield"
-    },
-    {
-        id: "pillar-4",
-        pillarNumber: "04",
-        title: "TrexVision SLAM",
-        description: "120 FPS 3D odometry & spatial telemetry pipeline.",
-        badge: "04",
-        glowColor: "#00f0ff",
-        position: "bottom",
-        xPercent: 85,
-        graphicType: "sphere"
-    }
-];
-
-let activePillars = JSON.parse(JSON.stringify(DEFAULT_PILLARS));
-let hoveredPillarIdx = null;
-
-// =========================================================================
-// SIMPLE SINGLE CURVE FLOW LINE WITH GLOWING & 4-SECOND AUTO-COMPLETION
-// Lightweight SVG hardware-accelerated flow: eliminates canvas loop lag
-// =========================================================================
-let isPillarsFlowTriggered = false;
-
-function initSimpleCurveFlow() {
-    if (isPillarsFlowTriggered) return;
-    const curvePath = document.getElementById("single-flow-line");
-    const photonHead = document.getElementById("flow-photon-head");
-    if (!curvePath) return;
-
-    let pathLength = 1400;
-    try {
-        pathLength = curvePath.getTotalLength();
-    } catch (e) {}
-
-    curvePath.style.strokeDasharray = pathLength;
-    curvePath.style.strokeDashoffset = pathLength;
-
-    if (photonHead) {
-        gsap.set(photonHead, { opacity: 0 });
-    }
-
-    // Set initial hidden states for the 4 pillar cards
-    activePillars.forEach((pillar, idx) => {
-        const card = document.getElementById(`pillar-card-${idx}`);
-        if (card) {
-            gsap.set(card, {
-                opacity: 0,
-                y: pillar.position === 'top' ? -15 : 15
-            });
-        }
-    });
-
-    initHolographicCardTilts();
-}
-
-function playSingleCurveFlowSequence() {
-    if (isPillarsFlowTriggered) return;
-    isPillarsFlowTriggered = true;
-
-    const curvePath = document.getElementById("single-flow-line");
-    const photonHead = document.getElementById("flow-photon-head");
-    const statusPill = document.getElementById("live-flow-status-pill");
-    if (!curvePath) return;
-
-    let pathLength = 1400;
-    try {
-        pathLength = curvePath.getTotalLength();
-    } catch (e) {}
-
-    curvePath.style.strokeDasharray = pathLength;
-
-    if (photonHead) {
-        gsap.to(photonHead, { opacity: 1, duration: 0.3 });
-    }
-
-    if (statusPill) {
-        statusPill.innerHTML = `
-            <span class="w-1.5 h-1.5 rounded-full bg-itrex-gold animate-ping"></span>
-            <span class="font-bold tracking-wider text-itrex-gold">Flow Trajectory: Syncing Nodes (0-4s)...</span>
-        `;
-    }
-
-    const flowTracker = { progress: 0 };
-
-    // Master 4-Second Flow Timeline
-    const masterTl = gsap.timeline({
-        onComplete: () => {
-            if (statusPill) {
-                statusPill.innerHTML = `
-                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    <span class="font-bold tracking-wider text-emerald-300">Flow Complete: 4 Pillars Synchronized</span>
-                `;
+    // Scrub seeking
+    if (scrubTrack) {
+        scrubTrack.addEventListener('click', (e) => {
+            const rect = scrubTrack.getBoundingClientRect();
+            const clickPos = (e.clientX - rect.left) / rect.width;
+            if (video.duration) {
+                video.currentTime = clickPos * video.duration;
             }
-            // Gentle hovering breathing motion on cards after 4s entrance
-            activePillars.forEach((pillar, idx) => {
-                const card = document.getElementById(`pillar-card-${idx}`);
-                if (card) {
-                    gsap.to(card, {
-                        y: pillar.position === 'top' ? "-=4" : "+=4",
-                        duration: 2.4 + (idx * 0.3),
-                        repeat: -1,
-                        yoyo: true,
-                        ease: "sine.inOut"
-                    });
-                }
-            });
-        }
-    });
-
-    // 1. Single glowing curve line flows from 0% to 100% over exactly 4.0 seconds
-    masterTl.to(flowTracker, {
-        progress: 1,
-        duration: 4.0,
-        ease: "power1.inOut",
-        onUpdate: () => {
-            const currentDist = flowTracker.progress * pathLength;
-            curvePath.style.strokeDashoffset = pathLength - currentDist;
-
-            if (photonHead && typeof curvePath.getPointAtLength === 'function') {
-                const pt = curvePath.getPointAtLength(currentDist);
-                photonHead.setAttribute("cx", pt.x);
-                photonHead.setAttribute("cy", pt.y);
-            }
-        }
-    }, 0);
-
-    // 2. Pillar 01 reveals at t = 0.6s (~15-20% of trajectory)
-    masterTl.add(() => {
-        revealPillar(0);
-    }, 0.6);
-
-    // 3. Pillar 02 reveals at t = 1.5s (~40% of trajectory)
-    masterTl.add(() => {
-        revealPillar(1);
-    }, 1.5);
-
-    // 4. Pillar 03 reveals at t = 2.5s (~65% of trajectory)
-    masterTl.add(() => {
-        revealPillar(2);
-    }, 2.5);
-
-    // 5. Pillar 04 reveals at t = 3.4s (~85% of trajectory)
-    masterTl.add(() => {
-        revealPillar(3);
-    }, 3.4);
-}
-
-function revealPillar(idx) {
-    // Reveal glowing node core on curve
-    const node = document.getElementById(`flow-node-${idx}`);
-    if (node) {
-        node.classList.remove("opacity-0");
-        node.classList.add("opacity-100");
-        gsap.fromTo(node, 
-            { scale: 0.3, transformOrigin: "center center" }, 
-            { scale: 1, duration: 0.45, ease: "back.out(2)" }
-        );
-    }
-
-    // Reveal corresponding holographic pillar card
-    const card = document.getElementById(`pillar-card-${idx}`);
-    if (card) {
-        gsap.to(card, {
-            opacity: 1,
-            y: 0,
-            duration: 0.5,
-            ease: "power2.out"
         });
     }
 
-    // Update status pill to reflect current progress
-    const statusPill = document.getElementById("live-flow-status-pill");
-    if (statusPill && idx < 3) {
-        statusPill.innerHTML = `
-            <span class="w-1.5 h-1.5 rounded-full bg-itrex-gold animate-ping"></span>
-            <span class="font-bold tracking-wider text-itrex-gold">Flow Trajectory: Pillar 0${idx + 1} Connected</span>
-        `;
-    }
-}
-
-function initNeuralStreamEngine() {
-    initSimpleCurveFlow();
-}
-
-function initHolographicCardTilts() {
-    const cards = document.querySelectorAll(".holographic-card");
-    cards.forEach(card => {
-        card.addEventListener("mousemove", (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left - rect.width / 2;
-            const y = e.clientY - rect.top - rect.height / 2;
-            const rotX = (y / (rect.height / 2)) * -5;
-            const rotY = (x / (rect.width / 2)) * 5;
-            gsap.to(card, {
-                rotationX: rotX,
-                rotationY: rotY,
-                transformPerspective: 800,
-                duration: 0.25,
-                ease: "power1.out"
-            });
-        });
-        card.addEventListener("mouseleave", () => {
-            gsap.to(card, {
-                rotationX: 0,
-                rotationY: 0,
-                duration: 0.5,
-                ease: "power2.out"
-            });
-        });
-    });
-}
-
-function onPillarHover(idx) {
-    hoveredPillarIdx = idx;
-    activePillars.forEach((_, i) => {
-        const card = document.getElementById(`pillar-card-${i}`);
-        if (!card) return;
-        if (i === idx) {
-            gsap.to(card, { scale: 1.03, opacity: 1, duration: 0.3, ease: "power2.out" });
-        } else {
-            gsap.to(card, { scale: 0.97, opacity: 0.4, duration: 0.3, ease: "power2.out" });
-        }
-    });
-}
-
-function onPillarLeave() {
-    hoveredPillarIdx = null;
-    activePillars.forEach((_, i) => {
-        const card = document.getElementById(`pillar-card-${i}`);
-        if (!card) return;
-        gsap.to(card, { scale: 1, opacity: 1, duration: 0.3, ease: "power2.out" });
-    });
-}
-
-window.onPillarHover = onPillarHover;
-window.onPillarLeave = onPillarLeave;
-window.playSingleCurveFlowSequence = playSingleCurveFlowSequence;
-window.initSimpleCurveFlow = initSimpleCurveFlow;
-
-function initNeuralStreamScrollTrigger() {
-    if (!isPillarsFlowTriggered) {
-        initSimpleCurveFlow();
-    }
-
-    // Trigger flow sequence automatically when user reaches the slide
-    ScrollTrigger.create({
-        trigger: "#architecture",
-        start: "top 75%",
-        once: true,
-        onEnter: () => {
-            playSingleCurveFlowSequence();
-        }
-    });
-
-    // Fallback safety check if section is already in view or user navigated directly
-    setTimeout(() => {
-        const arch = document.getElementById("architecture");
-        if (arch) {
-            const rect = arch.getBoundingClientRect();
-            if (rect.top < window.innerHeight * 0.85 && !isPillarsFlowTriggered) {
-                playSingleCurveFlowSequence();
+    // Mute toggle
+    if (muteBtn) {
+        muteBtn.addEventListener('click', () => {
+            video.muted = !video.muted;
+            if (muteIcon) {
+                muteIcon.setAttribute('data-lucide', video.muted ? 'volume-x' : 'volume-2');
+                if (window.lucide) window.lucide.createIcons();
             }
-        }
-    }, 1500);
-}
-
-// Founder Configuration Handlers
-function openPillarConfigModal() {
-    playHoverTick();
-    const modal = document.getElementById("pillar-config-modal");
-    if (modal) modal.classList.remove("hidden");
-}
-
-function closePillarConfigModal() {
-    const modal = document.getElementById("pillar-config-modal");
-    if (modal) modal.classList.add("hidden");
-}
-
-function savePillarConfig(e) {
-    if (e && e.preventDefault) e.preventDefault();
-    playNodeChime();
-
-    const selectedColor = document.querySelector('input[name="pillarTheme"]:checked')?.value || 
-                          document.getElementById('config-theme-select')?.value || "#00f0ff";
-    const scrub = document.getElementById("cfg-scrub-mode")?.value || "1.2";
-    const pulse = document.getElementById("cfg-pulse-speed")?.value || "2.4s";
-
-    const p1 = document.getElementById("cfg-p1-desc")?.value || activePillars[0].description;
-    const p2 = document.getElementById("cfg-p2-desc")?.value || activePillars[1].description;
-    const p3 = document.getElementById("cfg-p3-desc")?.value || activePillars[2].description;
-    const p4 = document.getElementById("cfg-p4-desc")?.value || activePillars[3].description;
-
-    activePillars[0].description = p1;
-    activePillars[1].description = p2;
-    activePillars[2].description = p3;
-    activePillars[3].description = p4;
-    activePillars[0].glowColor = selectedColor;
-
-    localStorage.setItem("itrex_pillars_data", JSON.stringify(activePillars));
-
-    // Backward-compat for existing tests
-    const legacyConfig = {
-        themeColor: selectedColor,
-        scrubSpeed: scrub,
-        pulseSpeed: pulse,
-        p1Desc: p1,
-        p2Desc: p2,
-        p3Desc: p3,
-        p4Desc: p4
-    };
-    localStorage.setItem("itrex_pillar_config", JSON.stringify(legacyConfig));
-
-    renderPillarCardsFromData();
-    closePillarConfigModal();
-}
-
-function resetPillarConfig() {
-    playHoverTick();
-    activePillars = JSON.parse(JSON.stringify(DEFAULT_PILLARS));
-    localStorage.removeItem("itrex_pillars_data");
-    localStorage.removeItem("itrex_pillar_config");
-    renderPillarCardsFromData();
-    closePillarConfigModal();
-}
-
-function loadPillarConfig() {
-    try {
-        const raw = localStorage.getItem("itrex_pillars_data");
-        if (raw) {
-            activePillars = JSON.parse(raw);
-        } else {
-            const legRaw = localStorage.getItem("itrex_pillar_config");
-            if (legRaw) {
-                const leg = JSON.parse(legRaw);
-                if (leg.p1Desc) activePillars[0].description = leg.p1Desc;
-                if (leg.p2Desc) activePillars[1].description = leg.p2Desc;
-                if (leg.p3Desc) activePillars[2].description = leg.p3Desc;
-                if (leg.p4Desc) activePillars[3].description = leg.p4Desc;
-                if (leg.themeColor) activePillars[0].glowColor = leg.themeColor;
-            }
-        }
-    } catch (e) {
-        activePillars = JSON.parse(JSON.stringify(DEFAULT_PILLARS));
+        });
     }
 
-    renderPillarCardsFromData();
+    // Fullscreen toggle
+    if (fsBtn && theaterWrapper) {
+        fsBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                theaterWrapper.requestFullscreen().catch(err => console.log(err));
+            } else {
+                document.exitFullscreen().catch(err => console.log(err));
+            }
+        });
+    }
 }
 
-function renderPillarCardsFromData() {
-    activePillars.forEach((p, idx) => {
-        const card = document.getElementById(`pillar-card-${idx}`);
-        if (!card) return;
-
-        const titleEl = card.querySelector(".pillar-card-title");
-        const badgeEl = card.querySelector(".pillar-card-badge");
-        const descEl = card.querySelector(".pillar-card-desc");
-
-        if (titleEl && p.title) titleEl.textContent = p.title;
-        if (badgeEl && p.badge) {
-            const badgeSpan = badgeEl.querySelector("span:last-child") || badgeEl;
-            badgeSpan.textContent = p.badge;
-        }
-        if (descEl && p.description) descEl.textContent = p.description;
-
-        if (p.glowColor) {
-            card.style.borderColor = `${p.glowColor}55`;
-        }
-    });
-}
-
-// ==============================================================
-// 12. PRODUCT SHOWCASE: AUTO-ADVANCING CURVED/PEEK CAROUSEL ENGINE
-// ==============================================================
-const DEFAULT_CAROUSEL_PRODUCTS = [
+/* ==========================================================================
+   5. BESPOKE 5-PRODUCT ECOSYSTEM SHOWCASE (Automotive Model Range Style)
+   ========================================================================== */
+const PRODUCTS_DATA = [
     {
         id: "trexos",
-        name: "TrexOS",
-        category: "Kernel Architecture",
-        badge: "0.35ms Latency · Ring 0 Microkernel",
-        tagline: "Deterministic Neural Microkernel Architecture",
-        description: "Purpose-built deterministic operating system kernel featuring sub-millisecond thread scheduling, zero-trust hardware isolation, and autonomous neural load balancing.",
-        accentColor: "#00f3ff",
-        link: "products.html#trexos"
+        code: "TRX-01",
+        title: "TrexOS",
+        category: "DETERMINISTIC NEURAL MICROKERNEL",
+        tagline: "Sub-millisecond thread scheduling, zero-trust hardware memory isolation, and predictive neural load balancing.",
+        telemetry: [
+            { label: "CONTEXT SWITCH", val: "0.35 ms", note: "Deterministic Guarantee" },
+            { label: "ISOLATION LEVEL", val: "RING 0", note: "Hardware Enclave" },
+            { label: "MEMORY OVERHEAD", val: "1.4 MB", note: "Bare-Metal Rust" }
+        ],
+        features: [
+            "Predictive neural task scheduler pre-empting execution spikes",
+            "Zero-trust microkernel memory isolation with hardware enclaves",
+            "Hardware-level DMA validation bypassing OS kernel bloat",
+            "Autonomous self-governing sandbox for distributed agent fleets"
+        ],
+        accentColor: "#00f2fe",
+        detailLink: "products.html#trexos",
+        simType: "kernel"
     },
     {
         id: "trexcore",
-        name: "TrexCore",
-        category: "Cloud Fabric",
-        badge: "Sub-12ms Global · 84K+ Nodes",
-        tagline: "Planetary Edge Cloud Fabric & State Mesh",
-        description: "Geo-distributed serverless runtime synchronizing state in sub-12ms across worldwide nodes with peer-to-peer mTLS WireGuard mesh fabric.",
-        accentColor: "#ff6b00",
-        link: "products.html#trexcore"
+        code: "TRX-02",
+        title: "TrexCore",
+        category: "PLANETARY EDGE CLOUD FABRIC & STATE MESH",
+        tagline: "Geo-distributed serverless runtime synchronizing state in sub-12ms across worldwide nodes with peer-to-peer mTLS WireGuard mesh.",
+        telemetry: [
+            { label: "GLOBAL SYNC", val: "11.4 ms", note: "Worldwide Median" },
+            { label: "EDGE PRESENCE", val: "180+ POPS", note: "Anycast Routed" },
+            { label: "FAILOVER TIME", val: "< 45 ms", note: "Zero Packet Loss" }
+        ],
+        features: [
+            "Hyper-converged distributed compute mesh with automated geo-sharding",
+            "Sub-12ms global state reconciliation via WireGuard mTLS fabric",
+            "Cold starts reduced to under 2ms globally with instant memory resume",
+            "Autonomous multi-cloud failover and compliance residency guarantees"
+        ],
+        accentColor: "#f97316",
+        detailLink: "products.html#trexcore",
+        simType: "mesh"
     },
     {
         id: "trexvision",
-        name: "TrexVision",
-        category: "Spatial Perception",
-        badge: "120 FPS · WebGPU Spatial SLAM",
-        tagline: "WebGPU Spatial Perception & 3D Odometry",
-        description: "Next-generation 3D spatial odometry and computer vision telemetry pipeline engineered for autonomous robotics, spatial computing, and digital twin orchestration.",
-        accentColor: "#8b5cf6",
-        link: "products.html#trexvision"
+        code: "TRX-03",
+        title: "TrexVision",
+        category: "SPATIAL INTELLIGENCE & SLAM ENGINE",
+        tagline: "Multimodal 3D spatial perception, point-cloud odometry, and visual telemetry processing locked at 120 FPS on local edge silicons.",
+        telemetry: [
+            { label: "FRAME RATE", val: "120 FPS", note: "Zero Jitter Sync" },
+            { label: "ODOMETRY DRIFT", val: "< 0.04%", note: "Full Trajectory" },
+            { label: "SENSOR FUSION", val: "LIDAR+RGBD", note: "Hardware Native" }
+        ],
+        features: [
+            "WebGPU/Vulkan accelerated real-time 3D pose and environment meshing",
+            "Multimodal sensor fusion combining LiDAR, stereo optics, and IMU",
+            "Low-precision quantized neural inference running directly at the edge",
+            "Zero cloud telemetry leakage mode for aerospace, robotics, and defense"
+        ],
+        accentColor: "#38bdf8",
+        detailLink: "products.html#trexvision",
+        simType: "spatial"
     },
     {
         id: "trexshield",
-        name: "TrexShield",
-        category: "Zero-Trust SecOps",
-        badge: "< 4ms Quarantine · Hardware HSM Enclave",
-        tagline: "eBPF Zero-Trust Hardware Enclave & Defense",
-        description: "Proactive kernel-level zero-trust security engine utilizing eBPF system call verification with sub-4ms automated threat isolation and HSM cryptographic audit attestations.",
+        code: "TRX-04",
+        title: "TrexShield",
+        category: "EBPF ZERO-TRUST HARDWARE ENCLAVE & DEFENSE",
+        tagline: "Autonomous kernel-level threat isolation utilizing eBPF system call verification with sub-4ms automated container quarantine.",
+        telemetry: [
+            { label: "QUARANTINE SPEED", val: "3.8 ms", note: "Autonomous Response" },
+            { label: "EBPF INTROSPECTION", val: "100%", note: "Kernel Syscall Coverage" },
+            { label: "COMPLIANCE LEVEL", val: "FEDRAMP", note: "ISO 27001 Cryptographic" }
+        ],
+        features: [
+            "Autonomous kernel honeypot injection upon unauthorized probe detection",
+            "Zero-overhead eBPF packet introspection and memory boundary locks",
+            "Instant cryptographic quarantine of compromised micro-containers",
+            "Real-time compliance attestations generated directly at Ring 0"
+        ],
         accentColor: "#10b981",
-        link: "products.html#trexshield"
+        detailLink: "products.html#trexshield",
+        simType: "security"
     },
     {
         id: "trexconnect",
-        name: "TrexConnect",
-        category: "Hyper-Transport Mesh",
-        badge: "1.8M msg/sec · Sub-ms Protocol Mesh",
-        tagline: "Ultra-Low Latency Multiplexed Protocol Mesh",
-        description: "High-throughput binary protocol engine bridging edge robotics fleets, IoT gateways, and telemetry pipelines with zero-copy serialization and QUIC transport.",
-        accentColor: "#d4af37",
-        link: "products.html#trexconnect"
+        code: "TRX-05",
+        title: "TrexConnect",
+        category: "ULTRA-LOW LATENCY MULTIPLEXED PROTOCOL MESH",
+        tagline: "High-throughput binary protocol engine bridging edge robotics fleets, IoT gateways, and telemetry pipelines with zero-copy serialization.",
+        telemetry: [
+            { label: "THROUGHPUT", val: "1.8M MSG/S", note: "Saturated Wire Speed" },
+            { label: "SERIALIZATION", val: "ZERO-COPY", note: "Direct DMA Buffer" },
+            { label: "TRANSPORT", val: "QUIC/TLS 1.3", note: "Quantum-Resistant" }
+        ],
+        features: [
+            "Zero-copy binary packet serialization bypassing userland memory copies",
+            "Multiplexed bidirectional QUIC and TLS 1.3 encrypted event channels",
+            "Cross-cloud VPC bridging with sub-millisecond edge queue dispatch",
+            "Telemetry multiplexing engineered for drone fleets and industrial automation"
+        ],
+        accentColor: "#e2e8f0",
+        detailLink: "products.html#trexconnect",
+        simType: "protocol"
     }
 ];
 
-let carouselCurrentIndex = 0;
-let carouselTotalSlides = 5;
-let carouselAutoPlayInterval = 4500;
-let carouselIsPaused = false;
-let carouselTimerTween = null;
-let carouselProgressObj = { value: 0 };
-let carouselProducts = [...DEFAULT_CAROUSEL_PRODUCTS];
-let carouselInitialized = false;
+let currentProductIndex = 0;
+let productAnimCanvas = null;
+let productAnimCtx = null;
+let productAnimId = null;
 
-function initProductCarousel() {
-    if (carouselInitialized) return;
-    const stage = document.getElementById("product-carousel-stage");
-    const track = document.getElementById("product-carousel-track");
-    if (!stage || !track) return;
-    carouselInitialized = true;
+function initProductShowcase() {
+    const tabsContainer = document.getElementById('product-tabs-container');
+    if (!tabsContainer) return;
 
-    loadCarouselProductsFromStorage();
-
-    // Event listener: Hover pauses auto-play, leaving resumes
-    stage.addEventListener("mouseenter", () => {
-        pauseCarouselAutoPlay();
-    });
-    stage.addEventListener("mouseleave", () => {
-        resumeCarouselAutoPlay();
+    // Render selector tabs
+    tabsContainer.innerHTML = '';
+    PRODUCTS_DATA.forEach((prod, idx) => {
+        const btn = document.createElement('button');
+        btn.className = `product-tab-btn ${idx === 0 ? 'active' : ''}`;
+        btn.setAttribute('data-index', idx);
+        btn.innerHTML = `
+            <span class="tab-indicator"></span>
+            <span>${prod.code} // ${prod.title}</span>
+        `;
+        btn.addEventListener('click', () => switchProduct(idx));
+        tabsContainer.appendChild(btn);
     });
 
-    // Event listener: clicking inactive peeking slides centers them
-    const slides = document.querySelectorAll(".carousel-slide");
-    slides.forEach((slide, idx) => {
-        slide.addEventListener("click", (e) => {
-            if (!e.target.closest("a") && !e.target.closest("button") && carouselCurrentIndex !== idx) {
-                goToCarouselSlide(idx);
-            }
+    // Render the initial product
+    renderProductStage(0);
+
+    // Prev / Next buttons
+    const prevBtn = document.getElementById('product-prev-btn');
+    const nextBtn = document.getElementById('product-next-btn');
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            const nextIdx = (currentProductIndex - 1 + PRODUCTS_DATA.length) % PRODUCTS_DATA.length;
+            switchProduct(nextIdx);
         });
-    });
+    }
 
-    // Window resize handler to maintain active slide centered
-    window.addEventListener("resize", () => {
-        positionCarousel(carouselCurrentIndex, false);
-    });
-
-    // Initial position & start timer
-    positionCarousel(0, false);
-    updatePaginationDots(0);
-    startCarouselTimer();
-
-    // Cross-tab real-time sync with Founder Dashboard
-    window.addEventListener("storage", (e) => {
-        if (e.key === "itrex_db_products" || e.key === "itrex_carousel_interval") {
-            loadCarouselProductsFromStorage();
-        }
-    });
-
-    if ('BroadcastChannel' in window) {
-        try {
-            const bc = new BroadcastChannel('itrex_realtime_mesh_v1');
-            bc.onmessage = (event) => {
-                if (event.data && event.data.collection === 'products') {
-                    loadCarouselProductsFromStorage();
-                }
-            };
-        } catch (e) {}
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            const nextIdx = (currentProductIndex + 1) % PRODUCTS_DATA.length;
+            switchProduct(nextIdx);
+        });
     }
 }
 
-function loadCarouselProductsFromStorage() {
-    try {
-        const raw = localStorage.getItem("itrex_db_products");
-        if (raw) {
-            carouselProducts = JSON.parse(raw);
+function switchProduct(idx) {
+    if (idx === currentProductIndex) return;
+    currentProductIndex = idx;
+
+    // Update tab active states
+    const tabs = document.querySelectorAll('.product-tab-btn');
+    tabs.forEach((tab, i) => {
+        if (i === idx) {
+            tab.classList.add('active');
         } else {
-            carouselProducts = [...DEFAULT_CAROUSEL_PRODUCTS];
+            tab.classList.remove('active');
         }
-    } catch (e) {
-        carouselProducts = [...DEFAULT_CAROUSEL_PRODUCTS];
-    }
-
-    const savedInterval = localStorage.getItem("itrex_carousel_interval");
-    if (savedInterval) {
-        carouselAutoPlayInterval = parseInt(savedInterval, 10) || 4500;
-    }
-
-    // Update slide DOM elements with customized content
-    carouselProducts.forEach((p, idx) => {
-        const card = document.querySelector(`.carousel-slide[data-index="${idx}"]`);
-        if (!card) return;
-
-        const titleEl = card.querySelector(".carousel-card-title");
-        const badgeEl = card.querySelector(".carousel-card-badge");
-        const taglineEl = card.querySelector(".carousel-card-tagline");
-        const descEl = card.querySelector(".carousel-card-desc");
-
-        if (titleEl && p.name) titleEl.textContent = p.name;
-        if (badgeEl && p.badge) badgeEl.textContent = p.badge;
-        if (taglineEl && p.tagline) taglineEl.textContent = p.tagline;
-        if (descEl && p.description) descEl.textContent = p.description;
     });
-}
 
-function positionCarousel(index, animate = true) {
-    const stage = document.getElementById("product-carousel-stage");
-    const track = document.getElementById("product-carousel-track");
-    const slides = document.querySelectorAll(".carousel-slide");
-    if (!stage || !track || slides.length === 0) return;
-
-    const targetSlide = slides[index];
-    if (!targetSlide) return;
-
-    const stageWidth = stage.offsetWidth;
-    const slideOffset = targetSlide.offsetLeft;
-    const slideWidth = targetSlide.offsetWidth;
-    const targetX = (stageWidth / 2) - (slideOffset + (slideWidth / 2));
-
-    if (animate) {
-        gsap.to(track, {
-            x: targetX,
-            duration: 0.75,
-            ease: "power3.inOut"
+    // Animate stage change with GSAP
+    const stageContent = document.getElementById('product-stage-content');
+    if (stageContent && typeof gsap !== 'undefined') {
+        gsap.to(stageContent, {
+            opacity: 0,
+            y: 15,
+            duration: 0.25,
+            onComplete: () => {
+                renderProductStage(idx);
+                gsap.to(stageContent, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.45,
+                    ease: "power2.out"
+                });
+            }
         });
     } else {
-        gsap.set(track, { x: targetX });
+        renderProductStage(idx);
     }
+}
 
-    slides.forEach((slide, idx) => {
-        if (idx === index) {
-            slide.classList.add("carousel-card-active");
-            slide.classList.remove("carousel-card-inactive");
+function renderProductStage(idx) {
+    const prod = PRODUCTS_DATA[idx];
+    const stageContent = document.getElementById('product-stage-content');
+    if (!stageContent) return;
 
-            if (animate) {
-                const animTargets = slide.querySelectorAll(".carousel-card-title, .carousel-card-tagline, .carousel-card-desc, .carousel-card-cta");
-                if (animTargets.length > 0) {
-                    gsap.fromTo(animTargets,
-                        { y: 12, opacity: 0.2 },
-                        { y: 0, opacity: 1, duration: 0.45, stagger: 0.05, ease: "power2.out" }
-                    );
+    stageContent.innerHTML = `
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            <!-- Left Editorial & Specifications Column -->
+            <div class="lg:col-span-7 space-y-8">
+                <div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="tech-tag" style="--color-neon-cyan: ${prod.accentColor}">${prod.code} // ${prod.category}</span>
+                    </div>
+                    <h3 class="font-display font-extrabold text-4xl sm:text-6xl text-white uppercase tracking-tight leading-none">
+                        ${prod.title}
+                    </h3>
+                    <p class="text-neutral-400 font-sans text-base sm:text-lg mt-4 leading-relaxed max-w-2xl">
+                        ${prod.tagline}
+                    </p>
+                </div>
+
+                <!-- Real-time Telemetry Metrics Pill Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    ${prod.telemetry.map(t => `
+                        <div class="telemetry-pill corner-brackets">
+                            <span class="block font-mono text-[10px] text-neutral-400 uppercase tracking-widest">${t.label}</span>
+                            <span class="block font-display font-bold text-xl sm:text-2xl text-white mt-1">${t.val}</span>
+                            <span class="block font-mono text-[9px] text-neutral-500 mt-0.5">${t.note}</span>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <!-- Architectural Capabilities Checklist -->
+                <div class="space-y-3 pt-2">
+                    <span class="block font-mono text-[11px] uppercase tracking-widest text-neutral-400">ENGINEERING SPECIFICATIONS</span>
+                    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-neutral-300">
+                        ${prod.features.map(f => `
+                            <li class="flex items-start gap-2.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-white mt-1.5 shrink-0" style="background: ${prod.accentColor}; box-shadow: 0 0 8px ${prod.accentColor}"></span>
+                                <span class="font-sans leading-snug">${f}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+
+                <!-- Direct CTA to Dedicated Products Experience -->
+                <div class="pt-4 flex flex-wrap items-center gap-4">
+                    <a href="${prod.detailLink}" class="chamfer-btn-primary">
+                        <span>INSPECT SPECIFICATIONS</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                    <a href="products.html" class="chamfer-btn-outline">
+                        <span>VIEW ALL PRODUCTS</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Interactive Graphic Canvas Stage -->
+            <div class="lg:col-span-5 relative">
+                <div class="aerodynamic-frame p-6 sm:p-8 min-h-[380px] sm:min-h-[440px] flex flex-col justify-between relative overflow-hidden">
+                    <!-- Top HUD Label -->
+                    <div class="flex items-center justify-between border-b border-white/10 pb-3 font-mono text-[10px] text-neutral-400">
+                        <span class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full animate-ping" style="background: ${prod.accentColor}"></span>
+                            SYSTEM DIAGNOSTIC ACTIVE
+                        </span>
+                        <span>FREQ: 120.00 GHZ</span>
+                    </div>
+
+                    <!-- Canvas Graphic Simulation -->
+                    <div class="relative w-full h-[260px] sm:h-[300px] flex items-center justify-center">
+                        <canvas id="product-canvas-sim" class="w-full h-full"></canvas>
+                        
+                        <!-- Center Floating Badge -->
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                            <span class="font-display font-black text-6xl sm:text-7xl opacity-10 text-white select-none">
+                                ${prod.code}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Status Bar -->
+                    <div class="border-t border-white/10 pt-3 flex items-center justify-between font-mono text-[10px] text-neutral-400">
+                        <span>ARCH: BARE-METAL POSIX-FREE</span>
+                        <span style="color: ${prod.accentColor}">READY // 100% HEALTH</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    if (window.lucide) window.lucide.createIcons();
+    initProductCanvasSimulation(prod.simType, prod.accentColor);
+}
+
+function initProductCanvasSimulation(type, color) {
+    if (productAnimId) cancelAnimationFrame(productAnimId);
+
+    const canvas = document.getElementById('product-canvas-sim');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * window.devicePixelRatio || 400;
+    canvas.height = rect.height * window.devicePixelRatio || 300;
+
+    let time = 0;
+
+    function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const w = canvas.width;
+        const h = canvas.height;
+        const cx = w / 2;
+        const cy = h / 2;
+
+        time += 0.025;
+
+        if (type === 'kernel') {
+            // Rotating nested cyber rings representing deterministic microkernel CPU queues
+            for (let r = 30; r <= 110; r += 26) {
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, time * (r % 2 === 0 ? 0.6 : -0.6), time * (r % 2 === 0 ? 0.6 : -0.6) + Math.PI * 1.4);
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+
+            // Central Ring 0 Core
+            ctx.beginPath();
+            ctx.arc(cx, cy, 14, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 18;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+        } else if (type === 'mesh') {
+            // Geo-distributed planetary edge node mesh
+            const nodeCount = 9;
+            const nodes = [];
+            for (let i = 0; i < nodeCount; i++) {
+                const angle = (i / nodeCount) * Math.PI * 2 + time * 0.2;
+                const dist = 75 + Math.sin(time + i) * 20;
+                nodes.push({
+                    x: cx + Math.cos(angle) * dist,
+                    y: cy + Math.sin(angle) * dist
+                });
+            }
+
+            // Draw interconnections
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    ctx.beginPath();
+                    ctx.moveTo(nodes[i].x, nodes[i].y);
+                    ctx.lineTo(nodes[j].x, nodes[j].y);
+                    ctx.stroke();
                 }
             }
+
+            // Draw node hubs
+            nodes.forEach(n => {
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+            });
+
+        } else if (type === 'spatial') {
+            // 3D Point-Cloud LiDAR Cube rotating in 3D perspective
+            const size = 65;
+            const points = [
+                [-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1],
+                [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]
+            ];
+
+            const rotX = time * 0.7;
+            const rotY = time * 0.9;
+
+            const projPoints = points.map(pt => {
+                // 3D Rotation
+                let y1 = pt[1] * Math.cos(rotX) - pt[2] * Math.sin(rotX);
+                let z1 = pt[1] * Math.sin(rotX) + pt[2] * Math.cos(rotX);
+
+                let x2 = pt[0] * Math.cos(rotY) + z1 * Math.sin(rotY);
+                let z2 = -pt[0] * Math.sin(rotY) + z1 * Math.cos(rotY);
+
+                const fov = 180;
+                const scale = fov / (fov + z2 * size);
+                return {
+                    x: cx + x2 * size * scale,
+                    y: cy + y1 * size * scale
+                };
+            });
+
+            // Draw LiDAR edges
+            const edges = [
+                [0,1],[1,2],[2,3],[3,0],
+                [4,5],[5,6],[6,7],[7,4],
+                [0,4],[1,5],[2,6],[3,7]
+            ];
+
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1.5;
+            edges.forEach(e => {
+                ctx.beginPath();
+                ctx.moveTo(projPoints[e[0]].x, projPoints[e[0]].y);
+                ctx.lineTo(projPoints[e[1]].x, projPoints[e[1]].y);
+                ctx.stroke();
+            });
+
+        } else if (type === 'security') {
+            // eBPF Shield Enclave Defense radar pulse
+            const pulseRadius = (time * 40) % 110;
+            ctx.beginPath();
+            ctx.arc(cx, cy, pulseRadius, 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(16, 185, 129, ${1 - pulseRadius / 110})`;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Hexagonal Shield Barrier
+            ctx.beginPath();
+            for (let i = 0; i < 6; i++) {
+                const angle = (i / 6) * Math.PI * 2 + Math.PI / 6;
+                const hx = cx + Math.cos(angle) * 60;
+                const hy = cy + Math.sin(angle) * 60;
+                if (i === 0) ctx.moveTo(hx, hy);
+                else ctx.lineTo(hx, hy);
+            }
+            ctx.closePath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2.5;
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 12;
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
         } else {
-            slide.classList.add("carousel-card-inactive");
-            slide.classList.remove("carousel-card-active");
+            // High-speed multiplexed packet frequency stream
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let x = 0; x < w; x += 4) {
+                const y = cy + Math.sin(x * 0.04 + time * 3) * 35 * Math.sin(time);
+                if (x === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
         }
+
+        productAnimId = requestAnimationFrame(render);
+    }
+
+    render();
+}
+
+/* ==========================================================================
+   6. 4-PILLAR ARCHITECTURAL NEURAL ENGINE
+   ========================================================================== */
+const PILLARS_DATA = [
+    {
+        title: "TrexOS Kernel",
+        tag: "01 // DETERMINISTIC MICROKERNEL",
+        desc: "Sub-millisecond thread scheduling with zero-trust hardware memory isolation and Rust-native safety guarantees.",
+        metric: "0.35ms Latency",
+        color: "#00f2fe"
+    },
+    {
+        title: "TrexCore Mesh",
+        tag: "02 // PLANETARY STATE FABRIC",
+        desc: "Geo-distributed serverless runtime synchronizing distributed state across 180+ global edge pops in sub-12ms.",
+        metric: "11.4ms Global Sync",
+        color: "#f97316"
+    },
+    {
+        title: "TrexShield SecOps",
+        tag: "03 // EBPF KERNEL ENCLAVE",
+        desc: "Autonomous system call introspection with automated threat quarantine in under 4ms and cryptographic attestations.",
+        metric: "3.8ms Quarantine",
+        color: "#10b981"
+    },
+    {
+        title: "TrexVision SLAM",
+        tag: "04 // SPATIAL PERCEPTION ENGINE",
+        desc: "120 FPS 3D odometry, LiDAR & RGB-D sensor fusion, and spatial telemetry pipeline for autonomous robotics.",
+        metric: "120 FPS Locked",
+        color: "#38bdf8"
+    }
+];
+
+function initArchitecturePillars() {
+    const cards = document.querySelectorAll('.arch-pillar-card');
+    const diagTitle = document.getElementById('arch-diag-title');
+    const diagDesc = document.getElementById('arch-diag-desc');
+    const diagMetric = document.getElementById('arch-diag-metric');
+    const freqDisplay = document.getElementById('arch-freq-display');
+
+    if (!cards.length) return;
+
+    cards.forEach((card, idx) => {
+        card.addEventListener('mouseenter', () => {
+            selectPillar(idx);
+        });
+        card.addEventListener('click', () => {
+            selectPillar(idx);
+        });
     });
 
-    // Ambient glow tint update
-    const aura = document.getElementById("carousel-ambient-aura");
-    const activeProd = carouselProducts[index] || DEFAULT_CAROUSEL_PRODUCTS[index];
-    if (aura && activeProd) {
-        gsap.to(aura, {
-            backgroundColor: activeProd.accentColor || "#00f3ff",
-            duration: 0.8,
-            ease: "power2.out"
+    function selectPillar(idx) {
+        cards.forEach((c, i) => {
+            if (i === idx) {
+                c.classList.add('border-white', 'bg-white/10');
+            } else {
+                c.classList.remove('border-white', 'bg-white/10');
+            }
+        });
+
+        const p = PILLARS_DATA[idx];
+        if (diagTitle) diagTitle.textContent = `${p.tag} — ${p.title}`;
+        if (diagDesc) diagDesc.textContent = p.desc;
+        if (diagMetric) diagMetric.textContent = p.metric;
+        if (freqDisplay) freqDisplay.textContent = `PULSE ACTIVE: ${(64.28 + idx * 8.4).toFixed(2)} GHz`;
+    }
+}
+
+/* ==========================================================================
+   7. STRATEGIC ROADMAP & TEAM INITIALIZATION
+   ========================================================================== */
+function initRoadmapAndTeam() {
+    // Copy coordinates helpers
+    window.copyToClipboard = function(text, btnElement) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                showCopyFeedback(btnElement);
+            }).catch(() => fallbackCopy(text, btnElement));
+        } else {
+            fallbackCopy(text, btnElement);
+        }
+    };
+
+    function fallbackCopy(text, btnElement) {
+        const temp = document.createElement('textarea');
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+        showCopyFeedback(btnElement);
+    }
+
+    function showCopyFeedback(btn) {
+        if (!btn) return;
+        const originalText = btn.textContent;
+        btn.textContent = 'COPIED';
+        btn.classList.add('bg-white', 'text-black');
+        setTimeout(() => {
+            btn.textContent = originalText;
+            btn.classList.remove('bg-white', 'text-black');
+        }, 1800);
+    }
+}
+
+/* ==========================================================================
+   8. DIRECT FOUNDER COMMUNICATION TERMINAL
+   ========================================================================== */
+function initContactTerminal() {
+    const form = document.getElementById('founder-contact-form');
+    const statusModal = document.getElementById('contact-status-modal');
+    if (!form) return;
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById('contact-name')?.value || 'Guest';
+        const email = document.getElementById('contact-email')?.value || '';
+        const category = document.getElementById('contact-category')?.value || 'Inquiry';
+        const message = document.getElementById('contact-message')?.value || '';
+
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<span>TRANSMITTING TLS 1.3...</span>`;
+        }
+
+        // Simulate high-assurance cryptographic transmission
+        setTimeout(() => {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<span>TRANSMIT SECURE MESSAGE</span><i data-lucide="send" class="w-4 h-4"></i>`;
+            }
+
+            // Reset form
+            form.reset();
+
+            // Display confirmation modal
+            if (statusModal) {
+                const modalText = document.getElementById('contact-modal-text');
+                if (modalText) {
+                    modalText.innerHTML = `
+                        Transmission ID: <strong>0x${Math.random().toString(16).substring(2, 10).toUpperCase()}</strong><br>
+                        Encrypted payload for <strong>Satyam</strong> (Founder & Chief Systems Architect) queued successfully.
+                    `;
+                }
+                statusModal.classList.remove('hidden');
+                statusModal.classList.add('flex');
+            } else {
+                alert(`Transmission sent directly to Satyam (satys9267@gmail.com). We will reach out to ${email} shortly.`);
+            }
+
+            if (window.lucide) window.lucide.createIcons();
+        }, 900);
+    });
+
+    window.closeContactModal = function() {
+        if (statusModal) {
+            statusModal.classList.add('hidden');
+            statusModal.classList.remove('flex');
+        }
+    };
+}
+
+/* ==========================================================================
+   9. FULLSCREEN NAVIGATION & HEADER
+   ========================================================================== */
+function initNavigation() {
+    const menuToggle = document.getElementById('menu-toggle-btn');
+    const menuClose = document.getElementById('nav-drawer-close');
+    const drawer = document.getElementById('fullscreen-nav-drawer');
+    const header = document.getElementById('main-header');
+
+    if (menuToggle && drawer) {
+        menuToggle.addEventListener('click', () => {
+            drawer.classList.add('active');
+            if (lenis) lenis.stop();
         });
     }
-}
 
-function updatePaginationDots(index) {
-    const dots = document.querySelectorAll(".carousel-dot-btn");
-    dots.forEach((dot, idx) => {
-        const fill = dot.querySelector(".carousel-dot-fill");
-        if (idx === index) {
-            dot.className = "carousel-dot-btn w-12 h-2.5 rounded-full bg-neutral-200 dark:bg-slate-800 relative overflow-hidden transition-all duration-300";
-            if (fill) fill.style.width = "0%";
-        } else {
-            dot.className = "carousel-dot-btn w-2.5 h-2.5 rounded-full bg-neutral-300 dark:bg-slate-800 relative overflow-hidden transition-all duration-300";
-            if (fill) fill.style.width = "0%";
+    if (menuClose && drawer) {
+        menuClose.addEventListener('click', closeMenu);
+    }
+
+    // Close on link click
+    const drawerLinks = document.querySelectorAll('.nav-drawer-link');
+    drawerLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            closeMenu();
+        });
+    });
+
+    // Close on Escape key
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && drawer && drawer.classList.contains('active')) {
+            closeMenu();
         }
     });
-}
 
-function startCarouselTimer() {
-    if (carouselTimerTween) {
-        carouselTimerTween.kill();
+    function closeMenu() {
+        if (drawer) drawer.classList.remove('active');
+        if (lenis) lenis.start();
     }
 
-    carouselProgressObj.value = 0;
-    const activeDot = document.querySelector(`.carousel-dot-btn:nth-child(${carouselCurrentIndex + 1}) .carousel-dot-fill`);
-    if (activeDot) {
-        activeDot.style.width = "0%";
-    }
-
-    if (carouselIsPaused) return;
-
-    carouselTimerTween = gsap.to(carouselProgressObj, {
-        value: 100,
-        duration: carouselAutoPlayInterval / 1000,
-        ease: "none",
-        onUpdate: () => {
-            if (activeDot) {
-                activeDot.style.width = `${carouselProgressObj.value}%`;
+    // Header scroll background morph
+    window.addEventListener('scroll', () => {
+        if (header) {
+            if (window.scrollY > 40) {
+                header.classList.add('header-scrolled');
+            } else {
+                header.classList.remove('header-scrolled');
             }
-        },
-        onComplete: () => {
-            nextCarouselSlide();
         }
+    });
+
+    // Anchor smooth scroll with Lenis
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const targetId = this.getAttribute('href');
+            if (targetId === '#' || targetId === '') return;
+            const targetEl = document.querySelector(targetId);
+            if (targetEl) {
+                e.preventDefault();
+                if (lenis) {
+                    lenis.scrollTo(targetEl, { offset: -70 });
+                } else {
+                    targetEl.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
     });
 }
 
-function pauseCarouselAutoPlay() {
-    if (carouselTimerTween && !carouselTimerTween.paused()) {
-        carouselTimerTween.pause();
-    }
+/* ==========================================================================
+   10. GSAP SCROLLTRIGGER REVEALS & TELEMETRY COUNTERS
+   ========================================================================== */
+function initScrollAnimations() {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Stagger in section titles
+    gsap.utils.toArray('.title-reveal').forEach(title => {
+        gsap.from(title, {
+            scrollTrigger: {
+                trigger: title,
+                start: "top 88%",
+                toggleActions: "play none none none"
+            },
+            y: 35,
+            opacity: 0,
+            duration: 0.9,
+            ease: "power3.out"
+        });
+    });
+
+    // Telemetry number counting
+    gsap.utils.toArray('.counter-metric').forEach(el => {
+        const targetVal = parseFloat(el.getAttribute('data-target') || 0);
+        const prefix = el.getAttribute('data-prefix') || '';
+        const suffix = el.getAttribute('data-suffix') || '';
+
+        ScrollTrigger.create({
+            trigger: el,
+            start: "top 90%",
+            once: true,
+            onEnter: () => {
+                const obj = { val: 0 };
+                gsap.to(obj, {
+                    val: targetVal,
+                    duration: 1.8,
+                    ease: "power2.out",
+                    onUpdate: () => {
+                        el.textContent = `${prefix}${obj.val.toLocaleString()}${suffix}`;
+                    }
+                });
+            }
+        });
+    });
 }
-
-function resumeCarouselAutoPlay() {
-    if (!carouselIsPaused && carouselTimerTween && carouselTimerTween.paused()) {
-        carouselTimerTween.resume();
-    }
-}
-
-function toggleCarouselAutoPlay() {
-    playHoverTick();
-    carouselIsPaused = !carouselIsPaused;
-    const icon = document.getElementById("carousel-play-pause-icon");
-    const btn = document.getElementById("carousel-play-pause-btn");
-
-    if (carouselIsPaused) {
-        if (carouselTimerTween) carouselTimerTween.pause();
-        if (icon) {
-            icon.setAttribute("data-lucide", "play");
-            lucide.createIcons();
-        }
-        if (btn) btn.setAttribute("title", "Resume Auto-Play");
-    } else {
-        if (icon) {
-            icon.setAttribute("data-lucide", "pause");
-            lucide.createIcons();
-        }
-        if (btn) btn.setAttribute("title", "Pause Auto-Play");
-        startCarouselTimer();
-    }
-}
-
-function nextCarouselSlide() {
-    goToCarouselSlide((carouselCurrentIndex + 1) % carouselTotalSlides);
-}
-
-function prevCarouselSlide() {
-    goToCarouselSlide((carouselCurrentIndex - 1 + carouselTotalSlides) % carouselTotalSlides);
-}
-
-function goToCarouselSlide(index) {
-    playHoverTick();
-    carouselCurrentIndex = index;
-    positionCarousel(index, true);
-    updatePaginationDots(index);
-    startCarouselTimer();
-}
-
-window.initProductCarousel = initProductCarousel;
-window.goToCarouselSlide = goToCarouselSlide;
-window.nextCarouselSlide = nextCarouselSlide;
-window.prevCarouselSlide = prevCarouselSlide;
-window.toggleCarouselAutoPlay = toggleCarouselAutoPlay;
-window.pauseCarouselAutoPlay = pauseCarouselAutoPlay;
-window.resumeCarouselAutoPlay = resumeCarouselAutoPlay;
-
-document.addEventListener("DOMContentLoaded", () => {
-    initProductCarousel();
-    initNeuralStreamEngine();
-});

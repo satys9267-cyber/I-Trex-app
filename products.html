@@ -1,1168 +1,536 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth bg-black text-white">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enterprise Product Suite — I-Trex Innovations</title>
+    <title>I-Trex Innovations — Product Specifications & Ecosystem Architecture</title>
+    <meta name="description" content="Technical specifications and architectural inspection of the 5 I-Trex core autonomous products: TrexOS, TrexCore, TrexVision, TrexShield, TrexConnect.">
     
-    <!-- Link to Custom Stylesheet -->
-    <link rel="stylesheet" href="style.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <link rel="apple-touch-icon" href="assets/images/favicon.png">
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        itrex: {
-                            bg: '#ffffff',
-                            navy: '#0b0f19',
-                            navyLight: '#1e293b',
-                            gold: '#c29738', 
-                            goldLight: '#fdfcf7',
-                            neutralLight: '#fafafa',
-                            border: '#f1f1f4',
-                            trexos: '#00f2fe',
-                            trexcore: '#f97316',
-                            trexvision: '#06b6d4',
-                            trexshield: '#15803d'
-                        }
+                        void: '#000000',
+                        carbon: '#05070a',
+                        graphite: '#0a0d14',
+                        surface: '#0e121b',
+                        chrome: '#e2e8f0',
+                        titanium: '#94a3b8',
+                        neonCyan: '#00f2fe'
                     },
                     fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                        space: ['Space Grotesk', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'Syne', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
                     }
                 }
             }
         }
     </script>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+    <!-- Custom Cinematic Automotive Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+
     <!-- GSAP & ScrollTrigger -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
     <!-- Lenis Smooth Scroll -->
     <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
-    
+
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="bg-itrex-bg dark:bg-itrex-navy text-itrex-navy dark:text-white font-sans antialiased overflow-x-hidden selection:bg-neutral-100 transition-colors duration-700 min-h-screen flex flex-col justify-between">
+<body class="bg-black text-white font-sans antialiased selection:bg-white selection:text-black">
 
-    <!-- Scroll Progress Indicator (Flight Path) -->
-    <div class="fixed top-0 left-0 w-full h-[3px] bg-neutral-100 dark:bg-neutral-800 z-50">
-        <div id="scroll-trajectory-progress" class="h-full bg-gradient-to-r from-itrex-trexos via-itrex-gold to-itrex-trexshield w-0 transition-all duration-100"></div>
-    </div>
-
-    <!-- Preloader Screen -->
-    <div id="loader" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center overflow-hidden">
-        <div class="absolute inset-0 flex justify-between pointer-events-none opacity-20">
-            <div class="w-px h-full bg-neutral-200 ml-[10%]"></div>
-            <div class="w-px h-full bg-neutral-200"></div>
-            <div class="w-px h-full bg-neutral-200 mr-[10%]"></div>
-        </div>
-
-        <div class="relative flex flex-col items-center z-10 text-center">
-            <div id="loader-logo-img" class="w-20 h-20 mb-6 rounded-2xl overflow-hidden shadow-xl border border-neutral-200 flex items-center justify-center bg-black">
-                <img src="assets/images/itrex_logo.jpg" alt="I-Trex Logo" class="w-full h-full object-cover">
+    <!-- Minimalist Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 header-glass">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-8">
+                <a href="index.html" class="flex items-center gap-3 text-white hover:text-cyan-400 transition-colors group">
+                    <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i>
+                    <span class="font-display font-bold text-xs uppercase tracking-[0.2em]">RETURN HOME</span>
+                </a>
             </div>
 
-            <h1 id="loader-logo" class="font-space font-bold tracking-[0.15em] text-4xl md:text-5xl text-itrex-navy flex select-none mb-3">
-                <span class="letter loader-letter opacity-0 transform translate-y-4">P</span>
-                <span class="letter loader-letter opacity-0 transform translate-y-4">R</span>
-                <span class="letter loader-letter opacity-0 transform translate-y-4">O</span>
-                <span class="letter loader-letter opacity-0 transform translate-y-4">D</span>
-                <span class="letter loader-letter opacity-0 transform translate-y-4">U</span>
-                <span class="letter loader-letter opacity-0 transform translate-y-4">C</span>
-                <span class="letter loader-letter opacity-0 transform translate-y-4">T</span>
-                <span class="letter loader-letter opacity-0 transform translate-y-4">S</span>
+            <div class="absolute left-1/2 -translate-x-1/2 flex items-center">
+                <a href="index.html" class="flex items-center group">
+                    <img src="assets/images/itrex_logo_silver_transparent.png" 
+                         alt="I-Trex Logo" 
+                         class="h-10 sm:h-12 w-auto transition-transform duration-300 group-hover:scale-105 filter drop-shadow-[0_0_15px_rgba(255,255,255,0.25)]">
+                </a>
+            </div>
+
+            <div class="flex items-center space-x-6">
+                <a href="index.html#contact" class="chamfer-btn-primary !py-2.5 !px-5 !text-[10px]">
+                    <span>INQUIRE ARCHITECTURE</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sticky Product Subnavigation Bar -->
+    <div class="sticky top-20 z-40 bg-black/90 backdrop-blur-md border-b border-white/10 px-6 overflow-x-auto no-scrollbar">
+        <div class="max-w-7xl mx-auto flex items-center justify-between py-3 gap-6 font-mono text-xs">
+            <div class="flex items-center gap-6 shrink-0">
+                <a href="#trexos" class="text-neutral-400 hover:text-white transition-colors py-1 border-b-2 border-transparent hover:border-cyan-400">01 // TREXOS</a>
+                <a href="#trexcore" class="text-neutral-400 hover:text-white transition-colors py-1 border-b-2 border-transparent hover:border-orange-400">02 // TREXCORE</a>
+                <a href="#trexvision" class="text-neutral-400 hover:text-white transition-colors py-1 border-b-2 border-transparent hover:border-cyan-300">03 // TREXVISION</a>
+                <a href="#trexshield" class="text-neutral-400 hover:text-white transition-colors py-1 border-b-2 border-transparent hover:border-emerald-400">04 // TREXSHIELD</a>
+                <a href="#trexconnect" class="text-neutral-400 hover:text-white transition-colors py-1 border-b-2 border-transparent hover:border-white">05 // TREXCONNECT</a>
+            </div>
+            <span class="hidden md:inline-block text-[10px] text-cyan-400 uppercase tracking-widest">
+                SPECIFICATIONS ENGINE v2.4.0
+            </span>
+        </div>
+    </div>
+
+    <!-- Hero Title Stage -->
+    <section class="relative pt-36 pb-20 px-6 lg:px-12 border-b border-white/10 bg-gradient-to-b from-black via-[#05070a] to-black">
+        <div class="max-w-7xl mx-auto text-center space-y-6">
+            <span class="tech-tag">PRODUCT SHOWROOM & BENCHMARKS</span>
+            <h1 class="title-hero text-5xl sm:text-7xl md:text-8xl text-white">
+                PURPOSE-BUILT<br>
+                <span class="text-chrome">AUTONOMOUS SUITE.</span>
             </h1>
-            <p id="loader-sub" class="text-xs tracking-[0.4em] text-neutral-400 uppercase font-mono mt-1 opacity-0 transform translate-y-4">
-                Architecture Suite · Founder: Satyam
+            <p class="font-sans text-neutral-400 text-base sm:text-lg max-w-2xl mx-auto font-light leading-relaxed">
+                Explore the deep architecture, telemetry guarantees, memory footprints, and kernel benchmarks of each I-Trex innovation.
             </p>
         </div>
-    </div>
+    </section>
 
-    <!-- Golden Light Sparkles Canvas -->
-    <canvas id="sparkle-canvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-[99] hidden lg:block"></canvas>
-
-    <!-- Background Architectural Guidelines -->
-    <div class="fixed inset-0 flex justify-between pointer-events-none opacity-20 dark:opacity-5 z-0 transition-opacity duration-700">
-        <div class="w-px h-full bg-itrex-border ml-12"></div>
-        <div class="w-px h-full bg-itrex-border hidden md:block"></div>
-        <div class="w-px h-full bg-itrex-border hidden lg:block"></div>
-        <div class="w-px h-full bg-itrex-border mr-12"></div>
-    </div>
-
-    <!-- Top Navigation Bar -->
-    <nav id="navbar" class="fixed top-0 left-0 w-full z-40 transition-all duration-300 py-6 px-6 lg:px-16 translate-y-[-100px] opacity-0">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <a href="index.html" class="flex items-center space-x-3 group" data-hover="heading">
-                <div class="w-10 h-10 rounded-xl overflow-hidden bg-black border border-neutral-300 dark:border-slate-700 shadow-sm transition-transform duration-500 group-hover:rotate-6 flex items-center justify-center">
-                    <img src="assets/images/itrex_logo.jpg" alt="I-Trex" class="w-full h-full object-cover">
+    <!-- PRODUCT 01: TREXOS -->
+    <section id="trexos" class="py-28 px-6 lg:px-12 border-b border-white/10 bg-black">
+        <div class="max-w-7xl mx-auto space-y-12">
+            <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-white/10">
+                <div>
+                    <span class="tech-tag" style="--color-neon-cyan: #00f2fe">FLAGSHIP // TRX-01</span>
+                    <h2 class="title-section text-4xl sm:text-6xl text-white mt-2">TREXOS</h2>
+                    <p class="font-mono text-sm text-cyan-400 mt-1 uppercase tracking-wider">Deterministic Neural Microkernel Architecture</p>
                 </div>
-                <div class="flex flex-col text-left">
-                    <span class="font-space font-bold tracking-tight text-base leading-none">I-Trex Innovations</span>
-                    <span class="text-[8px] tracking-[0.3em] uppercase text-neutral-400 mt-1">Autonomous OS • Founder: Satyam</span>
+                <div class="flex items-center gap-4">
+                    <span class="font-mono text-xs text-neutral-400">STATUS: PRODUCTION v2.4</span>
+                    <span class="font-mono text-xs px-3 py-1 bg-cyan-950 text-cyan-400 border border-cyan-500/30">99.999% ASSURANCE</span>
                 </div>
-            </a>
-
-            <!-- Menu Links -->
-            <div class="hidden md:flex items-center space-x-8 text-xs font-semibold text-neutral-500 dark:text-neutral-400 tracking-wider uppercase">
-                <a href="index.html#about" class="hover:text-itrex-navy dark:hover:text-white transition-colors">Vision</a>
-                <a href="index.html#architecture" class="hover:text-itrex-navy dark:hover:text-white transition-colors">Architecture</a>
-                <a href="products.html" class="text-itrex-gold font-bold transition-colors flex items-center gap-1.5">
-                    <span>Products</span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-itrex-gold animate-pulse"></span>
-                </a>
-                <a href="index.html#showcase" class="hover:text-itrex-navy dark:hover:text-white transition-colors">Ecosystem</a>
-                <a href="index.html#vision-mission" class="hover:text-itrex-navy dark:hover:text-white transition-colors">Roadmap</a>
-                <a href="index.html#team" class="hover:text-itrex-navy dark:hover:text-white transition-colors">The Team</a>
             </div>
 
-            <div class="flex items-center space-x-3 sm:space-x-4">
-                <!-- Theme Toggle Button -->
-                <button id="theme-toggle-btn" class="w-10 h-10 rounded-full border border-itrex-border dark:border-slate-800 flex items-center justify-center bg-white dark:bg-slate-900 shadow-sm transition-all duration-500" data-hover="button" title="Toggle Light / Dark Mode">
-                    <i data-lucide="sun" class="w-4 h-4 text-itrex-gold dark:hidden"></i>
-                    <i data-lucide="moon" class="w-4 h-4 text-itrex-gold hidden dark:block"></i>
-                </button>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                <div class="lg:col-span-7 space-y-8">
+                    <p class="font-sans text-neutral-300 text-base sm:text-lg leading-relaxed font-light">
+                        TrexOS replaces legacy POSIX thread schedulers with an autonomous neural orchestrator that anticipates resource spikes before they occur. Written in bare-metal memory-safe systems architecture, it guarantees sub-millisecond execution times for robotics, autonomous vehicles, and deep-edge nodes.
+                    </p>
 
-                <!-- Workspace Login Link -->
-                <a href="login.html" class="hidden sm:inline-flex items-center space-x-1.5 px-4 py-2.5 rounded-full border border-itrex-border dark:border-slate-800 text-xs font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-300 hover:text-itrex-navy dark:hover:text-white hover:border-itrex-gold transition-all duration-300" data-hover="button">
-                    <i data-lucide="lock" class="w-3.5 h-3.5 text-itrex-gold"></i>
-                    <span>Sign In</span>
-                </a>
+                    <!-- Telemetry Spec Table -->
+                    <div class="aerodynamic-frame p-6 corner-brackets font-mono text-xs space-y-4">
+                        <div class="flex justify-between border-b border-white/10 pb-2">
+                            <span class="text-neutral-400">SCHEDULING LATENCY</span>
+                            <span class="text-white font-bold">&lt; 0.35 ms (EPYC Zen 4 Benchmark)</span>
+                        </div>
+                        <div class="flex justify-between border-b border-white/10 pb-2">
+                            <span class="text-neutral-400">MEMORY ISOLATION</span>
+                            <span class="text-white font-bold">Ring 0 Hardware Enclaves (Rust FFI)</span>
+                        </div>
+                        <div class="flex justify-between border-b border-white/10 pb-2">
+                            <span class="text-neutral-400">CONTEXT SWITCH OVERHEAD</span>
+                            <span class="text-white font-bold">Zero Userland Transition Overhead</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-neutral-400">LEAD SYSTEMS ARCHITECT</span>
+                            <span class="text-cyan-400 font-bold">Satyam Swami & Elena Vance</span>
+                        </div>
+                    </div>
 
-                <!-- Connect With Us Button -->
-                <a href="index.html#contact" id="nav-connect-btn" class="inline-flex items-center space-x-2 bg-itrex-navy dark:bg-white text-white dark:text-itrex-navy text-xs font-bold uppercase tracking-wider px-5 sm:px-6 py-2.5 sm:py-3 rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-itrex-gold/20" data-hover="button">
-                    <span>Connect With Us</span>
-                    <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
-                </a>
+                    <div class="space-y-3">
+                        <h4 class="font-display font-bold text-lg text-white uppercase">Architectural Highlights</h4>
+                        <ul class="space-y-2 text-sm text-neutral-400 font-light font-sans">
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>Neural scheduling that predicts context switches before hardware latency strikes</li>
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>DMA Ring 0 protection shielding direct memory access from rogue processes</li>
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>Bare-metal compiled footprint of only 1.4 MB with zero external dependencies</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="aerodynamic-frame p-6 corner-brackets font-mono text-xs bg-[#05070a]">
+                        <div class="flex items-center justify-between pb-3 border-b border-white/10 text-neutral-400">
+                            <span>trexos_scheduler.rs</span>
+                            <span class="text-cyan-400">Rust 2024 Edition</span>
+                        </div>
+                        <pre class="pt-4 text-[11px] text-neutral-300 overflow-x-auto leading-relaxed"><code>#[kernel::entry]
+pub unsafe fn schedule_thread(
+    enclave: &mut HardwareEnclave,
+    neural_prior: &NeuralPriorWeights
+) -> Result&lt;SubMillisecondToken, KernelFault&gt; {
+    // Zero-overhead predictive dispatch
+    let target = neural_prior.predict_hot_core();
+    enclave.dma_ring0_bind(target)?;
+    Ok(SubMillisecondToken::new(0.35))
+}</code></pre>
+                    </div>
+
+                    <div class="p-4 border border-white/10 bg-black/60 flex items-center justify-between font-mono text-xs">
+                        <span class="text-neutral-400">COMMERCIAL SLA</span>
+                        <span class="text-white font-bold">$49 / node / month</span>
+                    </div>
+                </div>
             </div>
         </div>
-    </nav>
+    </section>
 
-    <!-- Main Products Content Container -->
-    <main id="main-content" class="relative z-10 opacity-0 pt-28">
-
-        <!-- 1. HERO SECTION -->
-        <section class="py-20 px-6 lg:px-16 text-center relative overflow-hidden bg-white dark:bg-itrex-navy transition-colors duration-700">
-            <div class="max-w-5xl mx-auto space-y-8">
-                
-                <div id="product-hero-badge" class="inline-flex items-center space-x-2.5 px-3.5 py-1.5 border border-neutral-200/60 dark:border-slate-800 rounded-full bg-white/50 dark:bg-slate-900/50 opacity-0 transform translate-y-4">
-                    <span class="w-2 h-2 rounded-full bg-itrex-gold animate-pulse"></span>
-                    <span class="text-[10px] font-space font-bold tracking-widest text-neutral-500 dark:text-neutral-400 uppercase">
-                        ENTERPRISE PRODUCT SUITE · AUTONOMOUS MICROKERNEL & EDGE MESH
-                    </span>
+    <!-- PRODUCT 02: TREXCORE -->
+    <section id="trexcore" class="py-28 px-6 lg:px-12 border-b border-white/10 bg-[#05070a]">
+        <div class="max-w-7xl mx-auto space-y-12">
+            <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-white/10">
+                <div>
+                    <span class="tech-tag" style="--color-neon-cyan: #f97316">INFRASTRUCTURE // TRX-02</span>
+                    <h2 class="title-section text-4xl sm:text-6xl text-white mt-2">TREXCORE</h2>
+                    <p class="font-mono text-sm text-orange-400 mt-1 uppercase tracking-wider">Planetary Edge Cloud Fabric & State Mesh</p>
                 </div>
-
-                <!-- Orchestrated Staggered Headline Reveal Mirroring Home Page -->
-                <h1 id="product-hero-headline" class="font-space font-extrabold text-5xl md:text-7xl lg:text-8xl tracking-tight leading-[1.03] text-itrex-navy dark:text-white overflow-hidden">
-                    <span class="inline-block hero-reveal-line transform translate-y-16 opacity-0">Our Products.</span><br>
-                    <span class="inline-block hero-reveal-line transform translate-y-16 opacity-0 text-transparent bg-clip-text bg-gradient-to-r from-itrex-trexos via-cyan-300 to-itrex-gold dark:from-white dark:via-cyan-200 dark:to-itrex-gold">Our Innovations.</span>
-                </h1>
-
-                <!-- Supporting Tagline / Subtext -->
-                <p id="product-hero-subtext" class="max-w-2xl mx-auto text-neutral-500 dark:text-neutral-400 text-sm md:text-base font-normal leading-relaxed opacity-0 transform translate-y-6">
-                    Engineered for Autonomy. Deployed with Microsecond Precision.
-                </p>
-
-                <!-- Dynamic Action Button entering from opposite axis with elastic easing -->
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-                    <a href="#products-catalog" id="product-hero-cta" class="inline-flex items-center space-x-2 bg-itrex-navy dark:bg-white text-white dark:text-itrex-navy text-xs font-bold uppercase tracking-wider px-8 py-4 rounded-full transition-all duration-300 hover:shadow-xl opacity-0 transform -translate-x-12" data-hover="button">
-                        <span>Explore Specifications</span>
-                        <i data-lucide="arrow-down" class="w-4 h-4"></i>
-                    </a>
-                    <a href="#specs-matrix" id="product-hero-secondary-cta" class="inline-flex items-center space-x-2 border border-itrex-border dark:border-slate-800 text-neutral-700 dark:text-neutral-300 text-xs font-bold uppercase tracking-wider px-8 py-4 rounded-full transition-all duration-300 hover:border-itrex-gold opacity-0 transform translate-x-12" data-hover="button">
-                        <span>View Architecture Specs</span>
-                        <i data-lucide="arrow-right" class="w-4 h-4 text-itrex-gold"></i>
-                    </a>
+                <div class="flex items-center gap-4">
+                    <span class="font-mono text-xs text-neutral-400">STATUS: GLOBAL BETA</span>
+                    <span class="font-mono text-xs px-3 py-1 bg-orange-950 text-orange-400 border border-orange-500/30">180+ GLOBAL POPS</span>
                 </div>
-
-                <!-- Interactive Category Filter Bar: All, Autonomous Systems, Neural Hardware, Telemetry & Cloud -->
-                <div class="flex flex-wrap items-center justify-center gap-2.5 pt-6" id="product-category-filters">
-                    <button onclick="filterProducts('all', this)" id="filter-all" class="product-filter-btn px-5 py-2.5 rounded-full text-xs font-mono font-bold tracking-wider uppercase transition-all bg-itrex-navy dark:bg-white text-white dark:text-itrex-navy shadow-md ring-2 ring-itrex-gold/30">
-                        All
-                    </button>
-                    <button onclick="filterProducts('autonomous-systems', this)" id="filter-autonomous" class="product-filter-btn px-5 py-2.5 rounded-full text-xs font-mono font-semibold tracking-wider uppercase transition-all bg-itrex-neutralLight dark:bg-slate-900 border border-itrex-border dark:border-slate-800 text-neutral-500 hover:text-itrex-navy dark:hover:text-white hover:border-itrex-gold">
-                        Autonomous Systems
-                    </button>
-                    <button onclick="filterProducts('neural-hardware', this)" id="filter-neural" class="product-filter-btn px-5 py-2.5 rounded-full text-xs font-mono font-semibold tracking-wider uppercase transition-all bg-itrex-neutralLight dark:bg-slate-900 border border-itrex-border dark:border-slate-800 text-neutral-500 hover:text-itrex-navy dark:hover:text-white hover:border-itrex-gold">
-                        Neural Hardware
-                    </button>
-                    <button onclick="filterProducts('telemetry-cloud', this)" id="filter-telemetry" class="product-filter-btn px-5 py-2.5 rounded-full text-xs font-mono font-semibold tracking-wider uppercase transition-all bg-itrex-neutralLight dark:bg-slate-900 border border-itrex-border dark:border-slate-800 text-neutral-500 hover:text-itrex-navy dark:hover:text-white hover:border-itrex-gold">
-                        Telemetry & Cloud
-                    </button>
-                </div>
-
             </div>
-        </section>
 
-        <!-- 2. PRODUCT SHOWCASE DEEP-DIVE CARDS -->
-        <section class="py-16 px-6 lg:px-16 border-t border-itrex-border dark:border-slate-900 bg-itrex-neutralLight/40 dark:bg-slate-950/40 relative transition-colors duration-700">
-            <div class="max-w-7xl mx-auto space-y-12" id="products-catalog">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                <div class="lg:col-span-7 space-y-8">
+                    <p class="font-sans text-neutral-300 text-base sm:text-lg leading-relaxed font-light">
+                        Deploy once, execute simultaneously across 180+ global edge points of presence with automatic data residency compliance and zero cold-start overhead. TrexCore utilizes a peer-to-peer mTLS WireGuard mesh fabric that reconciles globally distributed state in sub-12ms.
+                    </p>
 
-                <!-- PRODUCT 1: TrexOS -->
-                <div class="product-card bg-white/90 dark:bg-[#0b0f19]/80 backdrop-blur-xl border border-itrex-border dark:border-slate-800/80 rounded-[36px] p-8 lg:p-12 shadow-xl hover:border-itrex-trexos hover:shadow-cyan-500/10 transition-all duration-500 relative overflow-hidden group tilt-card" data-category="autonomous-systems" id="trexos">
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                        <div class="lg:col-span-7 space-y-6">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-itrex-trexos">
-                                    <i data-lucide="cpu" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <span class="text-[10px] font-mono uppercase text-itrex-trexos font-bold tracking-widest block">Autonomous Microkernel</span>
-                                    <h2 class="font-space font-bold text-3xl sm:text-4xl text-itrex-navy dark:text-white">TrexOS</h2>
-                                </div>
-                            </div>
-
-                            <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed font-sans">
-                                A high-assurance microkernel engine developed in modern memory-safe systems architecture. TrexOS preempts context-switching overhead using neural predictive scheduling, providing sub-millisecond guarantees for autonomous edge computing and robotics.
-                            </p>
-
-                            <!-- Key Metrics Row -->
-                            <div class="grid grid-cols-3 gap-4 pt-2">
-                                <div class="p-3.5 rounded-2xl bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800">
-                                    <span class="text-[9px] font-mono uppercase text-neutral-400 block">Context Switch</span>
-                                    <span class="text-base font-bold font-mono text-itrex-trexos">0.35 ms</span>
-                                </div>
-                                <div class="p-3.5 rounded-2xl bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800">
-                                    <span class="text-[9px] font-mono uppercase text-neutral-400 block">Memory Footprint</span>
-                                    <span class="text-base font-bold font-mono text-itrex-navy dark:text-white">4.2 MB</span>
-                                </div>
-                                <div class="p-3.5 rounded-2xl bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800">
-                                    <span class="text-[9px] font-mono uppercase text-neutral-400 block">IPC Latency</span>
-                                    <span class="text-base font-bold font-mono text-emerald-500">Zero-Copy</span>
-                                </div>
-                            </div>
-
-                            <!-- Bullet Differentiators -->
-                            <ul class="space-y-2 text-xs text-neutral-600 dark:text-neutral-300 font-sans">
-                                <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-itrex-trexos flex-shrink-0"></i> Deterministic eBPF thread scheduling avoiding CPU core contention</li>
-                                <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-itrex-trexos flex-shrink-0"></i> Hardware memory isolation enclaves resisting DMA spoofing</li>
-                                <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-itrex-trexos flex-shrink-0"></i> Native Rust asynchronous runtime for ultra-reliable edge IoT nodes</li>
-                            </ul>
+                    <div class="aerodynamic-frame p-6 corner-brackets font-mono text-xs space-y-4">
+                        <div class="flex justify-between border-b border-white/10 pb-2">
+                            <span class="text-neutral-400">MEDIAN GLOBAL RECONCILIATION</span>
+                            <span class="text-white font-bold">11.4 ms Across 6 Continents</span>
                         </div>
-
-                        <!-- 3D CAD Wireframe & Architecture Spec Box -->
-                        <div class="lg:col-span-5 bg-slate-950 rounded-3xl p-6 border border-slate-800 font-mono text-xs text-neutral-300 shadow-2xl relative overflow-hidden">
-                            <!-- CAD Blueprint Header & Wireframe Diagram -->
-                            <div class="mb-4 p-3 rounded-2xl bg-slate-900/80 border border-cyan-500/20 relative overflow-hidden group/cad">
-                                <div class="flex items-center justify-between text-[10px] text-cyan-400 font-mono mb-2">
-                                    <span class="flex items-center space-x-1.5">
-                                        <i data-lucide="cpu" class="w-3.5 h-3.5 text-cyan-400"></i>
-                                        <span class="tracking-wider uppercase font-semibold">Microkernel Core Blueprint</span>
-                                    </span>
-                                    <span class="px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-[9px]">ISO 3D WIREFRAME</span>
-                                </div>
-                                <div class="h-20 w-full flex items-center justify-center relative bg-[#060814]/80 rounded-xl overflow-hidden border border-white/5">
-                                    <svg viewBox="0 0 280 80" class="w-full h-full text-cyan-400 stroke-current fill-none stroke-[1.2]" preserveAspectRatio="xMidYMid meet">
-                                        <!-- Isometric CAD grid & processor core -->
-                                        <polygon points="140,12 215,35 140,58 65,35" stroke="rgba(0,240,255,0.4)" fill="rgba(0,240,255,0.05)" />
-                                        <polygon points="140,22 195,38 140,54 85,38" stroke="#00f2fe" fill="rgba(0,242,254,0.12)" />
-                                        <line x1="65" y1="35" x2="65" y2="48" stroke="rgba(0,240,255,0.3)" />
-                                        <line x1="215" y1="35" x2="215" y2="48" stroke="rgba(0,240,255,0.3)" />
-                                        <line x1="140" y1="58" x2="140" y2="71" stroke="#00f2fe" />
-                                        <polygon points="65,48 140,71 215,48" stroke="rgba(0,240,255,0.3)" />
-                                        <!-- Tracer data buses -->
-                                        <circle cx="140" cy="38" r="3" fill="#ffffff" stroke="#00f2fe" />
-                                        <line x1="140" y1="38" x2="250" y2="20" stroke="rgba(0,240,255,0.6)" stroke-dasharray="3,3" />
-                                        <line x1="140" y1="38" x2="30" y2="55" stroke="rgba(0,240,255,0.6)" stroke-dasharray="3,3" />
-                                        <text x="220" y="16" fill="#00f2fe" font-size="7" font-family="monospace">RING0: 350us</text>
-                                        <text x="18" y="68" fill="#10b981" font-size="7" font-family="monospace">ENCLAVE: ACTIVE</text>
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-800 text-[10px] text-neutral-500">
-                                <span>trexos.kernel.config</span>
-                                <span class="text-itrex-trexos">v2.4-STABLE</span>
-                            </div>
-                            <pre class="overflow-x-auto text-[11px] leading-relaxed text-cyan-300"><code>{
-  "kernel": "TrexOS-Micro",
-  "scheduler": "NeuralPredictive_v3",
-  "concurrency": {
-    "preemption_sla": "350us",
-    "lockless_buffers": true,
-    "memory_protection": "HardwareRing0"
-  },
-  "enclave": {
-    "zero_trust": true,
-    "fips_140_level": 3
-  }
-}</code></pre>
-                            <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-[10px] text-neutral-400">
-                                <span>Target: ARM64 / x86_64</span>
-                                <span class="text-emerald-400">● 100% Deterministic</span>
-                            </div>
+                        <div class="flex justify-between border-b border-white/10 pb-2">
+                            <span class="text-neutral-400">COLD START OVERHEAD</span>
+                            <span class="text-white font-bold">&lt; 2 ms (Warm Memory Snapshot)</span>
                         </div>
+                        <div class="flex justify-between border-b border-white/10 pb-2">
+                            <span class="text-neutral-400">BGP ROUTING FAILOVER</span>
+                            <span class="text-white font-bold">&lt; 45 ms Automatic Anycast</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-neutral-400">LEAD CLOUD ARCHITECT</span>
+                            <span class="text-orange-400 font-bold">Kavita Rao</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h4 class="font-display font-bold text-lg text-white uppercase">Distributed Capabilities</h4>
+                        <ul class="space-y-2 text-sm text-neutral-400 font-light font-sans">
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>Automatic data sovereignty enforcement (GDPR, HIPAA, and Indian DPDP compliant)</li>
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>Cross-cloud multi-region state replication with Byzantine Fault Tolerance</li>
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>Continuous health probes with zero-downtime rolling firmware upgrades</li>
+                        </ul>
                     </div>
                 </div>
 
-                <!-- PRODUCT 2: TrexCore -->
-                <div class="product-card bg-white/90 dark:bg-[#0b0f19]/80 backdrop-blur-xl border border-itrex-border dark:border-slate-800/80 rounded-[36px] p-8 lg:p-12 shadow-xl hover:border-itrex-trexcore hover:shadow-orange-500/10 transition-all duration-500 relative overflow-hidden group tilt-card" data-category="telemetry-cloud" id="trexcore">
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                        <div class="lg:col-span-7 space-y-6">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-itrex-trexcore">
-                                    <i data-lucide="network" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <span class="text-[10px] font-mono uppercase text-itrex-trexcore font-bold tracking-widest block">Geo-Distributed Cloud Fabric</span>
-                                    <h2 class="font-space font-bold text-3xl sm:text-4xl text-itrex-navy dark:text-white">TrexCore</h2>
-                                </div>
-                            </div>
-
-                            <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed font-sans">
-                                Planetary serverless mesh runtime orchestrating state reconciliation across edge data centers. TrexCore enables instant serverless compute with cold starts under 2ms, zero centralized bottlenecking, and automatic BGP Anycast routing.
-                            </p>
-
-                            <!-- Key Metrics Row -->
-                            <div class="grid grid-cols-3 gap-4 pt-2">
-                                <div class="p-3.5 rounded-2xl bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800">
-                                    <span class="text-[9px] font-mono uppercase text-neutral-400 block">Active Edge Nodes</span>
-                                    <span class="text-base font-bold font-mono text-itrex-trexcore">84,200+</span>
-                                </div>
-                                <div class="p-3.5 rounded-2xl bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800">
-                                    <span class="text-[9px] font-mono uppercase text-neutral-400 block">Global Sync SLA</span>
-                                    <span class="text-base font-bold font-mono text-itrex-navy dark:text-white">&lt; 12 ms</span>
-                                </div>
-                                <div class="p-3.5 rounded-2xl bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800">
-                                    <span class="text-[9px] font-mono uppercase text-neutral-400 block">Cold Start</span>
-                                    <span class="text-base font-bold font-mono text-emerald-500">&lt; 2 ms</span>
-                                </div>
-                            </div>
-
-                            <!-- Bullet Differentiators -->
-                            <ul class="space-y-2 text-xs text-neutral-600 dark:text-neutral-300 font-sans">
-                                <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-itrex-trexcore flex-shrink-0"></i> Decentralized Raft + CRDT consensus ensuring consistent global state</li>
-                                <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-itrex-trexcore flex-shrink-0"></i> Automatic zero-downtime rolling upgrades across all cloud zones</li>
-                                <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-itrex-trexcore flex-shrink-0"></i> Native PostgreSQL, BigQuery & Redis connector bridges built-in</li>
-                            </ul>
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="aerodynamic-frame p-6 corner-brackets font-mono text-xs bg-black">
+                        <div class="flex items-center justify-between pb-3 border-b border-white/10 text-neutral-400">
+                            <span>trexcore_mesh.go</span>
+                            <span class="text-orange-400">Go 1.23 Edge Runtime</span>
                         </div>
-
-                        <!-- 3D CAD Wireframe & Architecture Spec Box -->
-                        <div class="lg:col-span-5 bg-slate-950 rounded-3xl p-6 border border-slate-800 font-mono text-xs text-neutral-300 shadow-2xl relative overflow-hidden">
-                            <!-- CAD Mesh Wireframe -->
-                            <div class="mb-4 p-3 rounded-2xl bg-slate-900/80 border border-orange-500/20 relative overflow-hidden group/cad">
-                                <div class="flex items-center justify-between text-[10px] text-orange-400 font-mono mb-2">
-                                    <span class="flex items-center space-x-1.5">
-                                        <i data-lucide="network" class="w-3.5 h-3.5 text-orange-400"></i>
-                                        <span class="tracking-wider uppercase font-semibold">Mesh Lattice CAD</span>
-                                    </span>
-                                    <span class="px-2 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-300 text-[9px]">FULL P2P TOPO</span>
-                                </div>
-                                <div class="h-20 w-full flex items-center justify-center relative bg-[#060814]/80 rounded-xl overflow-hidden border border-white/5">
-                                    <svg viewBox="0 0 280 80" class="w-full h-full text-orange-400 stroke-current fill-none stroke-[1.2]" preserveAspectRatio="xMidYMid meet">
-                                        <!-- Isometric CAD node lattice -->
-                                        <line x1="50" y1="40" x2="140" y2="15" stroke="rgba(249,115,22,0.4)" stroke-dasharray="2,2" />
-                                        <line x1="140" y1="15" x2="230" y2="40" stroke="rgba(249,115,22,0.4)" stroke-dasharray="2,2" />
-                                        <line x1="230" y1="40" x2="140" y2="65" stroke="rgba(249,115,22,0.4)" stroke-dasharray="2,2" />
-                                        <line x1="140" y1="65" x2="50" y2="40" stroke="rgba(249,115,22,0.4)" stroke-dasharray="2,2" />
-                                        <line x1="50" y1="40" x2="230" y2="40" stroke="rgba(249,115,22,0.2)" />
-                                        <!-- Central & Edge Node Orbs -->
-                                        <circle cx="140" cy="40" r="6" fill="#f97316" stroke="#ffffff" />
-                                        <circle cx="50" cy="40" r="4" fill="rgba(249,115,22,0.6)" stroke="#f97316" />
-                                        <circle cx="140" cy="15" r="4" fill="rgba(249,115,22,0.6)" stroke="#f97316" />
-                                        <circle cx="230" cy="40" r="4" fill="rgba(249,115,22,0.6)" stroke="#f97316" />
-                                        <circle cx="140" cy="65" r="4" fill="rgba(249,115,22,0.6)" stroke="#f97316" />
-                                        <text x="148" y="38" fill="#f97316" font-size="7" font-family="monospace">SYNC: 1.8ms</text>
-                                        <text x="20" y="20" fill="#10b981" font-size="7" font-family="monospace">84,200+ NODES</text>
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-800 text-[10px] text-neutral-500">
-                                <span>trexcore.mesh.sharding</span>
-                                <span class="text-itrex-trexcore">BGP Anycast</span>
-                            </div>
-                            <pre class="overflow-x-auto text-[11px] leading-relaxed text-amber-300"><code>mesh_cluster "global-fleet" {
-  replication = "MultiRegion_CRDT"
-  max_packet_drift = "4ms"
-  health_probe_freq = "200ms"
-  failover_policy = "InstantLocalElect"
-  egress_encryption = "WireGuard_mTLS"
+                        <pre class="pt-4 text-[11px] text-neutral-300 overflow-x-auto leading-relaxed"><code>func (m *MeshFabric) ReconcileState(
+    ctx context.Context, 
+    delta *StateVector
+) (*MeshAck, error) {
+    // 12ms global consensus propagation
+    peers := m.DiscoverNearbyPOPs(180)
+    return m.WireGuardBroadcast(ctx, peers, delta)
 }</code></pre>
-                            <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-[10px] text-neutral-400">
-                                <span>Topology: Full Mesh P2P</span>
-                                <span class="text-emerald-400">● 99.999% Availability</span>
-                            </div>
+                    </div>
+
+                    <div class="p-4 border border-white/10 bg-black/60 flex items-center justify-between font-mono text-xs">
+                        <span class="text-neutral-400">DEPLOYMENT MODEL</span>
+                        <span class="text-white font-bold">Custom Enterprise SLA</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCT 03: TREXVISION -->
+    <section id="trexvision" class="py-28 px-6 lg:px-12 border-b border-white/10 bg-black">
+        <div class="max-w-7xl mx-auto space-y-12">
+            <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-white/10">
+                <div>
+                    <span class="tech-tag" style="--color-neon-cyan: #38bdf8">PERCEPTION & AI // TRX-03</span>
+                    <h2 class="title-section text-4xl sm:text-6xl text-white mt-2">TREXVISION</h2>
+                    <p class="font-mono text-sm text-cyan-300 mt-1 uppercase tracking-wider">Spatial Intelligence and SLAM Engine</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="font-mono text-xs text-neutral-400">STATUS: RELEASE CANDIDATE</span>
+                    <span class="font-mono text-xs px-3 py-1 bg-cyan-950 text-cyan-300 border border-cyan-500/30">LOCKED 120 FPS</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                <div class="lg:col-span-7 space-y-8">
+                    <p class="font-sans text-neutral-300 text-base sm:text-lg leading-relaxed font-light">
+                        High-performance multimodal spatial vision API engineered for ambient enterprise robotics, spatial computing, and visual telemetry. Leveraging direct WebGPU and Vulkan compute pipelines, TrexVision extracts 3D point clouds and calculates real-time odometry at 120 FPS directly on edge silicon.
+                    </p>
+
+                    <div class="aerodynamic-frame p-6 corner-brackets font-mono text-xs space-y-4">
+                        <div class="flex justify-between border-b border-white/10 pb-2">
+                            <span class="text-neutral-400">FRAME PIPELINE</span>
+                            <span class="text-white font-bold">120 FPS Locked at 4K Resolution</span>
                         </div>
+                        <div class="flex justify-between border-b border-white/10 pb-2">
+                            <span class="text-neutral-400">SENSOR FUSION</span>
+                            <span class="text-white font-bold">LiDAR + Stereo Optics + IMU Kalman Filter</span>
+                        </div>
+                        <div class="flex justify-between border-b border-white/10 pb-2">
+                            <span class="text-neutral-400">ZERO LEAKAGE MODE</span>
+                            <span class="text-white font-bold">100% Local Processing (Air-Gapped)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-neutral-400">PRINCIPAL RESEARCHER</span>
+                            <span class="text-cyan-300 font-bold">Marcus Chen & Ishwari Patil</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h4 class="font-display font-bold text-lg text-white uppercase">Vision Capabilities</h4>
+                        <ul class="space-y-2 text-sm text-neutral-400 font-light font-sans">
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-cyan-300"></span>120 FPS real-time 3D pose extraction and volumetric mesh generation</li>
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-cyan-300"></span>Low-precision quantized neural inference (INT4 / FP8) on embedded GPUs</li>
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-cyan-300"></span>Odometry drift restricted to &lt;0.04% over long autonomous robotics trajectories</li>
+                        </ul>
                     </div>
                 </div>
 
-                <!-- PRODUCT 3: TrexVision -->
-                <div class="product-card bg-white/90 dark:bg-[#0b0f19]/80 backdrop-blur-xl border border-itrex-border dark:border-slate-800/80 rounded-[36px] p-8 lg:p-12 shadow-xl hover:border-itrex-trexvision hover:shadow-cyan-400/10 transition-all duration-500 relative overflow-hidden group tilt-card" data-category="neural-hardware autonomous-systems" id="trexvision">
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                        <div class="lg:col-span-7 space-y-6">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-itrex-trexvision">
-                                    <i data-lucide="eye" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <span class="text-[10px] font-mono uppercase text-itrex-trexvision font-bold tracking-widest block">Spatial Perception & WebGPU AI</span>
-                                    <h2 class="font-space font-bold text-3xl sm:text-4xl text-itrex-navy dark:text-white">TrexVision</h2>
-                                </div>
-                            </div>
-
-                            <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed font-sans">
-                                WebGPU-accelerated spatial AI pipeline performing point-cloud extraction, real-time 3D pose estimation, and camera telemetry processing directly in distributed edge microkernels and browsers at a locked 120 FPS.
-                            </p>
-
-                            <!-- Key Metrics Row -->
-                            <div class="grid grid-cols-3 gap-4 pt-2">
-                                <div class="p-3.5 rounded-2xl bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800">
-                                    <span class="text-[9px] font-mono uppercase text-neutral-400 block">Render Throughput</span>
-                                    <span class="text-base font-bold font-mono text-itrex-trexvision">120 FPS</span>
-                                </div>
-                                <div class="p-3.5 rounded-2xl bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800">
-                                    <span class="text-[9px] font-mono uppercase text-neutral-400 block">Odometry Latency</span>
-                                    <span class="text-base font-bold font-mono text-itrex-navy dark:text-white">&lt; 8 ms</span>
-                                </div>
-                                <div class="p-3.5 rounded-2xl bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800">
-                                    <span class="text-[9px] font-mono uppercase text-neutral-400 block">Shader Backend</span>
-                                    <span class="text-base font-bold font-mono text-emerald-500">WGSL Native</span>
-                                </div>
-                            </div>
-
-                            <!-- Bullet Differentiators -->
-                            <ul class="space-y-2 text-xs text-neutral-600 dark:text-neutral-300 font-sans">
-                                <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-itrex-trexvision flex-shrink-0"></i> Zero CPU-GPU roundtrip delays via shared memory unified ring buffers</li>
-                                <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-itrex-trexvision flex-shrink-0"></i> Visual odometry and LiDAR coordinate mapping at real-time speeds</li>
-                                <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-itrex-trexvision flex-shrink-0"></i> Cross-platform client support (Web, Linux Edge, Android Virtual Hub)</li>
-                            </ul>
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="aerodynamic-frame p-6 corner-brackets font-mono text-xs bg-[#05070a]">
+                        <div class="flex items-center justify-between pb-3 border-b border-white/10 text-neutral-400">
+                            <span>spatial_slam.wgsl</span>
+                            <span class="text-cyan-300">WebGPU Shader</span>
                         </div>
-
-                        <!-- 3D CAD Wireframe & Architecture Spec Box -->
-                        <div class="lg:col-span-5 bg-slate-950 rounded-3xl p-6 border border-slate-800 font-mono text-xs text-neutral-300 shadow-2xl relative overflow-hidden">
-                            <!-- CAD Frustum Wireframe -->
-                            <div class="mb-4 p-3 rounded-2xl bg-slate-900/80 border border-cyan-500/20 relative overflow-hidden group/cad">
-                                <div class="flex items-center justify-between text-[10px] text-cyan-400 font-mono mb-2">
-                                    <span class="flex items-center space-x-1.5">
-                                        <i data-lucide="eye" class="w-3.5 h-3.5 text-cyan-400"></i>
-                                        <span class="tracking-wider uppercase font-semibold">Point Cloud Frustum CAD</span>
-                                    </span>
-                                    <span class="px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-[9px]">120 FPS LOCK</span>
-                                </div>
-                                <div class="h-20 w-full flex items-center justify-center relative bg-[#060814]/80 rounded-xl overflow-hidden border border-white/5">
-                                    <svg viewBox="0 0 280 80" class="w-full h-full text-cyan-400 stroke-current fill-none stroke-[1.2]" preserveAspectRatio="xMidYMid meet">
-                                        <!-- Camera Frustum Pyramidal Lines -->
-                                        <line x1="40" y1="40" x2="220" y2="15" stroke="rgba(6,182,212,0.4)" />
-                                        <line x1="40" y1="40" x2="220" y2="65" stroke="rgba(6,182,212,0.4)" />
-                                        <line x1="40" y1="40" x2="160" y2="40" stroke="rgba(6,182,212,0.7)" stroke-dasharray="2,2" />
-                                        <polygon points="170,22 230,12 230,68 170,58" stroke="#06b6d4" fill="rgba(6,182,212,0.08)" />
-                                        <circle cx="40" cy="40" r="4" fill="#06b6d4" stroke="#ffffff" />
-                                        <!-- Point Cloud Markers -->
-                                        <circle cx="190" cy="35" r="2" fill="#ffffff" />
-                                        <circle cx="210" cy="48" r="2.5" fill="#38bdf8" />
-                                        <circle cx="180" cy="50" r="1.5" fill="#38bdf8" />
-                                        <circle cx="205" cy="25" r="2" fill="#ffffff" />
-                                        <text x="18" y="24" fill="#06b6d4" font-size="7" font-family="monospace">CAMERA ORIGIN</text>
-                                        <text x="175" y="77" fill="#10b981" font-size="7" font-family="monospace">WGSL ODOMETRY: &lt;8ms</text>
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-800 text-[10px] text-neutral-500">
-                                <span>trexvision.wgsl.pipeline</span>
-                                <span class="text-itrex-trexvision">WebGPU 1.0</span>
-                            </div>
-                            <pre class="overflow-x-auto text-[11px] leading-relaxed text-teal-300"><code>@compute @workgroup_size(16, 16)
-fn computePoseTelemetry(
-  @builtin(global_invocation_id) id: vec3&lt;u32&gt;
+                        <pre class="pt-4 text-[11px] text-neutral-300 overflow-x-auto leading-relaxed"><code>@compute @workgroup_size(64)
+fn computeOdometry(
+    @builtin(global_invocation_id) id: vec3&lt;u32&gt;
 ) {
-  let ray = samplePointCloud(id.xy);
-  let vector = projectOdometry(ray);
-  outputBuffer[id.x] = vector;
+    let point = lidarBuffer[id.x];
+    let transformed = applyPoseRotation(point);
+    pointCloudOutput[id.x] = transformed;
 }</code></pre>
-                            <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-[10px] text-neutral-400">
-                                <span>Shader Compilation: Ahead-Of-Time</span>
-                                <span class="text-emerald-400">● Lock 120 FPS</span>
-                            </div>
+                    </div>
+
+                    <div class="p-4 border border-white/10 bg-black/60 flex items-center justify-between font-mono text-xs">
+                        <span class="text-neutral-400">LICENSING</span>
+                        <span class="text-white font-bold">$120 / stream channel</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCT 04: TREXSHIELD -->
+    <section id="trexshield" class="py-28 px-6 lg:px-12 border-b border-white/10 bg-[#05070a]">
+        <div class="max-w-7xl mx-auto space-y-12">
+            <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-white/10">
+                <div>
+                    <span class="tech-tag" style="--color-neon-cyan: #10b981">CYBERSECURITY // TRX-04</span>
+                    <h2 class="title-section text-4xl sm:text-6xl text-white mt-2">TREXSHIELD</h2>
+                    <p class="font-mono text-sm text-emerald-400 mt-1 uppercase tracking-wider">eBPF Zero-Trust Hardware Enclave & Defense</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="font-mono text-xs text-neutral-400">STATUS: PRODUCTION v3.1</span>
+                    <span class="font-mono text-xs px-3 py-1 bg-emerald-950 text-emerald-400 border border-emerald-500/30">SUB-4MS RESPONSE</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                <div class="lg:col-span-7 space-y-8">
+                    <p class="font-sans text-neutral-300 text-base sm:text-lg leading-relaxed font-light">
+                        Proactive kernel-level zero-trust security engine utilizing eBPF system call verification with automated threat isolation and cryptographic audit attestations. TrexShield continuously inspects memory addresses and system calls at the kernel layer, neutralizing intrusion and lateral movement in under 4 milliseconds.
+                    </p>
+
+                    <div class="aerodynamic-frame p-6 corner-brackets font-mono text-xs space-y-4">
+                        <div class="flex justify-between border-b border-white/10 pb-2">
+                            <span class="text-neutral-400">ISOLATION SPEED</span>
+                            <span class="text-white font-bold">3.8 ms Autonomous Reaction</span>
                         </div>
+                        <div class="flex justify-between border-b border-white/10 pb-2">
+                            <span class="text-neutral-400">EBPF SYSCALL COVERAGE</span>
+                            <span class="text-white font-bold">100% of Kernel Intercepts Covered</span>
+                        </div>
+                        <div class="flex justify-between border-b border-white/10 pb-2">
+                            <span class="text-neutral-400">COMPLIANCE STANDARDS</span>
+                            <span class="text-white font-bold">ISO 27001 · FedRAMP · SOC 2 Type II</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-neutral-400">CHIEF ARCHITECT</span>
+                            <span class="text-emerald-400 font-bold">Satyam Swami</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h4 class="font-display font-bold text-lg text-white uppercase">Defense Enclaves</h4>
+                        <ul class="space-y-2 text-sm text-neutral-400 font-light font-sans">
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Autonomous kernel honeypot injection upon probing attempts</li>
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Deep packet inspection at wire speed with zero CPU overhead</li>
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Cryptographic container quarantine severing rogue processes instantly</li>
+                        </ul>
                     </div>
                 </div>
 
-                <!-- PRODUCT 4: TrexShield -->
-                <div class="product-card bg-white/90 dark:bg-[#0b0f19]/80 backdrop-blur-xl border border-itrex-border dark:border-slate-800/80 rounded-[36px] p-8 lg:p-12 shadow-xl hover:border-itrex-trexshield hover:shadow-emerald-500/10 transition-all duration-500 relative overflow-hidden group tilt-card" data-category="autonomous-systems telemetry-cloud" id="trexshield">
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                        <div class="lg:col-span-7 space-y-6">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-itrex-trexshield">
-                                    <i data-lucide="shield-check" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <span class="text-[10px] font-mono uppercase text-itrex-trexshield font-bold tracking-widest block">Hardware-Enforced Zero-Trust SecOps</span>
-                                    <h2 class="font-space font-bold text-3xl sm:text-4xl text-itrex-navy dark:text-white">TrexShield</h2>
-                                </div>
-                            </div>
-
-                            <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed font-sans">
-                                Autonomous kernel-level threat isolation built on eBPF system call introspection. TrexShield quarantines compromised container boundaries in under 4 milliseconds with zero manual intervention.
-                            </p>
-
-                            <!-- Key Metrics Row -->
-                            <div class="grid grid-cols-3 gap-4 pt-2">
-                                <div class="p-3.5 rounded-2xl bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800">
-                                    <span class="text-[9px] font-mono uppercase text-neutral-400 block">Quarantine Response</span>
-                                    <span class="text-base font-bold font-mono text-emerald-500">&lt; 4 ms</span>
-                                </div>
-                                <div class="p-3.5 rounded-2xl bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800">
-                                    <span class="text-[9px] font-mono uppercase text-neutral-400 block">Standard Compliance</span>
-                                    <span class="text-base font-bold font-mono text-itrex-navy dark:text-white">FIPS 140-2</span>
-                                </div>
-                                <div class="p-3.5 rounded-2xl bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800">
-                                    <span class="text-[9px] font-mono uppercase text-neutral-400 block">Inspection Depth</span>
-                                    <span class="text-base font-bold font-mono text-itrex-trexshield">eBPF Layer 7</span>
-                                </div>
-                            </div>
-
-                            <!-- Bullet Differentiators -->
-                            <ul class="space-y-2 text-xs text-neutral-600 dark:text-neutral-300 font-sans">
-                                <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-itrex-trexshield flex-shrink-0"></i> Continuous behavioral syscall verification without user-space context penalties</li>
-                                <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-itrex-trexshield flex-shrink-0"></i> Cryptographic hardware root-of-trust key storage for enterprise nodes</li>
-                                <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-itrex-trexshield flex-shrink-0"></i> Automated honeypot diversion isolating suspicious telemetry packets</li>
-                            </ul>
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="aerodynamic-frame p-6 corner-brackets font-mono text-xs bg-black">
+                        <div class="flex items-center justify-between pb-3 border-b border-white/10 text-neutral-400">
+                            <span>trexshield_ebpf.c</span>
+                            <span class="text-emerald-400">eBPF Kernel C</span>
                         </div>
-
-                        <!-- 3D CAD Wireframe & Architecture Spec Box -->
-                        <div class="lg:col-span-5 bg-slate-950 rounded-3xl p-6 border border-slate-800 font-mono text-xs text-neutral-300 shadow-2xl relative overflow-hidden">
-                            <!-- CAD Enclave Shield Wireframe -->
-                            <div class="mb-4 p-3 rounded-2xl bg-slate-900/80 border border-emerald-500/20 relative overflow-hidden group/cad">
-                                <div class="flex items-center justify-between text-[10px] text-emerald-400 font-mono mb-2">
-                                    <span class="flex items-center space-x-1.5">
-                                        <i data-lucide="shield" class="w-3.5 h-3.5 text-emerald-400"></i>
-                                        <span class="tracking-wider uppercase font-semibold">Enclave Dome Schematic</span>
-                                    </span>
-                                    <span class="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[9px]">FIPS 140-2 LEVEL 3</span>
-                                </div>
-                                <div class="h-20 w-full flex items-center justify-center relative bg-[#060814]/80 rounded-xl overflow-hidden border border-white/5">
-                                    <svg viewBox="0 0 280 80" class="w-full h-full text-emerald-400 stroke-current fill-none stroke-[1.2]" preserveAspectRatio="xMidYMid meet">
-                                        <!-- Concentric Hex Enclave Shield -->
-                                        <polygon points="140,12 185,25 185,55 140,68 95,55 95,25" stroke="#10b981" fill="rgba(16,185,129,0.08)" />
-                                        <polygon points="140,20 170,29 170,51 140,60 110,51 110,29" stroke="rgba(16,185,129,0.5)" />
-                                        <circle cx="140" cy="40" r="5" fill="#10b981" stroke="#ffffff" />
-                                        <line x1="95" y1="25" x2="40" y2="15" stroke="rgba(16,185,129,0.3)" stroke-dasharray="2,2" />
-                                        <line x1="185" y1="25" x2="240" y2="15" stroke="rgba(16,185,129,0.3)" stroke-dasharray="2,2" />
-                                        <line x1="140" y1="68" x2="140" y2="76" stroke="rgba(16,185,129,0.6)" />
-                                        <text x="25" y="25" fill="#10b981" font-size="7" font-family="monospace">eBPF INTROSPECTION</text>
-                                        <text x="180" y="70" fill="#38bdf8" font-size="7" font-family="monospace">SEC_ISOLATION: 3.8ms</text>
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-800 text-[10px] text-neutral-500">
-                                <span>trexshield.ebpf.policy</span>
-                                <span class="text-emerald-400">Kernel Active</span>
-                            </div>
-                            <pre class="overflow-x-auto text-[11px] leading-relaxed text-emerald-300"><code>SEC("tracepoint/syscalls/sys_enter_execve")
-int audit_binary_execution(void *ctx) {
-    if (!verify_hardware_hash(ctx)) {
-        quarantine_cgroup_immediate();
-        emit_audit_event(FIPS_ALERT_SEV1);
+                        <pre class="pt-4 text-[11px] text-neutral-300 overflow-x-auto leading-relaxed"><code>SEC("tracepoint/syscalls/sys_enter")
+int trace_syscall(struct trace_event_raw_sys_enter *ctx) {
+    if (is_anomalous_syscall(ctx->id)) {
+        quarantine_container(ctx->id);
+        emit_audit_attestation(ctx->id);
         return -EPERM;
     }
     return 0;
 }</code></pre>
-                            <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-[10px] text-neutral-400">
-                                <span>Sandboxing: cgroups v2 + eBPF</span>
-                                <span class="text-emerald-400">● Autonomous Quarantine</span>
-                            </div>
-                        </div>
+                    </div>
+
+                    <div class="p-4 border border-white/10 bg-black/60 flex items-center justify-between font-mono text-xs">
+                        <span class="text-neutral-400">AVAILABILITY</span>
+                        <span class="text-white font-bold">Included with TrexOS Enterprise</span>
                     </div>
                 </div>
-
-                <!-- PRODUCT 5: TrexConnect -->
-                <div class="product-card bg-white/90 dark:bg-[#0b0f19]/80 backdrop-blur-xl border border-itrex-border dark:border-slate-800/80 rounded-[36px] p-8 lg:p-12 shadow-xl hover:border-itrex-gold hover:shadow-amber-500/10 transition-all duration-500 relative overflow-hidden group tilt-card" data-category="telemetry-cloud" id="trexconnect">
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                        <div class="lg:col-span-7 space-y-6">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-itrex-gold">
-                                    <i data-lucide="zap" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <span class="text-[10px] font-mono uppercase text-itrex-gold font-bold tracking-widest block">Quantum-Resistant Event Streaming</span>
-                                    <h2 class="font-space font-bold text-3xl sm:text-4xl text-itrex-navy dark:text-white">TrexConnect</h2>
-                                </div>
-                            </div>
-
-                            <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed font-sans">
-                                Ultra-high-throughput TLS 1.3 messaging fabric capable of delivering 1.8M messages per second with zero-copy packet dispatch and cross-cloud VPC bridging.
-                            </p>
-
-                            <!-- Key Metrics Row -->
-                            <div class="grid grid-cols-3 gap-4 pt-2">
-                                <div class="p-3.5 rounded-2xl bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800">
-                                    <span class="text-[9px] font-mono uppercase text-neutral-400 block">Peak Ingestion</span>
-                                    <span class="text-base font-bold font-mono text-itrex-gold">1.8M msgs/s</span>
-                                </div>
-                                <div class="p-3.5 rounded-2xl bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800">
-                                    <span class="text-[9px] font-mono uppercase text-neutral-400 block">P99 Latency</span>
-                                    <span class="text-base font-bold font-mono text-itrex-navy dark:text-white">&lt; 0.9 ms</span>
-                                </div>
-                                <div class="p-3.5 rounded-2xl bg-itrex-neutralLight dark:bg-slate-950 border border-itrex-border dark:border-slate-800">
-                                    <span class="text-[9px] font-mono uppercase text-neutral-400 block">Encryption</span>
-                                    <span class="text-base font-bold font-mono text-emerald-500">TLS 1.3 PQC</span>
-                                </div>
-                            </div>
-
-                            <!-- Bullet Differentiators -->
-                            <ul class="space-y-2 text-xs text-neutral-600 dark:text-neutral-300 font-sans">
-                                <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-itrex-gold flex-shrink-0"></i> Zero deserialization overhead for high-frequency trading and IoT data</li>
-                                <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-itrex-gold flex-shrink-0"></i> Seamless drop-in compatibility with gRPC, WebSockets, and Kafka</li>
-                                <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-itrex-gold flex-shrink-0"></i> Hardware ring-buffer queuing avoiding memory paging locks</li>
-                            </ul>
-                        </div>
-
-                        <!-- 3D CAD Wireframe & Architecture Spec Box -->
-                        <div class="lg:col-span-5 bg-slate-950 rounded-3xl p-6 border border-slate-800 font-mono text-xs text-neutral-300 shadow-2xl relative overflow-hidden">
-                            <!-- CAD Ring Buffer Event Stream Wireframe -->
-                            <div class="mb-4 p-3 rounded-2xl bg-slate-900/80 border border-amber-500/20 relative overflow-hidden group/cad">
-                                <div class="flex items-center justify-between text-[10px] text-amber-400 font-mono mb-2">
-                                    <span class="flex items-center space-x-1.5">
-                                        <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
-                                        <span class="tracking-wider uppercase font-semibold">Zero-Copy Buffer CAD</span>
-                                    </span>
-                                    <span class="px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[9px]">1.8M MSGS/S</span>
-                                </div>
-                                <div class="h-20 w-full flex items-center justify-center relative bg-[#060814]/80 rounded-xl overflow-hidden border border-white/5">
-                                    <svg viewBox="0 0 280 80" class="w-full h-full text-amber-400 stroke-current fill-none stroke-[1.2]" preserveAspectRatio="xMidYMid meet">
-                                        <!-- Ring Buffer Loop & Packet Streams -->
-                                        <ellipse cx="140" cy="40" rx="90" ry="24" stroke="rgba(245,158,11,0.3)" />
-                                        <ellipse cx="140" cy="40" rx="60" ry="16" stroke="#c29738" stroke-dasharray="4,4" />
-                                        <circle cx="80" cy="40" r="4" fill="#fbbf24" stroke="#ffffff" />
-                                        <circle cx="140" cy="16" r="3" fill="#fbbf24" />
-                                        <circle cx="200" cy="40" r="4" fill="#fbbf24" stroke="#ffffff" />
-                                        <circle cx="140" cy="64" r="3" fill="#fbbf24" />
-                                        <line x1="20" y1="40" x2="50" y2="40" stroke="#fbbf24" />
-                                        <line x1="230" y1="40" x2="260" y2="40" stroke="#fbbf24" />
-                                        <text x="18" y="25" fill="#c29738" font-size="7" font-family="monospace">INGEST STREAM</text>
-                                        <text x="195" y="72" fill="#10b981" font-size="7" font-family="monospace">P99: &lt;0.9ms</text>
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-800 text-[10px] text-neutral-500">
-                                <span>trexconnect.stream.json</span>
-                                <span class="text-itrex-gold">Zero-Copy Stream</span>
-                            </div>
-                            <pre class="overflow-x-auto text-[11px] leading-relaxed text-amber-200"><code>stream "enterprise-telemetry" {
-  protocol = "gRPC_over_mTLS13"
-  multiplex_streams = 4096
-  buffer_policy = "DirectMemoryMap"
-  backpressure = "DropTailAdaptive"
-  throughput_target = "1800000_mps"
-}</code></pre>
-                            <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-[10px] text-neutral-400">
-                                <span>Encoding: Protobuf v3 + FlatBuffers</span>
-                                <span class="text-emerald-400">● Sub-ms P99 SLA</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- 3. COMPREHENSIVE ARCHITECTURAL SPECIFICATIONS MATRIX -->
-        <section id="specs-matrix" class="py-20 px-6 lg:px-16 border-t border-itrex-border dark:border-slate-900 bg-white dark:bg-itrex-navy relative transition-colors duration-700">
-            <div class="max-w-7xl mx-auto space-y-12">
-                <div class="text-center max-w-2xl mx-auto space-y-3">
-                    <span class="text-xs font-mono tracking-widest text-neutral-400 uppercase">Architecture Benchmark</span>
-                    <h2 class="font-space font-bold text-3xl sm:text-5xl text-itrex-navy dark:text-white" data-hover="heading">
-                        Specifications Matrix
-                    </h2>
-                    <p class="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400">
-                        Side-by-side technical evaluation across performance, latency, isolation, and security standards.
+    <!-- PRODUCT 05: TREXCONNECT -->
+    <section id="trexconnect" class="py-28 px-6 lg:px-12 border-b border-white/10 bg-black">
+        <div class="max-w-7xl mx-auto space-y-12">
+            <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-white/10">
+                <div>
+                    <span class="tech-tag" style="--color-neon-cyan: #e2e8f0">NETWORKING // TRX-05</span>
+                    <h2 class="title-section text-4xl sm:text-6xl text-white mt-2">TREXCONNECT</h2>
+                    <p class="font-mono text-sm text-neutral-300 mt-1 uppercase tracking-wider">Ultra-Low Latency Multiplexed Protocol Mesh</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="font-mono text-xs text-neutral-400">STATUS: PRODUCTION v2.1</span>
+                    <span class="font-mono text-xs px-3 py-1 bg-neutral-800 text-white border border-white/30">1.8M MSG/SEC</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                <div class="lg:col-span-7 space-y-8">
+                    <p class="font-sans text-neutral-300 text-base sm:text-lg leading-relaxed font-light">
+                        High-throughput binary protocol engine bridging edge robotics fleets, IoT gateways, and telemetry pipelines with zero-copy serialization and QUIC transport. TrexConnect establishes encrypted multi-channel pipelines that bypass Linux userland buffer copies entirely.
                     </p>
-                </div>
 
-                <!-- Matrix Table Container -->
-                <div class="overflow-x-auto rounded-[32px] border border-itrex-border dark:border-slate-800 shadow-sm bg-white dark:bg-slate-900">
-                    <table class="w-full text-left text-xs font-mono">
-                        <thead class="bg-itrex-neutralLight dark:bg-slate-950 border-b border-itrex-border dark:border-slate-800 uppercase text-[10px] tracking-wider text-neutral-400">
-                            <tr>
-                                <th class="p-5">Platform Product</th>
-                                <th class="p-5">Primary Runtime</th>
-                                <th class="p-5">Latency SLA</th>
-                                <th class="p-5">Memory Footprint</th>
-                                <th class="p-5">Security Enclave</th>
-                                <th class="p-5">Target Hardware</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-itrex-border dark:divide-slate-800/80 text-neutral-600 dark:text-neutral-300">
-                            <tr class="hover:bg-neutral-50/50 dark:hover:bg-slate-800/40 transition-colors">
-                                <td class="p-5 font-bold text-itrex-navy dark:text-white font-space flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-itrex-trexos"></span>
-                                    <span>TrexOS</span>
-                                </td>
-                                <td class="p-5 text-cyan-400">Rust Microkernel</td>
-                                <td class="p-5 font-bold text-emerald-500">0.35 ms (Sub-ms)</td>
-                                <td class="p-5">4.2 MB Footprint</td>
-                                <td class="p-5">Hardware Ring0 / DMA Shield</td>
-                                <td class="p-5 text-neutral-400">ARM64, x86_64, RISC-V</td>
-                            </tr>
-                            <tr class="hover:bg-neutral-50/50 dark:hover:bg-slate-800/40 transition-colors">
-                                <td class="p-5 font-bold text-itrex-navy dark:text-white font-space flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-itrex-trexcore"></span>
-                                    <span>TrexCore</span>
-                                </td>
-                                <td class="p-5 text-amber-400">Distributed Mesh</td>
-                                <td class="p-5 font-bold text-emerald-500">&lt; 12 ms Worldwide</td>
-                                <td class="p-5">Dynamic Autoscaling</td>
-                                <td class="p-5">mTLS WireGuard Mesh</td>
-                                <td class="p-5 text-neutral-400">Planetary Cloud / Bare-Metal</td>
-                            </tr>
-                            <tr class="hover:bg-neutral-50/50 dark:hover:bg-slate-800/40 transition-colors">
-                                <td class="p-5 font-bold text-itrex-navy dark:text-white font-space flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-itrex-trexvision"></span>
-                                    <span>TrexVision</span>
-                                </td>
-                                <td class="p-5 text-teal-400">WebGPU WGSL Engine</td>
-                                <td class="p-5 font-bold text-emerald-500">120 FPS (&lt; 8ms)</td>
-                                <td class="p-5">Direct GPU Memory</td>
-                                <td class="p-5">Browser Sandbox / Edge Host</td>
-                                <td class="p-5 text-neutral-400">NVIDIA, Apple Silicon, Vulkan</td>
-                            </tr>
-                            <tr class="hover:bg-neutral-50/50 dark:hover:bg-slate-800/40 transition-colors">
-                                <td class="p-5 font-bold text-itrex-navy dark:text-white font-space flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-itrex-trexshield"></span>
-                                    <span>TrexShield</span>
-                                </td>
-                                <td class="p-5 text-emerald-400">eBPF Layer 7 Enclave</td>
-                                <td class="p-5 font-bold text-emerald-500">&lt; 4 ms Quarantine</td>
-                                <td class="p-5">Kernel In-Memory</td>
-                                <td class="p-5 font-bold text-itrex-gold">FIPS 140-2 Level 3</td>
-                                <td class="p-5 text-neutral-400">Linux Kernel 5.15+</td>
-                            </tr>
-                            <tr class="hover:bg-neutral-50/50 dark:hover:bg-slate-800/40 transition-colors">
-                                <td class="p-5 font-bold text-itrex-navy dark:text-white font-space flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-itrex-gold"></span>
-                                    <span>TrexConnect</span>
-                                </td>
-                                <td class="p-5 text-amber-300">TLS 1.3 Event Fabric</td>
-                                <td class="p-5 font-bold text-emerald-500">&lt; 0.9 ms P99</td>
-                                <td class="p-5">Lockless Buffer Pool</td>
-                                <td class="p-5">Post-Quantum Cryptography</td>
-                                <td class="p-5 text-neutral-400">Cross-Cloud VPC Bridging</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- 4. BOTTOM ENTERPRISE CTA -->
-        <section class="py-24 px-6 lg:px-16 border-t border-itrex-border dark:border-slate-900 bg-itrex-navy text-white text-center relative overflow-hidden">
-            <div class="max-w-4xl mx-auto space-y-8 relative z-10">
-                <span class="text-xs font-mono tracking-widest text-neutral-400 uppercase">Enterprise Onboarding</span>
-                <h2 class="font-space font-bold text-4xl sm:text-6xl tracking-tight text-white">
-                    Deploy Next-Gen Autonomy Today
-                </h2>
-                <p class="text-sm sm:text-base text-neutral-400 max-w-xl mx-auto">
-                    Connect your enterprise infrastructure to the I-Trex platform or schedule an engineering architecture session with our founders.
-                </p>
-                
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                    <a href="login.html" class="px-8 py-3.5 bg-itrex-gold hover:bg-amber-400 text-itrex-navy font-bold text-xs uppercase tracking-wider rounded-full transition-all duration-300 shadow-xl flex items-center space-x-2" data-hover="button">
-                        <i data-lucide="lock" class="w-4 h-4"></i>
-                        <span>Enter Workspace Terminal</span>
-                    </a>
-                    <a href="index.html#contact" class="px-8 py-3.5 bg-slate-900 border border-slate-800 hover:border-itrex-gold text-white font-semibold text-xs uppercase tracking-wider rounded-full transition-all duration-300" data-hover="button">
-                        Contact Systems Architecture Team →
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- MULTI-COLUMN CORPORATE FOOTER -->
-        <footer class="border-t border-itrex-border dark:border-slate-900 py-16 px-6 lg:px-16 bg-white dark:bg-itrex-navy relative z-10 transition-colors duration-700">
-            <div class="max-w-7xl mx-auto space-y-12">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-12 text-xs">
-                    
-                    <div class="space-y-4">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-xl overflow-hidden bg-black border border-neutral-300 dark:border-slate-700 flex items-center justify-center">
-                                <img src="assets/images/itrex_logo.jpg" alt="I-Trex" class="w-full h-full object-cover">
-                            </div>
-                            <span class="font-space font-bold tracking-tight text-sm text-itrex-navy dark:text-white">I-Trex Innovations</span>
+                    <div class="aerodynamic-frame p-6 corner-brackets font-mono text-xs space-y-4">
+                        <div class="flex justify-between border-b border-white/10 pb-2">
+                            <span class="text-neutral-400">WIRE THROUGHPUT</span>
+                            <span class="text-white font-bold">1.8 Million Messages / Second</span>
                         </div>
-                        <p class="text-neutral-500 dark:text-neutral-400 leading-relaxed font-sans">
-                            Autonomous microkernel operating systems, geo-distributed edge cloud mesh, and hardware-isolated enterprise cybersecurity.
-                        </p>
+                        <div class="flex justify-between border-b border-white/10 pb-2">
+                            <span class="text-neutral-400">PACKET SERIALIZATION</span>
+                            <span class="text-white font-bold">Zero-Copy DMA Memory Dispatch</span>
+                        </div>
+                        <div class="flex justify-between border-b border-white/10 pb-2">
+                            <span class="text-neutral-400">TRANSPORT PROTOCOL</span>
+                            <span class="text-white font-bold">Multiplexed QUIC over TLS 1.3</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-neutral-400">CORE ARCHITECTS</span>
+                            <span class="text-white font-bold">Satyam Swami & Kavita Rao</span>
+                        </div>
                     </div>
 
-                    <div class="space-y-4">
-                        <span class="font-mono text-neutral-400 uppercase tracking-widest text-[9px] font-bold">Products Suite</span>
-                        <ul class="space-y-2 text-neutral-500 dark:text-neutral-400">
-                            <li><a href="#trexos" class="hover:text-itrex-navy dark:hover:text-white transition-colors">TrexOS Microkernel</a></li>
-                            <li><a href="#trexcore" class="hover:text-itrex-navy dark:hover:text-white transition-colors">TrexCore Cloud Mesh</a></li>
-                            <li><a href="#trexvision" class="hover:text-itrex-navy dark:hover:text-white transition-colors">TrexVision Spatial AI</a></li>
-                            <li><a href="#trexshield" class="hover:text-itrex-navy dark:hover:text-white transition-colors">TrexShield SecOps</a></li>
-                            <li><a href="#trexconnect" class="hover:text-itrex-navy dark:hover:text-white transition-colors">TrexConnect Fabric</a></li>
+                    <div class="space-y-3">
+                        <h4 class="font-display font-bold text-lg text-white uppercase">Protocol Features</h4>
+                        <ul class="space-y-2 text-sm text-neutral-400 font-light font-sans">
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-white"></span>Quantum-resistant post-quantum lattice cryptography support</li>
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-white"></span>Cross-cloud VPC bridging with sub-millisecond edge queue dispatch</li>
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-white"></span>Direct hardware NIC offload for automotive and robotics telemetry</li>
                         </ul>
                     </div>
-
-                    <div class="space-y-4">
-                        <span class="font-mono text-neutral-400 uppercase tracking-widest text-[9px] font-bold">Leadership</span>
-                        <ul class="space-y-2 text-neutral-500 dark:text-neutral-400">
-                            <li><a href="index.html#team" class="hover:text-itrex-navy dark:hover:text-white transition-colors">Satyam Swami (Founder)</a></li>
-                            <li><a href="index.html#team" class="hover:text-itrex-navy dark:hover:text-white transition-colors">Ishwari Patil (Co-Founder)</a></li>
-                            <li><a href="login.html" class="hover:text-itrex-navy dark:hover:text-white transition-colors">Workspace Access</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="space-y-4">
-                        <span class="font-mono text-neutral-400 uppercase tracking-widest text-[9px] font-bold">Enclave Security</span>
-                        <p class="text-neutral-500 dark:text-neutral-400 leading-relaxed">
-                            Zero-Trust verified TLS 1.3 architecture with hardware-isolated cryptography.
-                        </p>
-                        <span class="text-emerald-500 font-mono text-[10px] block">● All Systems Nominal</span>
-                    </div>
-
                 </div>
 
-                <div class="pt-8 border-t border-itrex-border dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] font-mono text-neutral-400">
-                    <p>&copy; 2026 I-Trex Innovations. All rights reserved. Founded by Satyam Swami.</p>
-                    <div class="flex space-x-6">
-                        <a href="index.html" class="hover:text-itrex-gold transition-colors">Homepage</a>
-                        <a href="login.html" class="hover:text-itrex-gold transition-colors">Workspace Terminal</a>
-                        <a href="index.html#contact" class="hover:text-itrex-gold transition-colors">Connect</a>
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="aerodynamic-frame p-6 corner-brackets font-mono text-xs bg-[#05070a]">
+                        <div class="flex items-center justify-between pb-3 border-b border-white/10 text-neutral-400">
+                            <span>trexconnect_quic.rs</span>
+                            <span class="text-white">Zero-Copy Rust</span>
+                        </div>
+                        <pre class="pt-4 text-[11px] text-neutral-300 overflow-x-auto leading-relaxed"><code>pub async fn dispatch_telemetry(
+    stream: &mut QuicStream,
+    buffer: &[u8]
+) -> Result&lt;usize, TransportError&gt; {
+    // 0-copy direct DMA packet dispatch
+    stream.write_all_dma(buffer).await
+}</code></pre>
+                    </div>
+
+                    <div class="p-4 border border-white/10 bg-black/60 flex items-center justify-between font-mono text-xs">
+                        <span class="text-neutral-400">THROUGHPUT GUARANTEE</span>
+                        <span class="text-white font-bold">Line Rate Hardware Saturated</span>
                     </div>
                 </div>
             </div>
-        </footer>
+        </div>
+    </section>
 
-    </main>
+    <!-- Bottom Action CTA -->
+    <section class="py-24 px-6 lg:px-12 border-t border-white/10 bg-gradient-to-t from-black via-[#05070a] to-black text-center">
+        <div class="max-w-4xl mx-auto space-y-8">
+            <span class="tech-tag">INTEGRATION & PILOT</span>
+            <h2 class="title-section text-4xl sm:text-6xl text-white">READY TO DEPLOY?</h2>
+            <p class="font-sans text-neutral-400 text-base max-w-xl mx-auto font-light leading-relaxed">
+                Schedule a direct architectural consultation with Satyam and evaluate the I-Trex deterministic autonomous stack in your infrastructure.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="index.html#contact" class="chamfer-btn-primary">
+                    <span>CONNECT WITH FOUNDER</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+                <a href="index.html" class="chamfer-btn-outline">
+                    <span>RETURN TO HOME</span>
+                </a>
+            </div>
+        </div>
+    </section>
 
-    <!-- Interactive Scripts for Products Page -->
+    <!-- Footer -->
+    <footer class="py-12 px-6 lg:px-12 border-t border-white/10 bg-black font-mono text-xs text-neutral-500">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <img src="assets/images/itrex_logo_silver_transparent.png" alt="I-Trex Logo" class="h-8 w-auto">
+                <span class="text-white">I-TREX INNOVATIONS · SPECIFICATIONS CATALOG</span>
+            </div>
+            <div>© 2026 I-TREX INNOVATIONS. ALL RIGHTS RESERVED.</div>
+        </div>
+    </footer>
+
     <script>
-        lucide.createIcons();
-
-        // 1. Audio Synthesizer
-        let audioCtx = null;
-        function initAudio() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+            window.lucide.createIcons();
         }
-        function playTick() {
-            try {
-                initAudio();
-                if (!audioCtx) return;
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.type = "sine";
-                osc.frequency.setValueAtTime(1400, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(700, audioCtx.currentTime + 0.03);
-                gain.gain.setValueAtTime(0.015, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.03);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.03);
-            } catch (e) {}
-        }
-        function playChime() {
-            try {
-                initAudio();
-                if (!audioCtx) return;
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.type = "sine";
-                osc.frequency.setValueAtTime(880, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.5);
-            } catch (e) {}
-        }
-
-        // 2. Solar Eclipse Theme Swapper
-        const themeToggleBtn = document.getElementById("theme-toggle-btn");
-        if (themeToggleBtn) {
-            themeToggleBtn.addEventListener("click", () => {
-                document.documentElement.classList.toggle("dark");
-                playChime();
-                const isDark = document.documentElement.classList.contains("dark");
-                localStorage.setItem("itrex-theme", isDark ? "dark" : "light");
-            });
-        }
-        if (localStorage.getItem("itrex-theme") === "dark") {
-            document.documentElement.classList.add("dark");
-        }
-
-        // 3. Lenis Smooth Scrolling Engine
-        let productLenis = null;
         if (typeof Lenis !== 'undefined') {
-            productLenis = new Lenis({
-                duration: 1.2,
-                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-                orientation: 'vertical',
-                smoothWheel: true,
-            });
-
-            productLenis.on('scroll', ScrollTrigger.update);
-            gsap.ticker.add((time) => {
-                productLenis.raf(time * 1000);
-            });
-            gsap.ticker.lagSmoothing(0);
-
-            productLenis.on('scroll', (e) => {
-                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-                if (docHeight > 0) {
-                    const progress = (e.scroll / docHeight) * 100;
-                    const bar = document.getElementById("scroll-trajectory-progress");
-                    if (bar) bar.style.width = Math.min(100, Math.max(0, progress)) + "%";
-                }
-            });
-        }
-
-        // 4. Preloader & GSAP Orchestrated Entrance Sequence
-        let hasEntrancePlayed = false;
-
-        function playProductHeroSequence() {
-            const heroTl = gsap.timeline({ delay: 0.1 });
-
-            // 1. Reveal pill badge
-            heroTl.to("#product-hero-badge", {
-                opacity: 1,
-                y: 0,
-                duration: 0.6,
-                ease: "power3.out"
-            });
-
-            // 2. Staggered headline reveal: opacity 0, y: 40 -> opacity 1, y: 0
-            heroTl.to("#product-hero-headline .hero-reveal-line", {
-                y: 0,
-                opacity: 1,
-                stagger: 0.16,
-                duration: 0.85,
-                ease: "power4.out"
-            }, "-=0.3");
-
-            // 3. Supporting subtext reveal directly after headline resolves (+=0.2s)
-            heroTl.to("#product-hero-subtext", {
-                y: 0,
-                opacity: 1,
-                duration: 0.65,
-                ease: "power3.out"
-            }, "+=0.2");
-
-            // 4. Primary CTA enters from opposite direction/axis with elastic easing and settles into place
-            heroTl.to("#product-hero-cta", {
-                x: 0,
-                opacity: 1,
-                duration: 0.85,
-                ease: "back.out(1.4)"
-            }, "-=0.3");
-
-            // 5. Secondary CTA enters from +X offset
-            heroTl.to("#product-hero-secondary-cta", {
-                x: 0,
-                opacity: 1,
-                duration: 0.85,
-                ease: "back.out(1.2)"
-            }, "-=0.6");
-        }
-
-        function runProductEntrance() {
-            if (hasEntrancePlayed) return;
-            hasEntrancePlayed = true;
-
-            const tl = gsap.timeline();
-            tl.to("#loader-logo-img", {
-                scale: 1.1,
-                rotate: 360,
-                duration: 0.8,
-                ease: "power3.inOut"
-            });
-            tl.to(".loader-letter", {
-                opacity: 1,
-                y: 0,
-                stagger: 0.03,
-                duration: 0.35,
-                ease: "power2.out"
-            }, "-=0.4");
-            tl.to("#loader", {
-                y: "-100%",
-                duration: 0.6,
-                ease: "power4.inOut",
-                onComplete: () => {
-                    const loader = document.getElementById("loader");
-                    if (loader) {
-                        loader.style.display = "none";
-                        loader.style.pointerEvents = "none";
-                    }
-                }
-            }, "+=0.1");
-            tl.to("#main-content", {
-                opacity: 1,
-                duration: 0.5,
-                onComplete: () => {
-                    gsap.to("#navbar", {
-                        y: 0,
-                        opacity: 1,
-                        duration: 0.6,
-                        ease: "power4.out"
-                    });
-                    playProductHeroSequence();
-                    initProductAnimations();
-                }
-            }, "-=0.3");
-        }
-
-        window.addEventListener('load', runProductEntrance);
-        if (document.readyState === 'complete') {
-            setTimeout(runProductEntrance, 200);
-        } else {
-            setTimeout(runProductEntrance, 1200); // Safety fallback
-        }
-
-        function initProductAnimations() {
-            gsap.registerPlugin(ScrollTrigger);
-
-            // Navbar solid glass swap on scroll
-            ScrollTrigger.create({
-                start: "top -10%",
-                onEnter: () => {
-                    const nav = document.getElementById("navbar");
-                    nav.classList.add("bg-white/90", "dark:bg-slate-950/90", "backdrop-blur-md", "shadow-sm", "py-3");
-                    nav.classList.remove("py-6");
-                },
-                onLeaveBack: () => {
-                    const nav = document.getElementById("navbar");
-                    nav.classList.remove("bg-white/90", "dark:bg-slate-950/90", "backdrop-blur-md", "shadow-sm", "py-3");
-                    nav.classList.add("py-6");
-                }
-            });
-
-            // Product Cards Stagger Reveal
-            gsap.utils.toArray(".product-card").forEach((card, idx) => {
-                gsap.from(card, {
-                    y: 40,
-                    opacity: 0,
-                    duration: 0.8,
-                    ease: "power3.out",
-                    scrollTrigger: {
-                        trigger: card,
-                        start: "top 85%",
-                        toggleActions: "play none none reverse"
-                    }
-                });
-            });
-        }
-
-        // 5. Interactive Category Filter Switcher (All, Autonomous Systems, Neural Hardware, Telemetry & Cloud)
-        function filterProducts(category, btn) {
-            playTick();
-            const allBtns = document.querySelectorAll(".product-filter-btn");
-            allBtns.forEach(b => {
-                b.className = "product-filter-btn px-5 py-2.5 rounded-full text-xs font-mono font-semibold tracking-wider uppercase transition-all bg-itrex-neutralLight dark:bg-slate-900 border border-itrex-border dark:border-slate-800 text-neutral-500 hover:text-itrex-navy dark:hover:text-white hover:border-itrex-gold";
-            });
-
-            btn.className = "product-filter-btn px-5 py-2.5 rounded-full text-xs font-mono font-bold tracking-wider uppercase transition-all bg-itrex-navy dark:bg-white text-white dark:text-itrex-navy shadow-md ring-2 ring-itrex-gold/30";
-
-            const cards = document.querySelectorAll(".product-card");
-            cards.forEach(card => {
-                const cardCats = (card.getAttribute("data-category") || "").split(" ");
-                if (category === "all" || cardCats.includes(category)) {
-                    gsap.to(card, {
-                        opacity: 1,
-                        scale: 1,
-                        display: "block",
-                        duration: 0.4,
-                        ease: "power2.out"
-                    });
-                } else {
-                    gsap.to(card, {
-                        opacity: 0,
-                        scale: 0.96,
-                        duration: 0.3,
-                        ease: "power2.in",
-                        onComplete: () => {
-                            card.style.display = "none";
-                        }
-                    });
-                }
-            });
-        }
-
-        // 6. Sparkle Canvas (Identical Luxury Aesthetics)
-        const canvas = document.getElementById("sparkle-canvas");
-        if (canvas) {
-            const ctx = canvas.getContext("2d");
-            let particlesArray = [];
-            const mouse = { x: null, y: null, lastX: 0, lastY: 0 };
-
-            function resizeCanvas() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
+            const lenis = new Lenis({ duration: 1.2, smooth: true });
+            function raf(time) {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
             }
-            window.addEventListener("resize", resizeCanvas);
-            resizeCanvas();
-
-            class Sparkle {
-                constructor(x, y) {
-                    this.x = x;
-                    this.y = y;
-                    this.speedX = (Math.random() - 0.5) * 1.6;
-                    this.speedY = (Math.random() - 0.5) * 1.6;
-                    this.size = Math.random() * 10 + 2;
-                    this.alpha = 1;
-                    this.decay = Math.random() * 0.015 + 0.01;
-                }
-                draw() {
-                    ctx.save();
-                    ctx.translate(this.x, this.y);
-                    ctx.globalAlpha = this.alpha;
-                    ctx.fillStyle = `rgba(194, 151, 56, ${this.alpha})`;
-                    ctx.beginPath();
-                    for (let i = 0; i < 4; i++) {
-                        ctx.rotate(Math.PI / 2);
-                        ctx.lineTo(0, this.size);
-                        ctx.lineTo(this.size * 0.18, this.size * 0.18);
-                    }
-                    ctx.closePath();
-                    ctx.fill();
-                    ctx.restore();
-                }
-                update() {
-                    this.x += this.speedX;
-                    this.y += this.speedY;
-                    this.alpha -= this.decay;
-                    if (this.size > 0.1) this.size -= 0.05;
-                }
-            }
-
-            window.addEventListener("mousemove", (e) => {
-                mouse.x = e.clientX;
-                mouse.y = e.clientY;
-                if (Math.random() < 0.2 && particlesArray.length < 14) {
-                    particlesArray.push(new Sparkle(mouse.x, mouse.y));
-                }
-            }, { passive: true });
-
-            function animateSparkles() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                for (let i = 0; i < particlesArray.length; i++) {
-                    particlesArray[i].update();
-                    particlesArray[i].draw();
-                    if (particlesArray[i].alpha <= 0) {
-                        particlesArray.splice(i, 1);
-                        i--;
-                    }
-                }
-                requestAnimationFrame(animateSparkles);
-            }
-            animateSparkles();
+            requestAnimationFrame(raf);
         }
     </script>
 </body>
