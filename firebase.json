@@ -3,3 +3,11 @@
     "rules": "firestore.rules"
   }
 }
+{
+  "hosting": {
+    "site": "i-trex-b4d3c",
+
+    "public": "public",
+    ...
+  }
+}

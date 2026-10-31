@@ -1,0 +1,36 @@
+type Product @table {
+  name: String!
+  type: String!
+  description: String
+  version: String
+}
+
+type Client @table {
+  companyName: String!
+  contactEmail: String!
+  industry: String
+  subscriptionTier: String
+}
+
+type Deployment @table {
+  status: String!
+  deploymentDate: Date!
+  configSettings: String
+  region: String
+  product: Product!
+  client: Client!
+}
+
+type Dependency @table {
+  dependentProduct: Product!
+  parentProduct: Product!
+  connectionType: String
+}
+
+type Metric @table {
+  metricName: String!
+  value: Float!
+  timestamp: Timestamp!
+  unit: String
+  deployment: Deployment!
+}

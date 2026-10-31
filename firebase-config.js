@@ -1,19 +1,15 @@
 /**
  * I-TREX INNOVATIONS — FIREBASE CLIENT CONFIGURATION
- * 
- * Paste your Web App credentials from the Firebase Console:
- * 1. Go to https://console.firebase.google.com/
- * 2. Select your I-Trex Project
- * 3. Go to Project Settings (Gear icon ⚙️) > General
- * 4. Under "Your apps", select your Web app (</>) or click "Add app"
- * 5. Copy the firebaseConfig object and paste its values below.
+ * Connected Project: i-trex (Project Number: 293404929962)
+ * Active Web App: I-Trex Website
  */
 
 window.ITREX_FIREBASE_CONFIG = {
-    apiKey: "",             // Example: "AIzaSy..."
-    authDomain: "",         // Example: "i-trex-innovations.firebaseapp.com"
-    projectId: "",          // Example: "i-trex-innovations"
-    storageBucket: "",      // Example: "i-trex-innovations.appspot.com"
-    messagingSenderId: "",  // Example: "123456789012"
-    appId: ""               // Example: "1:123456789012:web:abcdef..."
+    apiKey: "AIzaSyDsr55FIClJKiuVa0qVu5cYmmb58BT1w4Q",
+    authDomain: "i-trex.firebaseapp.com",
+    projectId: "i-trex",
+    storageBucket: "i-trex.firebasestorage.app",
+    messagingSenderId: "293404929962",
+    appId: "1:293404929962:web:f0d1e2e38e5dd6c21585d3",
+    measurementId: "G-NNCFG346PR"
 };

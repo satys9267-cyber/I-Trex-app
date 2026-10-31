@@ -9,6 +9,29 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
 
+    <!-- Zero-Trust Enclave Guard: Instant Redirection before Resource Rendering -->
+    <script>
+        (function() {
+            try {
+                const s = localStorage.getItem('itrex_auth_user');
+                if (!s) {
+                    location.replace('login.html?denied=admin_enclave_restricted');
+                    return;
+                }
+                const u = JSON.parse(s);
+                const r = (u.role || '').toLowerCase();
+                const e = (u.email || '').toLowerCase();
+                const ok = r === 'founder' || r === 'co-founder' || r === 'admin' ||
+                           e === 'satys9267@gmail.com' || e === 'ishwarip267@gmail.com';
+                if (!ok) {
+                    location.replace('dashboard.html');
+                }
+            } catch (err) {
+                location.replace('login.html?denied=admin_enclave_restricted');
+            }
+        })();
+    </script>
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>

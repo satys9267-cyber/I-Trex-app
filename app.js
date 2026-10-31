@@ -1125,7 +1125,7 @@ function initContactTerminal() {
     const statusModal = document.getElementById('contact-status-modal');
     if (!form) return;
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const name = document.getElementById('contact-name')?.value || 'Guest';
@@ -1139,33 +1139,46 @@ function initContactTerminal() {
             submitBtn.innerHTML = `<span>TRANSMITTING TLS 1.3...</span>`;
         }
 
-        // Simulate high-assurance cryptographic transmission
-        setTimeout(() => {
-            if (submitBtn) {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = `<span>TRANSMIT SECURE MESSAGE</span><i data-lucide="send" class="w-4 h-4"></i>`;
+        let transmissionId = '0x' + Math.random().toString(16).substring(2, 10).toUpperCase();
+
+        try {
+            const res = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, category, message })
+            });
+            const data = await res.json();
+            if (data && data.id) {
+                transmissionId = data.id.toUpperCase();
             }
+        } catch (err) {
+            console.warn('[I-Trex Contact] Local fallback used:', err);
+        }
 
-            // Reset form
-            form.reset();
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<span>TRANSMIT SECURE MESSAGE</span><i data-lucide="send" class="w-4 h-4"></i>`;
+        }
 
-            // Display confirmation modal
-            if (statusModal) {
-                const modalText = document.getElementById('contact-modal-text');
-                if (modalText) {
-                    modalText.innerHTML = `
-                        Transmission ID: <strong>0x${Math.random().toString(16).substring(2, 10).toUpperCase()}</strong><br>
-                        Encrypted payload for <strong>Satyam</strong> (Founder & Chief Systems Architect) queued successfully.
-                    `;
-                }
-                statusModal.classList.remove('hidden');
-                statusModal.classList.add('flex');
-            } else {
-                alert(`Transmission sent directly to Satyam (satys9267@gmail.com). We will reach out to ${email} shortly.`);
+        // Reset form
+        form.reset();
+
+        // Display confirmation modal
+        if (statusModal) {
+            const modalText = document.getElementById('contact-modal-text');
+            if (modalText) {
+                modalText.innerHTML = `
+                    Transmission ID: <strong>${transmissionId}</strong><br>
+                    Encrypted payload for <strong>Satyam</strong> (Founder & Chief Systems Architect) queued successfully.
+                `;
             }
+            statusModal.classList.remove('hidden');
+            statusModal.classList.add('flex');
+        } else {
+            alert(`Transmission sent directly to Satyam (satys9267@gmail.com). We will reach out to ${email} shortly.`);
+        }
 
-            if (window.lucide) window.lucide.createIcons();
-        }, 900);
+        if (window.lucide) window.lucide.createIcons();
     });
 
     window.closeContactModal = function() {

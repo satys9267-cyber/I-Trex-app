@@ -1,0 +1,84 @@
+mutation CreateSeedData @transaction {
+  product_insertMany(data: [
+    {
+      id: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      name: "Cloud Engine",
+      type: "Compute",
+      description: "Highly scalable compute engine",
+      version: "1.0.0"
+    },
+    {
+      id: "b254c414-87cf-450f-a722-e1c9d2f3458a",
+      name: "Data Store",
+      type: "Database",
+      description: "Managed NoSQL database",
+      version: "2.1.0"
+    },
+    {
+      id: "c928e46b-272a-4c28-9d62-73138b3c8801",
+      name: "Auth Service",
+      type: "Identity",
+      description: "Authentication and Authorization",
+      version: "3.0.0"
+    }
+  ])
+  client_insertMany(data: [
+    {
+      id: "d9e8f7a6-b5c4-4d3e-a2f1-098765432101",
+      companyName: "Acme Corp",
+      contactEmail: "admin@acme.com",
+      industry: "Retail",
+      subscriptionTier: "Enterprise"
+    },
+    {
+      id: "d9e8f7a6-b5c4-4d3e-a2f1-098765432102",
+      companyName: "Globex Inc",
+      contactEmail: "dev@globex.com",
+      industry: "Tech",
+      subscriptionTier: "Pro"
+    }
+  ])
+  deployment_insertMany(data: [
+    {
+      id: "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d",
+      status: "ACTIVE",
+      deploymentDate: "2023-10-01",
+      configSettings: "{\"debug\": false}",
+      region: "us-central1",
+      productId: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      clientId: "d9e8f7a6-b5c4-4d3e-a2f1-098765432101"
+    },
+    {
+      id: "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
+      status: "STAGING",
+      deploymentDate: "2023-11-15",
+      configSettings: "{\"debug\": true}",
+      region: "eu-west1",
+      productId: "b254c414-87cf-450f-a722-e1c9d2f3458a",
+      clientId: "d9e8f7a6-b5c4-4d3e-a2f1-098765432102"
+    }
+  ])
+  dependency_insertMany(data: [
+    {
+      dependentProductId: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      parentProductId: "c928e46b-272a-4c28-9d62-73138b3c8801",
+      connectionType: "OIDC"
+    }
+  ])
+  metric_insertMany(data: [
+    {
+      metricName: "CPU Usage",
+      value: 45.5,
+      timestamp: "2023-12-01T10:00:00Z",
+      unit: "percent",
+      deploymentId: "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d"
+    },
+    {
+      metricName: "Memory Usage",
+      value: 1024.0,
+      timestamp: "2023-12-01T10:05:00Z",
+      unit: "MB",
+      deploymentId: "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d"
+    }
+  ])
+}

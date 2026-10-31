@@ -32,7 +32,8 @@
     {
       "id": "usr-002",
       "name": "Ishwari Patil",
-      "email": "ishwari.patil@itrex.internal",
+      "email": "ishwarip267@gmail.com",
+      "password": "Ishwari@27",
       "role": "co-founder",
       "title": "Co-Founder & AI Systems Lead",
       "department": "Neural Systems & Core AI",
@@ -54,7 +55,8 @@
         "twitter": "https://x.com/itrex_ai"
       },
       "status": "active",
-      "joiningDate": "2025-01-15"
+      "joiningDate": "2025-01-15",
+      "lastLoginAt": "2026-10-31T07:58:31.557Z"
     },
     {
       "id": "usr-003",
@@ -209,6 +211,90 @@
   "activity_logs": [],
   "change_logs": [
     {
+      "id": "clog-mvw409zb-e2im",
+      "user_id": "usr-002",
+      "user_name": "Ishwari Patil",
+      "action_type": "LOGIN_SUCCESS",
+      "target_entity": "auth",
+      "target_id": "usr-002",
+      "change_details": "{\"role\":\"co-founder\"}",
+      "ip_address": "::1",
+      "level": "INFO",
+      "created_at": "2026-10-31T07:58:31.561Z"
+    },
+    {
+      "id": "clog-mvw3fnns-9mwp",
+      "user_id": "usr-002",
+      "user_name": "Ishwari Patil",
+      "action_type": "LOGIN_SUCCESS",
+      "target_entity": "auth",
+      "target_id": "usr-002",
+      "change_details": "{\"role\":\"co-founder\"}",
+      "ip_address": "::1",
+      "level": "INFO",
+      "created_at": "2026-10-31T07:42:29.512Z"
+    },
+    {
+      "id": "clog-mvw3fna8-0uth",
+      "user_id": "usr-002",
+      "user_name": "Ishwari Patil",
+      "action_type": "LOGIN_FAILED_WRONG_PASSWORD",
+      "target_entity": "auth",
+      "target_id": "usr-002",
+      "change_details": "{}",
+      "ip_address": "::1",
+      "level": "WARN",
+      "created_at": "2026-10-31T07:42:29.025Z"
+    },
+    {
+      "id": "clog-mvw0sz05-700m",
+      "user_id": "public-visitor",
+      "user_name": "Dr. Evelyn Vance",
+      "action_type": "CONTACT_TRANSMISSION",
+      "target_entity": "inquiries",
+      "target_id": "inq-mvw0sz03",
+      "change_details": "{\"email\":\"evelyn.vance@quantum-mesh.org\",\"category\":\"Enterprise Deployment\"}",
+      "ip_address": "::1",
+      "level": "INFO",
+      "created_at": "2026-10-31T06:28:51.893Z"
+    },
+    {
+      "id": "clog-mvw0qkvb-v2hs",
+      "user_id": "public-visitor",
+      "user_name": "Dr. Evelyn Vance",
+      "action_type": "CONTACT_TRANSMISSION",
+      "target_entity": "inquiries",
+      "target_id": "inq-mvw0qkv8",
+      "change_details": "{\"email\":\"evelyn.vance@quantum-mesh.org\",\"category\":\"Enterprise Deployment\"}",
+      "ip_address": "::1",
+      "level": "INFO",
+      "created_at": "2026-10-31T06:27:00.264Z"
+    },
+    {
+      "id": "clog-mvw07tne-uwri",
+      "user_id": "public-visitor",
+      "user_name": "Dr. Evelyn Vance",
+      "action_type": "CONTACT_TRANSMISSION",
+      "target_entity": "inquiries",
+      "target_id": "inq-mvw07tmy",
+      "change_details": "{\"email\":\"evelyn.vance@quantum-mesh.org\",\"category\":\"Enterprise Deployment\"}",
+      "ip_address": "::1",
+      "level": "INFO",
+      "created_at": "2026-10-31T06:12:25.179Z"
+    },
+    {
+      "id": "clog-mvvcrgkk-51a7",
+      "user_id": "guest",
+      "user_name": "Visitor",
+      "action_type": "PASSWORD_RESET_REQUESTED",
+      "target_entity": "auth",
+      "target_id": "satys9267@gmail.com",
+      "change_details": "{}",
+      "ip_address": "::1",
+      "level": "INFO",
+      "created_at": "2026-10-30T19:15:50.565Z"
+    },
+    {
       "id": "clog-mvv9m2r7-bjup",
       "user_id": "usr-001",
       "user_name": "Satyam Swami",
@@ -319,6 +405,36 @@
   ],
   "notifications": [
     {
+      "id": "notif-mvw0sz07-631w",
+      "user_id": "usr-001",
+      "title": "New Inquiry from Dr. Evelyn Vance",
+      "message": "Category: Enterprise Deployment. Email: evelyn.vance@quantum-mesh.org",
+      "type": "info",
+      "is_read": false,
+      "link": "dashboard.html",
+      "created_at": "2026-10-31T06:28:51.896Z"
+    },
+    {
+      "id": "notif-mvw0qkvd-5op3",
+      "user_id": "usr-001",
+      "title": "New Inquiry from Dr. Evelyn Vance",
+      "message": "Category: Enterprise Deployment. Email: evelyn.vance@quantum-mesh.org",
+      "type": "info",
+      "is_read": false,
+      "link": "dashboard.html",
+      "created_at": "2026-10-31T06:27:00.267Z"
+    },
+    {
+      "id": "notif-mvw07tnv-dc2i",
+      "user_id": "usr-001",
+      "title": "New Inquiry from Dr. Evelyn Vance",
+      "message": "Category: Enterprise Deployment. Email: evelyn.vance@quantum-mesh.org",
+      "type": "info",
+      "is_read": false,
+      "link": "dashboard.html",
+      "created_at": "2026-10-31T06:12:25.196Z"
+    },
+    {
       "id": "notif-mvsg78zv-tiwg",
       "user_id": "usr-001",
       "title": "New Task Assigned: Verify MySQL 24/7 Zero Charges Cloud Integration",
@@ -350,6 +466,30 @@
     }
   ],
   "contact_inquiries": [
+    {
+      "id": "inq-mvw0sz03",
+      "name": "Dr. Evelyn Vance",
+      "email": "evelyn.vance@quantum-mesh.org",
+      "category": "Enterprise Deployment",
+      "message": "Requesting enterprise evaluation of TRX-01 microkernel scheduling.",
+      "createdAt": "2026-10-31T06:28:51.892Z"
+    },
+    {
+      "id": "inq-mvw0qkv8",
+      "name": "Dr. Evelyn Vance",
+      "email": "evelyn.vance@quantum-mesh.org",
+      "category": "Enterprise Deployment",
+      "message": "Requesting enterprise evaluation of TRX-01 microkernel scheduling.",
+      "createdAt": "2026-10-31T06:27:00.261Z"
+    },
+    {
+      "id": "inq-mvw07tmy",
+      "name": "Dr. Evelyn Vance",
+      "email": "evelyn.vance@quantum-mesh.org",
+      "category": "Enterprise Deployment",
+      "message": "Requesting enterprise evaluation of TRX-01 microkernel scheduling.",
+      "createdAt": "2026-10-31T06:12:25.164Z"
+    },
     {
       "id": "inq-001",
       "name": "Dr. Aris Thorne",

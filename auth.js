@@ -6,9 +6,9 @@
  */
 
 // 1. Resolve API Base for Local File or HTTP Server
-const API_BASE = (window.location.protocol === 'file:' || !window.location.port) 
+const API_BASE = (window.location.protocol === 'file:') 
     ? 'http://localhost:10000' 
-    : '';
+    : (window.ITREX_API_BASE || '');
 
 let firebaseApp = null;
 let firebaseAuth = null;
@@ -241,22 +241,33 @@ function initAuthCanvas() {
 /* ==========================================================================
    4. FIREBASE PROJECT CONFIGURATION MANAGEMENT
    ========================================================================== */
+function isValidFirebaseKey(key) {
+    return typeof key === 'string' &&
+           key.startsWith('AIza') &&
+           !key.includes('...') &&
+           key.length >= 35 &&
+           key.length <= 45;
+}
+
 function getActiveFirebaseConfig() {
-    // 1. Check localStorage first (user saved in browser)
+    // 1. Check window.ITREX_FIREBASE_CONFIG from firebase-config.js first
+    if (window.ITREX_FIREBASE_CONFIG && isValidFirebaseKey(window.ITREX_FIREBASE_CONFIG.apiKey)) {
+        return window.ITREX_FIREBASE_CONFIG;
+    }
+
+    // 2. Check localStorage (user saved in browser)
     try {
         const saved = localStorage.getItem('itrex_firebase_config');
         if (saved) {
             const parsed = JSON.parse(saved);
-            if (parsed && parsed.apiKey && parsed.apiKey.startsWith('AIza')) {
+            if (parsed && isValidFirebaseKey(parsed.apiKey)) {
                 return parsed;
+            } else {
+                // Wipe invalid/placeholder key so it doesn't cause auth/api-key-not-valid
+                localStorage.removeItem('itrex_firebase_config');
             }
         }
     } catch (e) {}
-
-    // 2. Check window.ITREX_FIREBASE_CONFIG from firebase-config.js
-    if (window.ITREX_FIREBASE_CONFIG && window.ITREX_FIREBASE_CONFIG.apiKey && window.ITREX_FIREBASE_CONFIG.apiKey.startsWith('AIza')) {
-        return window.ITREX_FIREBASE_CONFIG;
-    }
 
     return null;
 }
@@ -398,6 +409,12 @@ function initAuthController() {
 
     function hideBanner() {
         if (banner) banner.classList.add('hidden');
+    }
+
+    // Check if user was bounced from protected admin enclave
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('denied') === 'admin_enclave_restricted') {
+        showBanner('error', '<strong>ACCESS RESTRICTED:</strong> High-clearance administrator credentials required to access the Admin Enclave. Please authenticate.');
     }
 
     // Tab Switch: Email/Username vs Phone
@@ -570,11 +587,30 @@ function initAuthController() {
             const authDomain = extract('authDomain');
             const projectId = extract('projectId');
             const appId = extract('appId');
+            const storageBucket = extract('storageBucket');
+            const messagingSenderId = extract('messagingSenderId');
 
             if (apiKey && document.getElementById('cfg-apikey')) document.getElementById('cfg-apikey').value = apiKey;
             if (authDomain && document.getElementById('cfg-authdomain')) document.getElementById('cfg-authdomain').value = authDomain;
             if (projectId && document.getElementById('cfg-projectid')) document.getElementById('cfg-projectid').value = projectId;
             if (appId && document.getElementById('cfg-appid')) document.getElementById('cfg-appid').value = appId;
+        });
+    }
+
+    const clearConfigBtn = document.getElementById('btn-clear-firebase-config');
+    if (clearConfigBtn) {
+        clearConfigBtn.addEventListener('click', () => {
+            try {
+                localStorage.removeItem('itrex_firebase_config');
+            } catch (e) {}
+            if (document.getElementById('cfg-apikey')) document.getElementById('cfg-apikey').value = '';
+            if (document.getElementById('cfg-authdomain')) document.getElementById('cfg-authdomain').value = '';
+            if (document.getElementById('cfg-projectid')) document.getElementById('cfg-projectid').value = '';
+            if (document.getElementById('cfg-appid')) document.getElementById('cfg-appid').value = '';
+            if (pasteBox) pasteBox.value = '';
+            closeFirebaseModal();
+            initFirebaseService();
+            showBanner('info', 'Saved browser Firebase config cleared. Active configuration reset.');
         });
     }
 
@@ -590,12 +626,17 @@ function initAuthController() {
                 return;
             }
 
+            if (!isValidFirebaseKey(apiKey)) {
+                alert('The API Key you entered does not appear to be a valid Firebase Web API key.\nA valid Google key begins with "AIzaSy" and is ~39 characters long.\nPlease do not use placeholder text like "AIzaSy...".');
+                return;
+            }
+
             const newConfig = {
                 apiKey,
                 authDomain: authDomain || `${projectId}.firebaseapp.com`,
                 projectId,
-                storageBucket: `${projectId}.appspot.com`,
-                messagingSenderId: "",
+                storageBucket: `${projectId}.firebasestorage.app`,
+                messagingSenderId: "293404929962",
                 appId: appId || ""
             };
 
@@ -635,7 +676,9 @@ function initAuthController() {
         `);
 
         setTimeout(() => {
-            const isPrivileged = user.role === 'admin' || user.role === 'founder' || user.role === 'co-founder';
+            const userEmail = (user.email || '').toLowerCase();
+            const isPrivileged = user.role === 'admin' || user.role === 'founder' || user.role === 'co-founder' ||
+                                 userEmail === 'satys9267@gmail.com' || userEmail === 'ishwarip267@gmail.com';
             const targetPage = isPrivileged ? 'admin.html' : `dashboard.html?role=${user.role || 'user'}`;
             window.location.href = targetPage;
         }, 1200);
@@ -666,45 +709,51 @@ function initAuthController() {
             try {
                 const config = getActiveFirebaseConfig();
 
-                // Path A: Authenticate with live Firebase
+                // Path A: Authenticate with live Firebase (if user registered in Firebase)
                 if (config && firebaseAuth) {
-                    let targetEmail = identifier;
-                    // If identifier is a username, resolve to email via backend
-                    if (!identifier.includes('@')) {
-                        try {
-                            const res = await fetch(API_BASE + '/api/auth/resolve-username', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ username: identifier })
-                            });
-                            const data = await res.json();
-                            if (data.found && data.email) targetEmail = data.email;
-                        } catch (err) {}
-                    }
+                    try {
+                        let targetEmail = identifier;
+                        // If identifier is a username, resolve to email via backend
+                        if (!identifier.includes('@')) {
+                            try {
+                                const res = await fetch(API_BASE + '/api/auth/resolve-username', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ username: identifier })
+                                });
+                                const data = await res.json();
+                                if (data.found && data.email) targetEmail = data.email;
+                            } catch (err) {}
+                        }
 
-                    const userCred = await firebaseAuth.signInWithEmailAndPassword(targetEmail, password);
-                    const user = userCred.user;
+                        const userCred = await firebaseAuth.signInWithEmailAndPassword(targetEmail, password);
+                        const user = userCred.user;
+                        const userEmail = (user.email || '').toLowerCase();
+                        const isAdmin = userEmail === 'satys9267@gmail.com' || userEmail === 'ishwarip267@gmail.com';
 
-                    // Enforce email verification for non-admin accounts
-                    const isAdmin = user.email.toLowerCase() === 'satys9267@gmail.com';
-                    if (!user.emailVerified && !isAdmin) {
-                        document.getElementById('verify-target-email').textContent = user.email;
-                        showMode('verify');
-                        showBanner('info', 'Your email address is pending verification. Please click the link sent to your inbox.');
+                        // Enforce email verification for non-admin accounts
+                        if (!user.emailVerified && !isAdmin) {
+                            document.getElementById('verify-target-email').textContent = user.email;
+                            showMode('verify');
+                            showBanner('info', 'Your email address is pending verification. Please click the link sent to your inbox.');
+                            return;
+                        }
+
+                        routeAuthenticatedUser({
+                            id: user.uid,
+                            name: user.displayName || user.email.split('@')[0],
+                            email: user.email,
+                            role: isAdmin ? 'admin' : 'user',
+                            verified: user.emailVerified
+                        });
                         return;
+                    } catch (fbErr) {
+                        // User might be a backend/fixed admin credential (e.g. Ishwari or local admin)
+                        console.log('[I-Trex Auth] Firebase auth bypassed or user not found. Checking secure enclave...');
                     }
-
-                    routeAuthenticatedUser({
-                        id: user.uid,
-                        name: user.displayName || user.email.split('@')[0],
-                        email: user.email,
-                        role: isAdmin ? 'admin' : 'user',
-                        verified: user.emailVerified
-                    });
-                    return;
                 }
 
-                // Path B: Fallback to local server API
+                // Path B: Authenticate against secure local/backend API (fixed credentials)
                 const response = await fetch(API_BASE + '/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -717,11 +766,15 @@ function initAuthController() {
                 }
 
                 routeAuthenticatedUser(result.user);
-
             } catch (err) {
                 let msg = err.message || 'Authentication error. Please verify credentials.';
                 if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
                     msg = 'Invalid email or password. Please verify credentials.';
+                } else if (err.code === 'auth/api-key-not-valid' || (err.message && err.message.includes('api-key-not-valid'))) {
+                    try { localStorage.removeItem('itrex_firebase_config'); } catch(e){}
+                    msg = `<strong>Firebase API Key Error:</strong> The API key in your configuration was rejected by Google. The system has automatically refreshed your configuration. Please try again.`;
+                } else if (err.code === 'auth/operation-not-allowed') {
+                    msg = `<strong>Sign-In Method Disabled:</strong> Email/Password authentication is disabled in Firebase Console. Go to <strong>Authentication &gt; Sign-in method</strong> to enable it.`;
                 } else if (err.name === 'TypeError' && err.message.includes('fetch')) {
                     msg = `<strong>Connection Error</strong>: Server not reachable at <code>${API_BASE}</code>.<br>Please open via <strong><a href="http://localhost:10000/login.html" class="underline text-white">http://localhost:10000/login.html</a></strong> or connect Firebase credentials.`;
                 }
@@ -823,6 +876,11 @@ function initAuthController() {
                     msg = 'An account with this email address already exists. Please sign in instead.';
                 } else if (err.code === 'auth/weak-password') {
                     msg = 'Password is too weak. Please use at least 8 characters with numbers and symbols.';
+                } else if (err.code === 'auth/api-key-not-valid' || (err.message && err.message.includes('api-key-not-valid'))) {
+                    try { localStorage.removeItem('itrex_firebase_config'); } catch(e){}
+                    msg = `<strong>Firebase API Key Error:</strong> The API key in your configuration was rejected by Google. The system has automatically reset your browser configuration. Please try again.`;
+                } else if (err.code === 'auth/operation-not-allowed') {
+                    msg = `<strong>Sign-In Method Disabled:</strong> Email/Password authentication is disabled in Firebase Console. Go to <strong>Authentication &gt; Sign-in method</strong> to enable it.`;
                 } else if (err.name === 'TypeError' && err.message.includes('fetch')) {
                     msg = `<strong>Connection Error</strong>: Server not reachable at <code>${API_BASE}</code>.<br>Please open via <strong><a href="http://localhost:10000/login.html" class="underline text-white">http://localhost:10000/login.html</a></strong> or connect Firebase.`;
                 }

@@ -12,7 +12,7 @@
  * 8. 20 Mandatory Security Protections & Audit Logging Enclave
  */
 
-const API_BASE = (window.location.protocol === 'file:' || !window.location.port) ? 'http://localhost:10000' : '';
+const API_BASE = (window.location.protocol === 'file:') ? 'http://localhost:10000' : (window.ITREX_API_BASE || '');
 
 let currentUser = null;
 let currentActiveSection = 'home';
@@ -24,9 +24,34 @@ let selectedInquiry = null;
 let activeProfileTargetId = 'usr-001'; // Default to Founder
 let dashboardTimeFilter = 'weekly';
 
+// ==========================================================================
+// IMMEDIATE AIR-GAPPED ACCESS GUARD
+// Executes synchronously before DOM parsing to prevent any unauthorized UI exposure
+// ==========================================================================
+(function immediateGuard() {
+    try {
+        const stored = localStorage.getItem('itrex_auth_user');
+        if (!stored) {
+            window.location.replace('login.html?denied=admin_enclave_restricted');
+            return;
+        }
+        const user = JSON.parse(stored);
+        const role = (user.role || '').toLowerCase();
+        const email = (user.email || '').toLowerCase();
+        const isAuthorized = role === 'founder' || role === 'co-founder' || role === 'admin' ||
+                             email === 'satys9267@gmail.com' || email === 'ishwarip267@gmail.com';
+        if (!isAuthorized) {
+            window.location.replace('dashboard.html');
+        }
+    } catch (e) {
+        window.location.replace('login.html?denied=admin_enclave_restricted');
+    }
+})();
+
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Verify Authentication & RBAC Access
-    verifyAdminAccess();
+    // 1. Verify Authentication & RBAC Access (Bounces unauthorized visitors immediately)
+    const hasAccess = verifyAdminAccess();
+    if (!hasAccess) return;
 
     // 2. Initialize UI Components & Icons
     if (window.lucide && typeof window.lucide.createIcons === 'function') {
@@ -58,26 +83,30 @@ function verifyAdminAccess() {
     try {
         const stored = localStorage.getItem('itrex_auth_user');
         if (!stored) {
-            // Default bootstrap session as Founder Satyam Swami for local development preview
-            currentUser = {
-                id: 'usr-001',
-                name: 'Satyam Swami',
-                email: 'satys9267@gmail.com',
-                role: 'founder',
-                title: 'Founder & Chief Architect',
-                department: 'Executive Systems & Kernel'
-            };
-            localStorage.setItem('itrex_auth_user', JSON.stringify(currentUser));
-        } else {
-            currentUser = JSON.parse(stored);
+            // STRICT AIR-GAPPED SECURITY: No unauthenticated visitors in Admin Enclave
+            window.location.replace('login.html?denied=admin_enclave_restricted');
+            return false;
         }
 
-        // Check clearance: Only founder, co-founder, or admin can enter
+        currentUser = JSON.parse(stored);
+
+        // Check clearance: Only founder, co-founder, or designated admin accounts can enter
         const role = (currentUser.role || '').toLowerCase();
-        if (role !== 'founder' && role !== 'co-founder' && role !== 'admin') {
+        const email = (currentUser.email || '').toLowerCase();
+        const isAuthorized = role === 'founder' || role === 'co-founder' || role === 'admin' ||
+                             email === 'satys9267@gmail.com' || email === 'ishwarip267@gmail.com';
+
+        if (!isAuthorized) {
             alert('Security Warning: Administrative clearance required. Redirecting to employee portal.');
-            window.location.href = 'dashboard.html';
-            return;
+            window.location.replace('dashboard.html');
+            return false;
+        }
+
+        // Set active profile tab based on executive identity
+        if (email === 'ishwarip267@gmail.com') {
+            activeProfileTargetId = 'usr-002';
+        } else {
+            activeProfileTargetId = 'usr-001';
         }
 
         // Update UI with authenticated identity
@@ -85,12 +114,19 @@ function verifyAdminAccess() {
         const roleEl = document.getElementById('sidebar-user-role');
         const greetingEl = document.getElementById('home-greeting-name');
 
-        if (nameEl) nameEl.textContent = currentUser.name || 'Satyam Swami';
-        if (roleEl) roleEl.textContent = (currentUser.role || 'FOUNDER').toUpperCase();
-        if (greetingEl) greetingEl.textContent = (currentUser.name || 'Satyam').split(' ')[0];
+        const displayName = currentUser.name || (email === 'ishwarip267@gmail.com' ? 'Ishwari Patil' : 'Satyam Swami');
+        const displayRole = (currentUser.role || (email === 'ishwarip267@gmail.com' ? 'CO-FOUNDER' : 'FOUNDER')).toUpperCase();
+
+        if (nameEl) nameEl.textContent = displayName;
+        if (roleEl) roleEl.textContent = displayRole;
+        if (greetingEl) greetingEl.textContent = displayName.split(' ')[0];
+
+        return true;
 
     } catch (e) {
         console.warn('[I-Trex Admin] Auth verification error:', e.message);
+        window.location.replace('login.html?denied=admin_enclave_restricted');
+        return false;
     }
 }
 

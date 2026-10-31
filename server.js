@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 10000;
 
 // 1. Strict Security Headers
 app.use((req, res, next) => {
-    res.setHeader('Content-Security-Policy', "default-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://unpkg.com https://www.gstatic.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https: blob:; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' http://localhost:10000 https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com; frame-src 'self' https://*.firebaseapp.com; object-src 'none'; base-uri 'self';");
+    res.setHeader('Content-Security-Policy', "default-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://unpkg.com https://www.gstatic.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https: blob:; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' http://localhost:10000 https://*.onrender.com https://*.vercel.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com; frame-src 'self' https://*.firebaseapp.com; object-src 'none'; base-uri 'self';");
     res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-Frame-Options', 'SAMEORIGIN');
@@ -104,7 +104,8 @@ function getLocalDB() {
                 {
                     id: 'usr-002',
                     name: 'Ishwari Patil',
-                    email: 'ishwari.patil@itrex.internal',
+                    email: 'ishwarip267@gmail.com',
+                    password: 'Ishwari@27',
                     role: 'admin',
                     title: 'Co-Founder & AI Systems Lead',
                     department: 'Neural Systems & Core AI',
@@ -336,7 +337,7 @@ async function initMySqlTables() {
                 INSERT INTO users (id, name, email, role, title, department, phone, bio, avatar, provider, verified, total_shift_hours)
                 VALUES 
                 ('usr-001', 'Satyam Swami', 'satys9267@gmail.com', 'admin', 'Founder & Chief Architect', 'Executive Systems & Kernel', '+91 74998 25344', 'Founding visionary of I-Trex Innovations. Leading autonomous neural kernels.', '👑', 'Google OAuth (Verified)', TRUE, '142.5'),
-                ('usr-002', 'Ishwari Patil', 'ishwari.patil@itrex.internal', 'admin', 'Co-Founder & AI Systems Lead', 'Neural Systems & Core AI', '+91 98220 00000', 'Co-Founder at I-Trex Innovations. Leading distributed ML systems.', '🔬', 'Google OAuth (Verified)', TRUE, '118.0');
+                ('usr-002', 'Ishwari Patil', 'ishwarip267@gmail.com', 'admin', 'Co-Founder & AI Systems Lead', 'Neural Systems & Core AI', '+91 98220 00000', 'Co-Founder at I-Trex Innovations. Leading distributed ML systems.', '🔬', 'Google OAuth (Verified)', TRUE, '118.0');
             `);
             console.log(' [✓] MySQL Seed Users Initialized.');
         }
@@ -1092,6 +1093,62 @@ function checkAuthRateLimit(ip, limit = 10, windowMs = 60000) {
     return record.count <= limit;
 }
 
+// 0. Firebase Client Configuration Sync (GET & POST)
+app.get('/api/config/firebase', (req, res) => {
+    try {
+        const configPath = path.join(__dirname, 'firebase-config.js');
+        if (fs.existsSync(configPath)) {
+            const content = fs.readFileSync(configPath, 'utf8');
+            const extract = (key) => {
+                const match = content.match(new RegExp(`${key}\\s*:\\s*["']([^"']*)["']`));
+                return match ? match[1] : '';
+            };
+            return res.json({
+                apiKey: extract('apiKey'),
+                authDomain: extract('authDomain'),
+                projectId: extract('projectId'),
+                storageBucket: extract('storageBucket'),
+                messagingSenderId: extract('messagingSenderId'),
+                appId: extract('appId'),
+                measurementId: extract('measurementId')
+            });
+        }
+        res.json({});
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+app.post('/api/config/firebase', (req, res) => {
+    try {
+        const { apiKey, authDomain, projectId, storageBucket, messagingSenderId, appId, measurementId } = req.body;
+        if (!apiKey || !apiKey.startsWith('AIza')) {
+            return res.status(400).json({ error: 'Invalid API key format. A valid Google API key begins with "AIzaSy...".' });
+        }
+        const configPath = path.join(__dirname, 'firebase-config.js');
+        const fileContent = `/**
+ * I-TREX INNOVATIONS — FIREBASE CLIENT CONFIGURATION
+ * Connected Project: ${projectId || 'i-trex'}
+ * Updated: ${new Date().toISOString()}
+ */
+
+window.ITREX_FIREBASE_CONFIG = {
+    apiKey: "${apiKey}",
+    authDomain: "${authDomain || `${projectId}.firebaseapp.com`}",
+    projectId: "${projectId}",
+    storageBucket: "${storageBucket || `${projectId}.firebasestorage.app`}",
+    messagingSenderId: "${messagingSenderId || '293404929962'}",
+    appId: "${appId || ''}",
+    measurementId: "${measurementId || ''}"
+};
+`;
+        fs.writeFileSync(configPath, fileContent, 'utf8');
+        res.json({ success: true, message: 'Firebase configuration successfully synced to firebase-config.js' });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 // 1. Resolve Username -> Email Mapping (Secure server-side lookup)
 app.post('/api/auth/resolve-username', async (req, res) => {
     try {
@@ -1168,19 +1225,20 @@ app.post('/api/auth/register', async (req, res) => {
 
         // Create new user profile (Default role is strictly 'user')
         const newUserId = 'usr-' + Date.now().toString(36);
+        const isExecutive = cleanEmail === 'satys9267@gmail.com' || cleanEmail === 'ishwarip267@gmail.com';
         const newUser = {
             id: newUserId,
             name: name.trim(),
             username: cleanUsername,
             email: cleanEmail,
-            role: cleanEmail === 'satys9267@gmail.com' ? 'admin' : 'user', // Safe founder bootstrap
-            title: cleanEmail === 'satys9267@gmail.com' ? 'Founder & Chief Architect' : 'Standard Member',
-            department: 'Core Operations',
+            role: isExecutive ? 'admin' : 'user', // Safe founder/co-founder bootstrap
+            title: cleanEmail === 'satys9267@gmail.com' ? 'Founder & Chief Architect' : (cleanEmail === 'ishwarip267@gmail.com' ? 'Co-Founder & AI Systems Lead' : 'Standard Member'),
+            department: isExecutive ? 'Executive Leadership' : 'Core Operations',
             phone: '',
             bio: '',
-            avatar: '👤',
+            avatar: cleanEmail === 'satys9267@gmail.com' ? '👑' : (cleanEmail === 'ishwarip267@gmail.com' ? '🔬' : '👤'),
             provider: 'Email/Password (Zero-Trust)',
-            verified: cleanEmail === 'satys9267@gmail.com', // Founder pre-verified
+            verified: isExecutive, // Executives pre-verified
             twoFactorEnabled: false,
             createdAt: new Date().toISOString(),
             lastLoginAt: new Date().toISOString()
@@ -1230,6 +1288,12 @@ app.post('/api/auth/login', async (req, res) => {
 
         if (!user) {
             await recordChangeLog('Anonymous', 'guest', 'LOGIN_FAILED_NOT_FOUND', 'auth', cleanId, {}, 'WARN', req);
+            return res.status(401).json({ error: 'Invalid credentials. Please verify your email/username and password.' });
+        }
+
+        // Verify fixed password if configured on user record
+        if (user.password && user.password !== password) {
+            await recordChangeLog(user.name, user.id, 'LOGIN_FAILED_WRONG_PASSWORD', 'auth', user.id, {}, 'WARN', req);
             return res.status(401).json({ error: 'Invalid credentials. Please verify your email/username and password.' });
         }
 

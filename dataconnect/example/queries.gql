@@ -1,0 +1,127 @@
+mutation CreateClientData($companyName: String!, $contactEmail: String!) @auth(level: USER) {
+  client_insert(data: {companyName: $companyName, contactEmail: $contactEmail})
+}
+
+mutation UpdateClientData($id: UUID!, $companyName: String) @auth(level: USER) {
+  client_update(id: $id, data: {companyName: $companyName})
+}
+
+mutation DeleteClientData($id: UUID!) @auth(level: USER) {
+  client_delete(id: $id)
+}
+
+query GetClient($id: UUID!) @auth(level: USER) {
+  client(id: $id) {
+    companyName
+    contactEmail
+  }
+}
+
+query ListClients @auth(level: USER) {
+  clients {
+    companyName
+    industry
+  }
+}
+
+mutation CreateProductData($name: String!, $type: String!) @auth(level: PUBLIC, insecureReason: "Publicly accessible product catalog") {
+  product_insert(data: {name: $name, type: $type})
+}
+
+mutation UpdateProductData($id: UUID!, $description: String) @auth(level: USER) {
+  product_update(id: $id, data: {description: $description})
+}
+
+mutation DeleteProductData($id: UUID!) @auth(level: USER) {
+  product_delete(id: $id)
+}
+
+query GetProduct($id: UUID!) @auth(level: PUBLIC, insecureReason: "Public product catalog") {
+  product(id: $id) {
+    name
+    version
+  }
+}
+
+query ListProducts @auth(level: PUBLIC, insecureReason: "Public product catalog") {
+  products {
+    name
+    type
+  }
+}
+
+mutation CreateDeploymentData($status: String!, $date: Date!, $productId: UUID!, $clientId: UUID!) @auth(level: USER) {
+  deployment_insert(data: {status: $status, deploymentDate: $date, productId: $productId, clientId: $clientId})
+}
+
+mutation UpdateDeploymentData($id: UUID!, $status: String) @auth(level: USER) {
+  deployment_update(id: $id, data: {status: $status})
+}
+
+mutation DeleteDeploymentData($id: UUID!) @auth(level: USER) {
+  deployment_delete(id: $id)
+}
+
+query GetDeployment($id: UUID!) @auth(level: USER) {
+  deployment(id: $id) {
+    status
+    region
+  }
+}
+
+query ListDeployments @auth(level: USER) {
+  deployments {
+    status
+    deploymentDate
+  }
+}
+
+mutation CreateMetricData($name: String!, $value: Float!, $timestamp: Timestamp!, $deploymentId: UUID!) @auth(level: USER) {
+  metric_insert(data: {metricName: $name, value: $value, timestamp: $timestamp, deploymentId: $deploymentId})
+}
+
+mutation UpdateMetricData($id: UUID!, $value: Float) @auth(level: USER) {
+  metric_update(id: $id, data: {value: $value})
+}
+
+mutation DeleteMetricData($id: UUID!) @auth(level: USER) {
+  metric_delete(id: $id)
+}
+
+query GetMetric($id: UUID!) @auth(level: USER) {
+  metric(id: $id) {
+    metricName
+    value
+  }
+}
+
+query ListMetrics @auth(level: USER) {
+  metrics {
+    metricName
+    value
+  }
+}
+
+mutation CreateDependencyData($depId: UUID!, $parentId: UUID!) @auth(level: USER) {
+  dependency_insert(data: {dependentProductId: $depId, parentProductId: $parentId})
+}
+
+mutation UpdateDependencyData($id: UUID!, $type: String) @auth(level: USER) {
+  dependency_update(id: $id, data: {connectionType: $type})
+}
+
+mutation DeleteDependencyData($id: UUID!) @auth(level: USER) {
+  dependency_delete(id: $id)
+}
+
+query GetDependency($id: UUID!) @auth(level: USER) {
+  dependency(id: $id) {
+    connectionType
+  }
+}
+
+query ListDependencies @auth(level: USER) {
+  dependencies {
+    connectionType
+  }
+}
