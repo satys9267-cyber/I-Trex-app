@@ -37,16 +37,19 @@ const { chromium } = require('playwright');
     // TEST 2: Co-Founder Login with Fixed Credentials (ishwarip267@gmail.com / Ishwari@27)
     // -----------------------------------------------------------------
     console.log('\n[Test 2] Co-Founder logging in on login.html...');
-    const page2 = await browser.newPage();
-    await page2.goto('http://localhost:10000/login.html', { waitUntil: 'domcontentloaded' });
-    await page2.waitForTimeout(1000);
+    const context2 = await browser.newContext();
+    const page2 = await context2.newPage();
+    await page2.goto('http://localhost:10000/login.html', { waitUntil: 'commit' });
+    await page2.waitForSelector('#login-identifier', { timeout: 10000 });
+    await page2.waitForTimeout(500);
 
     await page2.fill('#login-identifier', 'ishwarip267@gmail.com');
     await page2.fill('#login-password', 'Ishwari@27');
     await page2.click('#btn-submit-login');
     
     // Wait for authentication and redirect
-    await page2.waitForTimeout(3000);
+    await page2.waitForURL(/admin\.html/, { timeout: 10000 }).catch(() => {});
+    await page2.waitForTimeout(2000);
 
     const url2 = page2.url();
     console.log('Co-Founder routed to:', url2);
@@ -66,15 +69,17 @@ const { chromium } = require('playwright');
     }
 
     await page2.screenshot({ path: 'tests/evidence/evidence-cofounder-admin-verified.png' });
-    await page2.close();
+    await context2.close();
 
     // -----------------------------------------------------------------
     // TEST 3: Standard User Login -> Routed to dashboard.html (NOT admin.html)
     // -----------------------------------------------------------------
     console.log('\n[Test 3] Standard User logging in...');
-    const page3 = await browser.newPage();
-    await page3.goto('http://localhost:10000/login.html', { waitUntil: 'domcontentloaded' });
-    await page3.waitForTimeout(800);
+    const context3 = await browser.newContext();
+    const page3 = await context3.newPage();
+    await page3.goto('http://localhost:10000/login.html', { waitUntil: 'commit' });
+    await page3.waitForSelector('#login-identifier', { timeout: 10000 });
+    await page3.waitForTimeout(500);
 
     // Register a standard user
     await page3.click('#btn-to-register');

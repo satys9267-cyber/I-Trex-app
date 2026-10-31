@@ -56,7 +56,7 @@
       },
       "status": "active",
       "joiningDate": "2025-01-15",
-      "lastLoginAt": "2026-10-31T07:58:31.557Z"
+      "lastLoginAt": "2026-10-31T09:34:37.802Z"
     },
     {
       "id": "usr-003",
@@ -210,6 +210,18 @@
   "shifts": [],
   "activity_logs": [],
   "change_logs": [
+    {
+      "id": "clog-mvw7fv8u-pl29",
+      "user_id": "usr-002",
+      "user_name": "Ishwari Patil",
+      "action_type": "LOGIN_SUCCESS",
+      "target_entity": "auth",
+      "target_id": "usr-002",
+      "change_details": "{\"role\":\"co-founder\"}",
+      "ip_address": "::1",
+      "level": "INFO",
+      "created_at": "2026-10-31T09:34:37.808Z"
+    },
     {
       "id": "clog-mvw409zb-e2im",
       "user_id": "usr-002",
