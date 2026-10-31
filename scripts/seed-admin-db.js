@@ -174,7 +174,7 @@ db.products = [
         },
         banner: 'assets/images/itrex_logo_silver_transparent.png',
         demoLink: 'https://i-trex.internal/demo/trexos',
-        githubLink: 'https://github.com/satys9267-cyber/I-Trex-website',
+        githubLink: 'https://github.com/satys9267-cyber/I-Trex-app',
         docLink: 'https://docs.i-trex.internal/trexos',
         launchDate: '2026-04-15',
         updatedAt: new Date().toISOString()
@@ -208,7 +208,7 @@ db.products = [
         },
         banner: 'assets/images/itrex_logo_silver_transparent.png',
         demoLink: 'https://i-trex.internal/demo/trexcore',
-        githubLink: 'https://github.com/satys9267-cyber/I-Trex-website',
+        githubLink: 'https://github.com/satys9267-cyber/I-Trex-app',
         docLink: 'https://docs.i-trex.internal/trexcore',
         launchDate: '2026-06-01',
         updatedAt: new Date().toISOString()
@@ -242,7 +242,7 @@ db.products = [
         },
         banner: 'assets/images/itrex_logo_silver_transparent.png',
         demoLink: 'https://i-trex.internal/demo/trexvision',
-        githubLink: 'https://github.com/satys9267-cyber/I-Trex-website',
+        githubLink: 'https://github.com/satys9267-cyber/I-Trex-app',
         docLink: 'https://docs.i-trex.internal/trexvision',
         launchDate: '2026-05-20',
         updatedAt: new Date().toISOString()
@@ -276,7 +276,7 @@ db.products = [
         },
         banner: 'assets/images/itrex_logo_silver_transparent.png',
         demoLink: 'https://i-trex.internal/demo/trexshield',
-        githubLink: 'https://github.com/satys9267-cyber/I-Trex-website',
+        githubLink: 'https://github.com/satys9267-cyber/I-Trex-app',
         docLink: 'https://docs.i-trex.internal/trexshield',
         launchDate: '2026-07-10',
         updatedAt: new Date().toISOString()
@@ -310,7 +310,7 @@ db.products = [
         },
         banner: 'assets/images/itrex_logo_silver_transparent.png',
         demoLink: 'https://i-trex.internal/demo/trexconnect',
-        githubLink: 'https://github.com/satys9267-cyber/I-Trex-website',
+        githubLink: 'https://github.com/satys9267-cyber/I-Trex-app',
         docLink: 'https://docs.i-trex.internal/trexconnect',
         launchDate: '2026-08-30',
         updatedAt: new Date().toISOString()

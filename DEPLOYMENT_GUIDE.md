@@ -61,7 +61,7 @@ The system includes pre-seeded, air-gapped credentials:
 Render hosts the Node.js API and the PostgreSQL database.
 
 ### Step 1.1: Push Local Changes to GitHub
-Your repository is already connected to `https://github.com/satys9267-cyber/I-Trex-website.git`.
+Your repository is already connected to `https://github.com/satys9267-cyber/I-Trex-app.git`.
 Run:
 ```powershell
 git push origin master
@@ -70,7 +70,7 @@ git push origin master
 ### Step 1.2: Deploy via Render 1-Click Blueprint (Recommended)
 1. Navigate to **[Render Dashboard](https://dashboard.render.com/)**.
 2. Click **New +** (top right) $\rightarrow$ Select **Blueprint**.
-3. Select your GitHub repository: `satys9267-cyber/I-Trex-website`.
+3. Select your GitHub repository: `satys9267-cyber/I-Trex-app`.
 4. Render will read [`render.yaml`](file:///d:/new%20project/render.yaml) automatically:
    - **Web Service**: `itrex-platform` (Node.js runtime, build: `npm install`, start: `npm start`)
    - **Database**: `itrex-postgres` (Managed PostgreSQL Free Tier)
@@ -93,7 +93,7 @@ Vercel provides edge delivery and runs with `vercel.json` to route `/api/*` requ
 ### Step 2.1: Import Project on Vercel
 1. Navigate to **[Vercel Dashboard](https://vercel.com/dashboard)**.
 2. Click **Add New...** $\rightarrow$ **Project**.
-3. Import your GitHub repository: `satys9267-cyber/I-Trex-website`.
+3. Import your GitHub repository: `satys9267-cyber/I-Trex-app`.
 4. **Project Settings**:
    - **Framework Preset**: *Other*
    - **Root Directory**: `./` (default)
