@@ -14,26 +14,20 @@ The platform uses a **Dual-Mode Database & Real-Time Sync Engine**:
 
 ## 🚀 1-Click Deployment with `render.yaml` Blueprint
 
-Because this repository includes [`render.yaml`](file:///d:/I-Trex%20website/render.yaml), Render can automatically create both the **Web Service** and the **Managed PostgreSQL Database** together!
+Because this repository includes [`render.yaml`](file:///d:/new%20project/render.yaml), Render can automatically create both the **Web Service** and the **Managed PostgreSQL Database** together!
 
 ### Step 1: Push Code to GitHub
-1. Initialize Git in this directory (if not already done):
+1. Connect your repository on GitHub (`I-Trex-app`) and push your code:
    ```bash
-   git init
-   git add .
-   git commit -m "feat: complete I-Trex platform, dashboard, and database sync engine"
-   ```
-2. Create a new repository on GitHub (e.g. `itrex-platform`) and push your code:
-   ```bash
-   git remote add origin https://github.com/YOUR_USERNAME/itrex-platform.git
+   git remote set-url origin https://github.com/satys9267-cyber/I-Trex-app.git
    git branch -M main
-   git push -u origin main
+   git push origin main --force
    ```
 
 ### Step 2: Connect to Render.com
 1. Log in to your [Render Dashboard](https://dashboard.render.com).
 2. Click the **"New +"** button at the top right and select **"Blueprint"**.
-3. Connect your GitHub account and select your `itrex-platform` repository.
+3. Connect your GitHub account and select your `I-Trex-app` repository.
 4. Render will read `render.yaml` and show:
    * **Web Service**: `itrex-platform` (Node.js runtime)
    * **Database**: `itrex-postgres` (Free Tier Managed PostgreSQL)
@@ -62,7 +56,7 @@ If you prefer to configure manually on Render without the Blueprint:
 
 ### 2. Create the Web Service on Render
 1. Click **New +** → **Web Service**.
-2. Select your GitHub repository.
+2. Select your GitHub repository (`I-Trex-app`).
 3. Settings:
    * **Name**: `itrex-platform`
    * **Environment**: `Node`
@@ -87,15 +81,3 @@ When `server.js` boots with `DATABASE_URL`, it automatically runs the schema ini
 | `shifts` | Working session stopwatch records & duration metrics |
 | `activity_logs` | Zero-Trust system audit trail recording every user action |
 | `contact_inquiries` | Inquiries submitted via the public contact terminal |
-
----
-
-## 🧪 Testing Locally Before Pushing
-
-You can test the entire platform right now:
-1. **Option A (Browser Direct)**: Double-click [dashboard.html](file:///d:/I-Trex%20website/dashboard.html) or [login.html](file:///d:/I-Trex%20website/login.html).
-2. **Option B (PowerShell Local Server)**:
-   ```powershell
-   .\start-server.ps1
-   ```
-3. Open two browser windows side-by-side to see tasks, notes, and shift logs update in real-time across both screens!
