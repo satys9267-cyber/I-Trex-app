@@ -61,10 +61,10 @@ The system includes pre-seeded, air-gapped credentials:
 Render hosts the Node.js API and the PostgreSQL database.
 
 ### Step 1.1: Push Local Changes to GitHub
-Your repository is already connected to `https://github.com/satys9267-cyber/I-Trex-app.git`.
+Your repository is connected to `https://github.com/satys9267-cyber/I-Trex-app.git`.
 Run:
 ```powershell
-git push origin master
+git push origin main --force
 ```
 
 ### Step 1.2: Deploy via Render 1-Click Blueprint (Recommended)
