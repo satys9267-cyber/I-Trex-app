@@ -21,6 +21,9 @@ yarn-error.log*
 # Test artifacts & temporary evidence
 tests/evidence/*.png
 .playwright/
+evidence-*.png
+playwright-verification-success.png
+gemini_generated_video_38dd00ce.mp4
 
 # Editor & IDE configs
 .idea/

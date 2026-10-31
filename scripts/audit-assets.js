@@ -8,7 +8,7 @@ let allPassed = true;
 
 htmlFiles.forEach(file => {
     const content = fs.readFileSync(file, 'utf8');
-    const regex = /(?:src|href)=["']([^"']+\.(?:png|jpg|jpeg|svg|mp4))["']/g;
+    const regex = /(?:src|href|poster)=["']([^"']+\.(?:png|jpg|jpeg|svg|mp4))["']/g;
     let match;
     console.log(`Checking [${file}]:`);
     let count = 0;

@@ -6,8 +6,11 @@ node_modules
 start-server.ps1
 verify-playwright-full.js
 verify-playwright.js
+evidence-*.png
+playwright-verification-success.png
+gemini_generated_video_38dd00ce.mp4
 
-# Test suites & test evidence screenshots (DO NOT ignore assets/images/!)
+# Test suites & test evidence screenshots (DO NOT ignore assets/!)
 tests/
 
 # Backend Server & Database (Runs on Render with PostgreSQL, NOT on Vercel)
