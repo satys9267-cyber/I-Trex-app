@@ -1,10 +1,20 @@
+# Dependencies & System
 node_modules
-tests
-*.png
-data
 .vscode
 .git
 .github
+start-server.ps1
 verify-playwright-full.js
 verify-playwright.js
-start-server.ps1
+
+# Test suites & test evidence screenshots (DO NOT ignore assets/images/!)
+tests/
+
+# Backend Server & Database (Runs on Render with PostgreSQL, NOT on Vercel)
+server.js
+services/
+scripts/
+data/
+render.yaml
+RENDER_DEPLOYMENT.md
+DEPLOYMENT_GUIDE.md

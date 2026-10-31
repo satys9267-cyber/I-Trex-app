@@ -4,6 +4,7 @@
   "description": "I-Trex Innovations — Autonomous Operating System & Enterprise Workspace Platform",
   "main": "server.js",
   "scripts": {
+    "build": "echo 'Frontend static CDN ready'",
     "start": "node server.js",
     "dev": "node server.js"
   },

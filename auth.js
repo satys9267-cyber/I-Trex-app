@@ -829,25 +829,36 @@ function initAuthController() {
                 const config = getActiveFirebaseConfig();
 
                 // Path A: Register with live Firebase (Sends REAL verification email!)
+                let registeredWithFirebase = false;
                 if (config && firebaseAuth) {
-                    const userCred = await firebaseAuth.createUserWithEmailAndPassword(email, password);
-                    await userCred.user.updateProfile({ displayName: name });
+                    try {
+                        const userCred = await firebaseAuth.createUserWithEmailAndPassword(email, password);
+                        await userCred.user.updateProfile({ displayName: name });
 
-                    // DISPATCH REAL VERIFICATION EMAIL TO USER'S INBOX!
-                    await userCred.user.sendEmailVerification();
-                    playSuccessChime();
+                        // DISPATCH REAL VERIFICATION EMAIL TO USER'S INBOX!
+                        await userCred.user.sendEmailVerification();
+                        playSuccessChime();
 
-                    document.getElementById('verify-target-email').textContent = email;
-                    showMode('verify');
-                    showBanner('success', `
-                        <strong>Registration Successful!</strong><br>
-                        A real verification email from Firebase has been dispatched to <strong>${email}</strong>.<br>
-                        Please check your inbox (and spam folder) and click the verification link.
-                    `);
-                    return;
+                        document.getElementById('verify-target-email').textContent = email;
+                        showMode('verify');
+                        showBanner('success', `
+                            <strong>Registration Successful!</strong><br>
+                            A real verification email from Firebase has been dispatched to <strong>${email}</strong>.<br>
+                            Please check your inbox (and spam folder) and click the verification link.
+                        `);
+                        return;
+                    } catch (fbErr) {
+                        console.warn('[I-Trex Auth] Firebase registration rejected:', fbErr.message);
+                        if (fbErr.code === 'auth/api-key-not-valid' || (fbErr.message && fbErr.message.includes('api-key-not-valid'))) {
+                            try { localStorage.removeItem('itrex_firebase_config'); } catch(e){}
+                            // Continue to Path B backend API
+                        } else {
+                            throw fbErr;
+                        }
+                    }
                 }
 
-                // Path B: Fallback to local server API
+                // Path B: Fallback to server API (Render / Local)
                 const response = await fetch(API_BASE + '/api/auth/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
