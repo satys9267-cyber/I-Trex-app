@@ -753,6 +753,12 @@ html, body {
 
 /* Mobile Devices (max-width: 767px) */
 @media (max-width: 767px) {
+  #main-header .chamfer-btn-primary,
+  header.header-glass .chamfer-btn-primary {
+    width: auto !important;
+    display: inline-flex !important;
+    min-height: 36px !important;
+  }
   .title-hero {
     font-size: clamp(32px, 10vw, 52px);
     letter-spacing: -0.02em;
@@ -762,7 +768,8 @@ html, body {
     font-size: clamp(26px, 8vw, 40px);
     line-height: 1.1;
   }
-  .chamfer-btn-primary, .chamfer-btn-outline {
+  .hero-cta-group .chamfer-btn-primary,
+  .hero-cta-group .chamfer-btn-outline {
     padding: 14px 20px;
     font-size: 11px;
     min-height: 44px;

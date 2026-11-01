@@ -103,32 +103,32 @@
          MINIMALIST AEROSPACE NAVIGATION HEADER (LAMBORGHINI STANDARD: MENU | LOGO | CONNECT)
          ====================================================================== -->
     <header id="main-header" class="fixed top-0 left-0 right-0 z-50 header-glass transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 h-16 sm:h-20 flex items-center justify-between">
             
             <!-- Left: Minimalist Menu Trigger (Exact Lamborghini Style) -->
             <div class="flex items-center">
-                <button id="menu-toggle-btn" class="flex items-center gap-3 text-white hover:text-neutral-300 transition-colors group focus:outline-none" aria-label="Open Navigation">
-                    <span class="flex flex-col gap-1.5 w-5">
-                        <span class="block w-5 h-[1.5px] bg-white group-hover:bg-cyan-400 transition-all duration-300"></span>
-                        <span class="block w-5 h-[1.5px] bg-white group-hover:bg-cyan-400 transition-all duration-300"></span>
+                <button id="menu-toggle-btn" class="flex items-center gap-2 sm:gap-3 text-white hover:text-neutral-300 transition-colors group focus:outline-none" aria-label="Open Navigation">
+                    <span class="flex flex-col gap-1 sm:gap-1.5 w-4 sm:w-5">
+                        <span class="block w-4 sm:w-5 h-[1.5px] bg-white group-hover:bg-cyan-400 transition-all duration-300"></span>
+                        <span class="block w-4 sm:w-5 h-[1.5px] bg-white group-hover:bg-cyan-400 transition-all duration-300"></span>
                     </span>
-                    <span class="font-display font-bold text-xs uppercase tracking-[0.22em] text-white">MENU</span>
+                    <span class="font-display font-bold text-[11px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.22em] text-white">MENU</span>
                 </button>
             </div>
 
             <!-- Center: Official Silver Metallic I-Trex Logo -->
-            <div class="absolute left-1/2 -translate-x-1/2 flex items-center">
+            <div class="absolute left-1/2 -translate-x-1/2 flex items-center pointer-events-auto">
                 <a href="#home" class="flex items-center group">
                     <img src="assets/images/itrex_logo_silver_transparent.png" 
                          alt="I-Trex Official Logo" 
-                         class="h-10 sm:h-12 w-auto transition-transform duration-300 group-hover:scale-105 filter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                         class="h-8 sm:h-10 md:h-12 w-auto transition-transform duration-300 group-hover:scale-105 filter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
                 </a>
             </div>
 
             <!-- Right: Connect With Us CTA -->
             <div class="flex items-center">
-                <a href="#contact" class="chamfer-btn-primary !py-2.5 !px-6 !text-[11px] font-display font-bold uppercase tracking-[0.18em]">
-                    <span>CONNECT WITH US</span>
+                <a href="#contact" class="chamfer-btn-primary !py-2 !px-3 sm:!py-2.5 sm:!px-6 !text-[10px] sm:!text-[11px] font-display font-bold uppercase tracking-[0.14em] sm:tracking-[0.18em] whitespace-nowrap">
+                    <span>CONNECT<span class="hidden sm:inline">&nbsp;WITH US</span></span>
                 </a>
             </div>
         </div>
