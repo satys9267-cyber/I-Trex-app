@@ -9,6 +9,7 @@ const { chromium } = require('playwright');
     // -----------------------------------------------------------------
     const viewports = [
         { name: 'Windows Desktop (1920x1080)', width: 1920, height: 1080, isMobile: false },
+        { name: 'Linux Desktop (1366x768)', width: 1366, height: 768, isMobile: false },
         { name: 'Apple iPad Air (820x1180)', width: 820, height: 1180, isMobile: true, hasTouch: true },
         { name: 'Apple iPhone 14 / iOS (390x844)', width: 390, height: 844, isMobile: true, hasTouch: true },
         { name: 'Android Galaxy / Pixel (412x915)', width: 412, height: 915, isMobile: true, hasTouch: true }

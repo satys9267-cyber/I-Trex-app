@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "deploy": "node scripts/deploy.js",
+    "test:cross-platform": "node tests/test-cross-platform-and-recovery.js"
   },
   "dependencies": {
     "@dataconnect/generated": "file:src/dataconnect-generated",
