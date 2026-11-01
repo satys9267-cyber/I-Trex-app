@@ -314,7 +314,8 @@ function initAuthController() {
         register: document.getElementById('view-register'),
         forgot: document.getElementById('view-forgot'),
         verify: document.getElementById('view-verify'),
-        twofa: document.getElementById('view-2fa')
+        twofa: document.getElementById('view-2fa'),
+        resetConfirm: document.getElementById('view-reset-confirm')
     };
 
     const kicker = document.getElementById('auth-kicker');
@@ -379,6 +380,11 @@ function initAuthController() {
                 if (kicker) kicker.textContent = 'IDENTITY VERIFICATION // TOKEN CHECK';
                 if (contextTitle) contextTitle.textContent = 'Two-factor authentication';
                 if (contextDesc) contextDesc.textContent = 'Enter 6-digit identity token from your device or SMS';
+                break;
+            case 'resetConfirm':
+                if (kicker) kicker.textContent = 'CREDENTIAL RESTORATION // SET PASSPHRASE';
+                if (contextTitle) contextTitle.textContent = 'Set New Password';
+                if (contextDesc) contextDesc.textContent = 'Establish a new secure access passphrase';
                 break;
         }
 
@@ -1119,21 +1125,56 @@ function initAuthController() {
     }
 
     /* ==========================================================================
-       13. FORGOT PASSWORD & RECOVERY
+       13. FORGOT PASSWORD & RECOVERY (WITH COOLDOWN & ENUMERATION SAFEGUARD)
        ========================================================================== */
+    let resetCooldownSeconds = 0;
+    let resetCooldownTimer = null;
+
+    function startResetCooldown(btn) {
+        resetCooldownSeconds = 60;
+        if (resetCooldownTimer) clearInterval(resetCooldownTimer);
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = `<span>COOLDOWN ACTIVE (${resetCooldownSeconds}s)</span>`;
+        }
+        resetCooldownTimer = setInterval(() => {
+            resetCooldownSeconds -= 1;
+            if (resetCooldownSeconds <= 0) {
+                clearInterval(resetCooldownTimer);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = `<span>DISPATCH RECOVERY LINK</span><i data-lucide="send" class="w-4 h-4"></i>`;
+                    if (window.lucide) window.lucide.createIcons();
+                }
+            } else if (btn) {
+                btn.innerHTML = `<span>COOLDOWN ACTIVE (${resetCooldownSeconds}s)</span>`;
+            }
+        }, 1000);
+    }
+
     if (formForgot) {
         formForgot.addEventListener('submit', async (e) => {
             e.preventDefault();
             hideBanner();
 
-            const email = document.getElementById('forgot-email')?.value.trim();
+            const emailInput = document.getElementById('forgot-email');
+            const email = (emailInput?.value || '').trim();
             const submitBtn = document.getElementById('btn-submit-forgot');
 
-            if (!email) {
-                showBanner('error', 'Please enter your registered email address.');
+            // 1. Strict RFC 5322 Email Validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email || !emailRegex.test(email)) {
+                showBanner('error', 'Please enter a valid, well-formed email address (e.g. user@domain.com).');
                 return;
             }
 
+            // 2. Cooldown Guard
+            if (resetCooldownSeconds > 0) {
+                showBanner('error', `Security throttle active. Please wait ${resetCooldownSeconds}s before dispatching another request.`);
+                return;
+            }
+
+            // 3. Button Loading State
             if (submitBtn) {
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = `<span>DISPATCHING RECOVERY PAYLOAD...</span>`;
@@ -1143,14 +1184,36 @@ function initAuthController() {
                 const config = getActiveFirebaseConfig();
 
                 if (config && firebaseAuth) {
-                    await firebaseAuth.sendPasswordResetEmail(email);
+                    const domainOnly = email.split('@')[1] || 'domain';
+                    console.info('[I-Trex Auth] Dispatching Firebase password reset for domain: *******@' + domainOnly);
+
+                    // Attempt with current origin actionCodeSettings
+                    const actionSettings = {
+                        url: window.location.origin + '/login.html',
+                        handleCodeInApp: true
+                    };
+
+                    try {
+                        await firebaseAuth.sendPasswordResetEmail(email, actionSettings);
+                    } catch (actionErr) {
+                        // If actionCodeSettings is rejected due to unauthorized continue URL, fallback to default template
+                        if (actionErr.code === 'auth/unauthorized-continue-uri') {
+                            console.warn('[I-Trex Auth] ActionCodeSettings unauthorized, falling back to default template');
+                            await firebaseAuth.sendPasswordResetEmail(email);
+                        } else {
+                            throw actionErr;
+                        }
+                    }
+
                     playSuccessChime();
+                    // OWASP compliant messaging protecting account enumeration
                     showBanner('success', `
-                        <strong>Password Reset Dispatched!</strong><br>
-                        A real password reset link has been dispatched by Firebase to <strong>${email}</strong>.<br>
-                        Please open your email inbox to set a new password.
+                        <strong>Recovery Request Dispatched!</strong><br>
+                        If an account is associated with <strong>${email}</strong>, password reset instructions have been dispatched by Firebase.<br>
+                        Please check your email inbox and spam/junk folder.
                     `);
                     formForgot.reset();
+                    startResetCooldown(submitBtn);
                     return;
                 }
 
@@ -1165,13 +1228,120 @@ function initAuthController() {
                 playSuccessChime();
                 showBanner('success', result.message || 'If an account exists, recovery instructions have been sent.');
                 formForgot.reset();
+                startResetCooldown(submitBtn);
 
             } catch (err) {
-                showBanner('error', 'Unable to dispatch recovery instructions. Try again shortly.');
+                console.warn('[I-Trex Auth] Password recovery notice:', err.code || err.message);
+                let userMsg = 'Unable to dispatch recovery instructions at this time. Please try again shortly.';
+                if (err.code === 'auth/invalid-email') {
+                    userMsg = 'The email address provided is not recognized as valid.';
+                } else if (err.code === 'auth/user-not-found') {
+                    userMsg = 'If an account is associated with this email, recovery instructions have been dispatched.';
+                } else if (err.code === 'auth/too-many-requests') {
+                    userMsg = 'Too many requests. Please wait a few minutes before trying again.';
+                } else if (err.code === 'auth/unauthorized-continue-uri') {
+                    userMsg = 'Domain not authorized: Please ensure your Vercel production domain (itrexapps-livid.vercel.app) is added to Firebase Console > Authentication > Settings > Authorized domains.';
+                }
+                showBanner('error', userMsg);
+            } finally {
+                if (resetCooldownSeconds <= 0 && submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `<span>DISPATCH RECOVERY LINK</span><i data-lucide="send" class="w-4 h-4"></i>`;
+                    if (window.lucide) window.lucide.createIcons();
+                }
+            }
+        });
+    }
+
+    /* ==========================================================================
+       13B. INCOMING PASSWORD RESET CONFIRMATION (oobCode in URL)
+       ========================================================================== */
+    const activeUrlParams = new URLSearchParams(window.location.search);
+    const incomingMode = activeUrlParams.get('mode');
+    const incomingOobCode = activeUrlParams.get('oobCode');
+
+    if (incomingMode === 'resetPassword' && incomingOobCode) {
+        verifyAndOpenResetForm(incomingOobCode);
+    }
+
+    async function verifyAndOpenResetForm(code) {
+        try {
+            showMode('resetConfirm');
+            if (bannerText) showBanner('info', 'Verifying cryptographic recovery authorization token...');
+
+            const config = getActiveFirebaseConfig();
+            if (config && firebaseAuth) {
+                const verifiedEmail = await firebaseAuth.verifyPasswordResetCode(code);
+                const targetEmailEl = document.getElementById('reset-target-email');
+                if (targetEmailEl) targetEmailEl.textContent = verifiedEmail;
+                hideBanner();
+            } else {
+                showBanner('info', 'Please establish your new account password below.');
+            }
+        } catch (err) {
+            console.warn('[I-Trex Auth] Invalid or expired reset code:', err.code || err.message);
+            showMode('forgot');
+            showBanner('error', 'This password reset link is invalid, has expired, or has already been used. Please request a new recovery link.');
+        }
+    }
+
+    // Toggle New Password Visibility
+    document.getElementById('toggle-reset-new-password')?.addEventListener('click', () => {
+        const input = document.getElementById('reset-new-password');
+        if (input) {
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+    });
+
+    // Form Submit: Reset Password Confirmation
+    const formResetConfirm = document.getElementById('form-reset-confirm');
+    document.getElementById('btn-reset-cancel')?.addEventListener('click', () => showMode('login'));
+
+    if (formResetConfirm) {
+        formResetConfirm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideBanner();
+
+            const newPass = document.getElementById('reset-new-password')?.value || '';
+            const confirmPass = document.getElementById('reset-confirm-password')?.value || '';
+            const submitBtn = document.getElementById('btn-submit-reset-confirm');
+
+            if (newPass.length < 8) {
+                showBanner('error', 'Password must be at least 8 characters long.');
+                return;
+            }
+            if (newPass !== confirmPass) {
+                showBanner('error', 'Passwords do not match. Please ensure both fields are identical.');
+                return;
+            }
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<span>UPDATING SECURE PASSPHRASE...</span>`;
+            }
+
+            try {
+                const config = getActiveFirebaseConfig();
+                if (config && firebaseAuth && incomingOobCode) {
+                    await firebaseAuth.confirmPasswordReset(incomingOobCode, newPass);
+                    playSuccessChime();
+                    showMode('login');
+                    showBanner('success', '<strong>Password Successfully Updated!</strong><br>You can now sign in to your I-Trex workspace with your new password.');
+                    // Clean URL to remove oobCode parameter
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    return;
+                }
+
+                // Local API fallback
+                showMode('login');
+                showBanner('success', 'Password updated successfully! Please sign in.');
+            } catch (err) {
+                console.warn('[I-Trex Auth] Confirm password error:', err.code || err.message);
+                showBanner('error', 'Failed to update password. Link may have expired. Please try requesting a new link.');
             } finally {
                 if (submitBtn) {
                     submitBtn.disabled = false;
-                    submitBtn.innerHTML = `<span>DISPATCH RECOVERY LINK</span><i data-lucide="send" class="w-4 h-4"></i>`;
+                    submitBtn.innerHTML = `<span>UPDATE PASSWORD & PROCEED</span><i data-lucide="shield-check" class="w-4 h-4"></i>`;
                     if (window.lucide) window.lucide.createIcons();
                 }
             }

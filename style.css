@@ -644,24 +644,75 @@ html.lenis, html.lenis body {
   transition: background-color 0.3s ease;
 }
 
-/* --- Responsive Adjustments --- */
-@media (max-width: 1024px) {
-  .title-hero {
-    font-size: clamp(40px, 9vw, 84px);
-    line-height: 0.96;
+/* --- Universal Cross-Platform Responsive Architecture (Windows, Android, iOS, Tablet) --- */
+:root {
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+}
+
+/* Eliminate tap delay & tap flash on Android/iOS touch */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Ensure smooth touch scrolling on iOS / iPadOS */
+body, .fullscreen-nav-drawer, .admin-main-content, .overflow-y-auto, .overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent horizontal scroll jitter on mobile */
+html, body {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Safe area padding for fixed navigation headers & floating actions */
+#main-header {
+  padding-top: var(--sat);
+}
+#skip-intro-btn {
+  bottom: calc(2.5rem + var(--sab));
+  right: calc(2.5rem + var(--sar));
+}
+
+/* iOS Safari Input Auto-Zoom Fix: inputs must be >= 16px font-size on mobile */
+@media screen and (max-width: 768px) {
+  input, select, textarea, .tech-input {
+    font-size: 16px !important;
   }
-  .title-section {
-    font-size: clamp(32px, 7vw, 56px);
+}
+
+/* Tablet Optimizations (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .title-hero {
+    font-size: clamp(48px, 8vw, 76px);
   }
   .fullscreen-nav-drawer {
     padding: 30px;
   }
+  .admin-sidebar {
+    width: 220px;
+  }
 }
 
-@media (max-width: 640px) {
+/* Mobile Devices (max-width: 767px) */
+@media (max-width: 767px) {
+  .title-hero {
+    font-size: clamp(32px, 10vw, 52px);
+    letter-spacing: -0.02em;
+    line-height: 1.02;
+  }
+  .title-section {
+    font-size: clamp(26px, 8vw, 40px);
+    line-height: 1.1;
+  }
   .chamfer-btn-primary, .chamfer-btn-outline {
-    padding: 14px 24px;
-    font-size: 10px;
+    padding: 14px 20px;
+    font-size: 11px;
+    min-height: 44px;
     width: 100%;
   }
   .video-hud-overlay {
@@ -671,5 +722,11 @@ html.lenis, html.lenis body {
     min-height: auto;
     padding-top: 40px;
     padding-bottom: 40px;
+  }
+  .fullscreen-nav-drawer {
+    padding: calc(1rem + var(--sat)) calc(1rem + var(--sar)) calc(2rem + var(--sab)) calc(1rem + var(--sal));
+  }
+  #intro-logo-img {
+    max-width: 85vw;
   }
 }

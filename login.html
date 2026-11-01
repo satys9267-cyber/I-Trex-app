@@ -2,7 +2,11 @@
 <html lang="en" class="scroll-smooth bg-black text-white">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no">
     <title>Authentication Terminal — I-Trex Innovations</title>
     <meta name="description" content="Secure zero-trust authentication gateway for I-Trex Innovations. Identity verification, enterprise workspace access, and neural kernel telemetry.">
     
@@ -498,6 +502,75 @@
 
                     <div class="pt-2 text-center text-xs font-mono">
                         <button type="button" id="btn-2fa-cancel" class="text-neutral-400 hover:text-white transition-colors">
+                            Cancel & Return to Login
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ==========================================================
+                     VIEW 6: PASSWORD RESET CONFIRMATION (oobCode in URL)
+                     ========================================================== -->
+                <div id="view-reset-confirm" class="auth-view space-y-6 hidden">
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span class="tech-tag" style="--color-neon-cyan: #10b981">ACTION VERIFIED</span>
+                            <span class="font-mono text-[10px] text-neutral-400 uppercase">RECOVERY ACCESS</span>
+                        </div>
+                        <h3 class="font-display font-bold text-xl text-white uppercase tracking-wider">Set New Password</h3>
+                        <p class="font-sans text-xs text-neutral-300 leading-relaxed font-light">
+                            Your recovery authorization token is verified for <strong id="reset-target-email" class="text-cyan-400 font-mono"></strong>. Please establish your new secure password:
+                        </p>
+                    </div>
+
+                    <form id="form-reset-confirm" class="space-y-5" novalidate>
+                        <div>
+                            <label for="reset-new-password" class="block font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-2">
+                                NEW PASSWORD *
+                            </label>
+                            <div class="relative">
+                                <input id="reset-new-password" 
+                                       type="password" 
+                                       required 
+                                       minlength="8"
+                                       placeholder="••••••••••••" 
+                                       class="tech-input pl-11 pr-11">
+                                <i data-lucide="lock" class="w-4 h-4 text-neutral-500 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                                <button type="button" id="toggle-reset-new-password" class="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white transition-colors" aria-label="Toggle password visibility">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                            <!-- Entropy indicator -->
+                            <div class="mt-2 flex gap-1">
+                                <div id="reset-entropy-1" class="strength-segment"></div>
+                                <div id="reset-entropy-2" class="strength-segment"></div>
+                                <div id="reset-entropy-3" class="strength-segment"></div>
+                                <div id="reset-entropy-4" class="strength-segment"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="reset-confirm-password" class="block font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-2">
+                                CONFIRM NEW PASSWORD *
+                            </label>
+                            <div class="relative">
+                                <input id="reset-confirm-password" 
+                                       type="password" 
+                                       required 
+                                       minlength="8"
+                                       placeholder="••••••••••••" 
+                                       class="tech-input pl-11">
+                                <i data-lucide="check-circle" class="w-4 h-4 text-neutral-500 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="btn-submit-reset-confirm" class="chamfer-btn-primary w-full !py-3.5">
+                            <span>UPDATE PASSWORD & PROCEED</span>
+                            <i data-lucide="shield-check" class="w-4 h-4"></i>
+                        </button>
+                    </form>
+
+                    <div class="pt-2 text-center text-xs font-mono">
+                        <button type="button" id="btn-reset-cancel" class="text-neutral-400 hover:text-white transition-colors">
                             Cancel & Return to Login
                         </button>
                     </div>
