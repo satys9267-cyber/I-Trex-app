@@ -7,7 +7,8 @@
     "start": "node server.js",
     "dev": "node server.js",
     "deploy": "node scripts/deploy.js",
-    "test:cross-platform": "node tests/test-cross-platform-and-recovery.js"
+    "test:cross-platform": "node tests/test-cross-platform-and-recovery.js",
+    "test:mobile-admin": "node tests/test-mobile-admin.js"
   },
   "dependencies": {
     "@dataconnect/generated": "file:src/dataconnect-generated",

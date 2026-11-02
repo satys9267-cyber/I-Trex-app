@@ -142,9 +142,33 @@ function handleAdminSignOut() {
    ========================================================================== */
 function initSidebarControls() {
     const sidebar = document.getElementById('admin-sidebar');
+    const backdrop = document.getElementById('admin-sidebar-backdrop');
     const collapseBtn = document.getElementById('btn-sidebar-collapse');
     const collapseIcon = document.getElementById('sidebar-collapse-icon');
     const mobileToggle = document.getElementById('btn-mobile-sidebar-toggle');
+    const mobileClose = document.getElementById('btn-sidebar-close');
+
+    function openMobileSidebar() {
+        if (!sidebar) return;
+        sidebar.classList.remove('-translate-x-full');
+        sidebar.classList.add('translate-x-0');
+        if (backdrop) {
+            backdrop.classList.remove('hidden');
+            backdrop.classList.add('block');
+        }
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileSidebar() {
+        if (!sidebar) return;
+        sidebar.classList.remove('translate-x-0');
+        sidebar.classList.add('-translate-x-full');
+        if (backdrop) {
+            backdrop.classList.remove('block');
+            backdrop.classList.add('hidden');
+        }
+        document.body.style.overflow = '';
+    }
 
     if (collapseBtn && sidebar) {
         collapseBtn.addEventListener('click', () => {
@@ -158,11 +182,31 @@ function initSidebarControls() {
         });
     }
 
-    if (mobileToggle && sidebar) {
-        mobileToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('-translate-x-full');
+    if (mobileToggle) {
+        mobileToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (sidebar.classList.contains('translate-x-0')) {
+                closeMobileSidebar();
+            } else {
+                openMobileSidebar();
+            }
         });
     }
+
+    if (mobileClose) {
+        mobileClose.addEventListener('click', closeMobileSidebar);
+    }
+
+    if (backdrop) {
+        backdrop.addEventListener('click', closeMobileSidebar);
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeMobileSidebar();
+    });
+
+    window.closeMobileSidebar = closeMobileSidebar;
+    window.openMobileSidebar = openMobileSidebar;
 }
 
 function showAdminSection(sectionName) {
@@ -191,6 +235,11 @@ function showAdminSection(sectionName) {
     const breadcrumb = document.getElementById('topbar-current-route');
     if (breadcrumb) {
         breadcrumb.textContent = sectionName.toUpperCase();
+    }
+
+    // 4. Auto-close mobile navigation drawer on selection
+    if (window.innerWidth < 1024 && typeof window.closeMobileSidebar === 'function') {
+        window.closeMobileSidebar();
     }
 
     // 4. Refresh section data
