@@ -211,6 +211,30 @@
   "activity_logs": [],
   "change_logs": [
     {
+      "id": "clog-mw0bki6p-ffyf",
+      "user_id": "public-visitor",
+      "user_name": "Alexander Vance",
+      "action_type": "CONTACT_TRANSMISSION",
+      "target_entity": "inquiries",
+      "target_id": "inq-mw0bki6l",
+      "change_details": "{\"email\":\"alexander.vance@vance-aerospace.com\",\"category\":\"Enterprise Deployment\"}",
+      "ip_address": "::1",
+      "level": "INFO",
+      "created_at": "2026-11-03T06:41:17.331Z"
+    },
+    {
+      "id": "clog-mvz89z2r-neqe",
+      "user_id": "public-visitor",
+      "user_name": "Test Transmission Sender",
+      "action_type": "CONTACT_TRANSMISSION",
+      "target_entity": "inquiries",
+      "target_id": "inq-mvz89z2o",
+      "change_details": "{\"email\":\"sender@test.com\",\"category\":\"Enterprise Deployment\"}",
+      "ip_address": "::1",
+      "level": "INFO",
+      "created_at": "2026-11-02T12:21:20.980Z"
+    },
+    {
       "id": "clog-mvwmyrjy-a00n",
       "user_id": "usr-002",
       "user_name": "Ishwari Patil",
@@ -429,6 +453,36 @@
   ],
   "notifications": [
     {
+      "id": "notif-mw0bki76-rqpm",
+      "user_id": "usr-002",
+      "title": "New Transmission from Alexander Vance",
+      "message": "Category: Enterprise Deployment | Email: alexander.vance@vance-aerospace.com",
+      "type": "info",
+      "is_read": false,
+      "link": "admin.html#connections",
+      "created_at": "2026-11-03T06:41:17.347Z"
+    },
+    {
+      "id": "notif-mw0bki74-7ixp",
+      "user_id": "usr-001",
+      "title": "New Transmission from Alexander Vance",
+      "message": "Category: Enterprise Deployment | Email: alexander.vance@vance-aerospace.com",
+      "type": "info",
+      "is_read": false,
+      "link": "admin.html#connections",
+      "created_at": "2026-11-03T06:41:17.345Z"
+    },
+    {
+      "id": "notif-mvz89z2w-j32l",
+      "user_id": "usr-001",
+      "title": "New Inquiry from Test Transmission Sender",
+      "message": "Category: Enterprise Deployment. Email: sender@test.com",
+      "type": "info",
+      "is_read": false,
+      "link": "dashboard.html",
+      "created_at": "2026-11-02T12:21:20.985Z"
+    },
+    {
       "id": "notif-mvw0sz07-631w",
       "user_id": "usr-001",
       "title": "New Inquiry from Dr. Evelyn Vance",
@@ -491,12 +545,47 @@
   ],
   "contact_inquiries": [
     {
+      "id": "inq-mw0bki6l",
+      "name": "Alexander Vance",
+      "email": "alexander.vance@vance-aerospace.com",
+      "category": "Enterprise Deployment",
+      "subject": "Enterprise Deployment",
+      "message": "Requesting direct technical consultation on high-speed low-latency eBPF deployment for aerospace edge nodes.",
+      "status": "replied",
+      "replies": [
+        {
+          "id": "rep-mw0bkotn",
+          "sender": "Satyam Swami",
+          "senderEmail": "satys9267@gmail.com",
+          "text": "Thank you Alexander. The I-Trex engineering team has allocated bandwidth for your deployment review.",
+          "sentAt": "2026-11-03T06:41:25.931Z",
+          "delivered": true
+        }
+      ],
+      "createdAt": "2026-11-03T06:41:17.325Z",
+      "updatedAt": "2026-11-03T06:41:25.931Z"
+    },
+    {
+      "id": "inq-mvz89z2o",
+      "name": "Test Transmission Sender",
+      "email": "sender@test.com",
+      "category": "Enterprise Deployment",
+      "message": "Hello I-Trex, this is an automated test message.",
+      "createdAt": "2026-11-02T12:21:20.977Z",
+      "status": "unread",
+      "subject": "Enterprise Deployment",
+      "replies": []
+    },
+    {
       "id": "inq-mvw0sz03",
       "name": "Dr. Evelyn Vance",
       "email": "evelyn.vance@quantum-mesh.org",
       "category": "Enterprise Deployment",
       "message": "Requesting enterprise evaluation of TRX-01 microkernel scheduling.",
-      "createdAt": "2026-10-31T06:28:51.892Z"
+      "createdAt": "2026-10-31T06:28:51.892Z",
+      "status": "unread",
+      "subject": "Enterprise Deployment",
+      "replies": []
     },
     {
       "id": "inq-mvw0qkv8",
@@ -504,7 +593,10 @@
       "email": "evelyn.vance@quantum-mesh.org",
       "category": "Enterprise Deployment",
       "message": "Requesting enterprise evaluation of TRX-01 microkernel scheduling.",
-      "createdAt": "2026-10-31T06:27:00.261Z"
+      "createdAt": "2026-10-31T06:27:00.261Z",
+      "status": "unread",
+      "subject": "Enterprise Deployment",
+      "replies": []
     },
     {
       "id": "inq-mvw07tmy",
@@ -512,7 +604,10 @@
       "email": "evelyn.vance@quantum-mesh.org",
       "category": "Enterprise Deployment",
       "message": "Requesting enterprise evaluation of TRX-01 microkernel scheduling.",
-      "createdAt": "2026-10-31T06:12:25.164Z"
+      "createdAt": "2026-10-31T06:12:25.164Z",
+      "status": "unread",
+      "subject": "Enterprise Deployment",
+      "replies": []
     },
     {
       "id": "inq-001",
@@ -909,6 +1004,18 @@
     }
   ],
   "admin_audit_logs": [
+    {
+      "id": "alog-mw0bkoto-akx6",
+      "action": "CONNECTION_REPLIED",
+      "actorId": "usr-001",
+      "actorName": "Satyam Swami",
+      "actorRole": "founder",
+      "targetType": "inquiry",
+      "targetId": "inq-mw0bki6l",
+      "details": "{\"recipientEmail\":\"alexander.vance@vance-aerospace.com\",\"sender\":\"Satyam Swami\"}",
+      "ipAddress": "::1",
+      "timestamp": "2026-11-03T06:41:25.933Z"
+    },
     {
       "id": "alog-mvv7ycmm-kpmm",
       "action": "CONNECTION_REPLIED",

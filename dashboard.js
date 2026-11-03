@@ -198,9 +198,8 @@ window.addEventListener('load', () => {
     initDashLenis();
     checkDatabaseStatus();
     setInterval(checkDatabaseStatus, 25000);
-    if (window.itrexDB) {
-        renderNotifications(window.itrexDB.getNotifications());
-    }
+    refreshTransmissionsAndNotifications();
+    setInterval(refreshTransmissionsAndNotifications, 15000);
 });
 
 // Lenis Smooth Scroll Engine
@@ -755,9 +754,55 @@ function renderNotifications(notifs = []) {
 
 function handleNotificationClick(id) {
     if (window.itrexDB) {
-        window.itrexDB.markNotificationAsRead(id);
         const notifs = window.itrexDB.getNotifications();
-        renderNotifications(notifs);
+        const clicked = notifs.find(n => n.id === id);
+        window.itrexDB.markNotificationAsRead(id);
+        const updated = window.itrexDB.getNotifications((typeof currentUser !== 'undefined' && currentUser) ? currentUser.id : 'all');
+        renderNotifications(updated);
+        if (clicked && clicked.link) {
+            window.location.href = clicked.link;
+        }
+    }
+}
+
+// 8.2 LIVE TRANSMISSIONS & CLOUD NOTIFICATIONS REFRESH ENGINE
+async function refreshTransmissionsAndNotifications() {
+    try {
+        const currentUid = (typeof currentUser !== 'undefined' && currentUser) ? currentUser.id : 'all';
+        if (window.itrexDB && typeof window.itrexDB.syncCloudNotifications === 'function') {
+            const notifs = await window.itrexDB.syncCloudNotifications(currentUid);
+            renderNotifications(notifs);
+        }
+
+        // Fetch transmission count for topbar badge
+        let unreadCount = 0;
+        try {
+            const localBuffer = JSON.parse(localStorage.getItem('itrex_inquiries_buffer') || '[]');
+            unreadCount += localBuffer.filter(i => (i.status || 'unread') === 'unread').length;
+        } catch (_) {}
+
+        try {
+            const res = await fetch('/api/connections');
+            if (res.ok) {
+                const conns = await res.json();
+                if (Array.isArray(conns)) {
+                    const serverUnread = conns.filter(c => (c.status || 'unread') === 'unread').length;
+                    unreadCount = Math.max(unreadCount, serverUnread);
+                }
+            }
+        } catch (_) {}
+
+        const badge = document.getElementById('dashboard-transmissions-badge');
+        if (badge) {
+            badge.textContent = unreadCount;
+            if (unreadCount > 0) {
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+    } catch (e) {
+        console.warn('[I-Trex Dashboard] Live transmission refresh warning:', e);
     }
 }
 

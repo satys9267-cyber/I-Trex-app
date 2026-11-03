@@ -750,22 +750,31 @@ app.post('/api/changelogs', async (req, res) => {
 // -------------------------------------------------------------
 app.get('/api/notifications', async (req, res) => {
     try {
-        const userId = req.query.userId || 'all';
+        const userId = req.query.userId;
         if (dbMode === 'mysql' && mysqlPool) {
-            const [rows] = await mysqlPool.query(
-                'SELECT * FROM notifications WHERE user_id = ? OR user_id = "all" ORDER BY created_at DESC LIMIT 50',
-                [userId]
-            );
+            let query = 'SELECT * FROM notifications ORDER BY created_at DESC LIMIT 50';
+            let params = [];
+            if (userId && userId !== 'all') {
+                query = 'SELECT * FROM notifications WHERE user_id = ? OR user_id = "all" ORDER BY created_at DESC LIMIT 50';
+                params = [userId];
+            }
+            const [rows] = await mysqlPool.query(query, params);
             res.json(rows);
         } else if (dbMode === 'postgresql' && pgPool) {
-            const result = await pgPool.query(
-                "SELECT * FROM notifications WHERE user_id = $1 OR user_id = 'all' ORDER BY created_at DESC LIMIT 50",
-                [userId]
-            );
+            let query = "SELECT * FROM notifications ORDER BY created_at DESC LIMIT 50";
+            let params = [];
+            if (userId && userId !== 'all') {
+                query = "SELECT * FROM notifications WHERE user_id = $1 OR user_id = 'all' ORDER BY created_at DESC LIMIT 50";
+                params = [userId];
+            }
+            const result = await pgPool.query(query, params);
             res.json(result.rows);
         } else {
             const db = getLocalDB();
-            const notifs = (db.notifications || []).filter(n => n.user_id === userId || n.user_id === 'all');
+            let notifs = db.notifications || [];
+            if (userId && userId !== 'all') {
+                notifs = notifs.filter(n => n.user_id === userId || n.user_id === 'all');
+            }
             res.json(notifs);
         }
     } catch (e) {
@@ -1009,31 +1018,52 @@ app.get('/api/contact', async (req, res) => {
 
 app.post('/api/contact', async (req, res) => {
     try {
-        const { name, email, category, message } = req.body;
+        const { name, email, category, subject, message } = req.body;
         const id = 'inq-' + Date.now().toString(36);
+        const resolvedCategory = (category && category.trim()) ? category.trim() : 'Direct Transmission Inquiry';
+        const resolvedSubject = (subject && subject.trim()) ? subject.trim() : resolvedCategory;
+        const resolvedName = (name && name.trim()) ? name.trim() : 'Executive Contact';
+        const resolvedEmail = (email && email.trim()) ? email.trim() : 'inquiry@itrex.ai';
+        const resolvedMessage = (message && message.trim()) ? message.trim() : '';
+
+        const newInquiry = {
+            id,
+            name: resolvedName,
+            email: resolvedEmail,
+            category: resolvedCategory,
+            subject: resolvedSubject,
+            message: resolvedMessage,
+            status: 'unread',
+            replies: [],
+            createdAt: new Date().toISOString()
+        };
 
         if (dbMode === 'mysql' && mysqlPool) {
             await mysqlPool.query(
-                `INSERT INTO contact_inquiries (id, name, email, category, message) VALUES (?, ?, ?, ?, ?)`,
-                [id, name, email, category || 'General', message]
+                `INSERT INTO contact_inquiries (id, name, email, category, message, status) VALUES (?, ?, ?, ?, ?, ?)`,
+                [id, resolvedName, resolvedEmail, resolvedCategory, resolvedMessage, 'unread']
             );
         } else if (dbMode === 'postgresql' && pgPool) {
             await pgPool.query(
-                `INSERT INTO contact_inquiries (id, name, email, category, message) VALUES ($1, $2, $3, $4, $5)`,
-                [id, name, email, category, message]
+                `INSERT INTO contact_inquiries (id, name, email, category, message, status) VALUES ($1, $2, $3, $4, $5, $6)`,
+                [id, resolvedName, resolvedEmail, resolvedCategory, resolvedMessage, 'unread']
             );
         } else {
             const db = getLocalDB();
             db.contact_inquiries = db.contact_inquiries || [];
-            db.contact_inquiries.unshift({ id, name, email, category, message, createdAt: new Date().toISOString() });
+            db.contact_inquiries.unshift(newInquiry);
             saveLocalDB(db);
         }
 
-        await recordChangeLog(name, 'public-visitor', 'CONTACT_TRANSMISSION', 'inquiries', id, { email, category }, 'INFO', req);
-        await createNotification('usr-001', `New Inquiry from ${name}`, `Category: ${category}. Email: ${email}`, 'info', 'dashboard.html');
+        await recordChangeLog(resolvedName, 'public-visitor', 'CONTACT_TRANSMISSION', 'inquiries', id, { email: resolvedEmail, category: resolvedCategory }, 'INFO', req);
+        
+        // Notify both Founder (Satyam) and Co-Founder (Ishwari) in their workspaces
+        await createNotification('usr-001', `New Transmission from ${resolvedName}`, `Category: ${resolvedCategory} | Email: ${resolvedEmail}`, 'info', 'admin.html#connections');
+        await createNotification('usr-002', `New Transmission from ${resolvedName}`, `Category: ${resolvedCategory} | Email: ${resolvedEmail}`, 'info', 'admin.html#connections');
 
-        res.status(201).json({ success: true, id });
+        res.status(201).json({ success: true, id, inquiry: newInquiry });
     } catch (e) {
+        console.error('[I-Trex Contact API Error]:', e);
         res.status(500).json({ error: e.message });
     }
 });

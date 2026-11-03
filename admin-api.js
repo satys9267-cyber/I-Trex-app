@@ -61,7 +61,18 @@ module.exports = function configureAdminRoutes(helpers) {
             const products = db.products || [];
             const users = db.users || [];
             const approvals = db.approval_requests || [];
-            const connections = db.contact_inquiries || [];
+            const rawConnections = db.contact_inquiries || [];
+            const connections = rawConnections.map(i => ({
+                id: i.id || ('inq-' + Math.random().toString(36).substr(2, 8)),
+                name: i.name || 'Anonymous Contact',
+                email: i.email || 'unknown@itrex.ai',
+                category: i.category || 'General Inquiry',
+                subject: i.subject || i.category || 'Direct Transmission Inquiry',
+                message: i.message || '',
+                status: i.status || 'unread',
+                replies: Array.isArray(i.replies) ? i.replies : [],
+                createdAt: i.createdAt || i.created_at || new Date().toISOString()
+            }));
             const tasks = db.employee_tasks || [];
             const submissions = db.work_submissions || [];
             const auditLogs = db.admin_audit_logs || [];
@@ -615,7 +626,18 @@ module.exports = function configureAdminRoutes(helpers) {
     router.get('/api/connections', (req, res) => {
         try {
             const db = getLocalDB();
-            let inquiries = db.contact_inquiries || [];
+            const rawInquiries = db.contact_inquiries || [];
+            let inquiries = rawInquiries.map(i => ({
+                id: i.id || ('inq-' + Math.random().toString(36).substr(2, 8)),
+                name: i.name || 'Anonymous Contact',
+                email: i.email || 'unknown@itrex.ai',
+                category: i.category || 'General Inquiry',
+                subject: i.subject || i.category || 'Direct Transmission Inquiry',
+                message: i.message || '',
+                status: i.status || 'unread',
+                replies: Array.isArray(i.replies) ? i.replies : [],
+                createdAt: i.createdAt || i.created_at || new Date().toISOString()
+            }));
             const { status, search } = req.query;
 
             if (status && status !== 'all') {

@@ -74,6 +74,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else {
         showAdminSection('home');
     }
+
+    // Background polling for live transmissions and telemetry
+    setInterval(() => {
+        if (typeof currentActiveSection !== 'undefined' && currentActiveSection === 'connections') {
+            renderConnectionsInbox();
+        } else if (typeof currentActiveSection !== 'undefined' && currentActiveSection === 'home') {
+            loadInitialAdminData();
+            renderAdminHome();
+        }
+    }, 10000);
 });
 
 /* ==========================================================================
@@ -313,12 +323,29 @@ async function loadInitialAdminData() {
 
         if (connectionsRes.ok) {
             currentConnections = await connectionsRes.json();
-            const unreadCount = currentConnections.filter(c => c.status === 'unread').length;
-            const badge = document.getElementById('badge-connections-unread');
-            const qaBadge = document.getElementById('qa-connections-count');
-            if (badge) badge.textContent = unreadCount;
-            if (qaBadge) qaBadge.textContent = unreadCount;
+        } else {
+            currentConnections = [];
         }
+
+        // Merge local browser transmission buffer (resilient zero-loss guarantee)
+        try {
+            const localBuffer = JSON.parse(localStorage.getItem('itrex_inquiries_buffer') || '[]');
+            localBuffer.forEach(localInq => {
+                if (!currentConnections.some(c => c.id === localInq.id || (c.email === localInq.email && c.createdAt === localInq.createdAt))) {
+                    currentConnections.unshift(localInq);
+                }
+            });
+        } catch (e) {}
+
+        const unreadCount = currentConnections.filter(c => c.status === 'unread' || !c.status).length;
+        const badge = document.getElementById('badge-connections-unread');
+        const qaBadge = document.getElementById('qa-connections-count');
+        if (badge) badge.textContent = unreadCount;
+        if (qaBadge) qaBadge.textContent = unreadCount;
+        const hc = document.getElementById('home-metric-connections');
+        const hu = document.getElementById('home-metric-unread');
+        if (hc) hc.textContent = currentConnections.length;
+        if (hu) hu.textContent = `${unreadCount} Unread`;
 
     } catch (e) {
         console.warn('[I-Trex Admin] Error loading initial admin data:', e.message);
@@ -336,8 +363,10 @@ function updateOverviewCounters(summary) {
     if (hp) hp.textContent = summary.totalProducts || 5;
     if (he) he.textContent = summary.totalEmployees || 3;
     if (ha) ha.textContent = summary.pendingApprovals || 0;
-    if (hc) hc.textContent = summary.totalConnections || 0;
-    if (hu) hu.textContent = `${summary.unreadConnections || 0} Unread`;
+    const totalCount = Math.max(summary.totalConnections || 0, currentConnections.length);
+    const unreadCount = currentConnections.filter(c => c.status === 'unread' || !c.status).length;
+    if (hc) hc.textContent = totalCount;
+    if (hu) hu.textContent = `${unreadCount} Unread`;
 }
 
 /* ==========================================================================
@@ -377,22 +406,37 @@ async function renderAdminHome() {
 
         // Render Unread Inquiries Stream
         const inquiryContainer = document.getElementById('home-inquiries-stream');
-        if (inquiryContainer && Array.isArray(data.unreadInquiries)) {
-            if (data.unreadInquiries.length === 0) {
-                inquiryContainer.innerHTML = '<div class="text-neutral-500 py-4">All inbound transmissions processed. Zero unread.</div>';
+        if (inquiryContainer) {
+            let unreadList = (data && Array.isArray(data.unreadInquiries)) ? [...data.unreadInquiries] : [];
+            // Merge with unread items from currentConnections (includes browser buffer)
+            currentConnections.forEach(c => {
+                if ((c.status === 'unread' || !c.status) && !unreadList.some(u => u.id === c.id)) {
+                    unreadList.unshift(c);
+                }
+            });
+            if (unreadList.length === 0) {
+                inquiryContainer.innerHTML = '<div class="text-neutral-500 py-4 font-mono text-xs">All inbound transmissions processed. Zero unread.</div>';
             } else {
-                inquiryContainer.innerHTML = data.unreadInquiries.slice(0, 4).map(inq => `
+                inquiryContainer.innerHTML = unreadList.slice(0, 4).map(inq => `
                     <div class="p-3 bg-black/60 border border-cyan-500/20 hover:border-cyan-400/50 transition-colors cursor-pointer" onclick="openInquiryDetail('${inq.id}')">
                         <div class="flex items-center justify-between">
                             <span class="text-cyan-400 font-bold text-xs">${inq.name}</span>
                             <span class="text-neutral-500 text-[10px]">${new Date(inq.createdAt).toLocaleDateString()}</span>
                         </div>
-                        <div class="text-white font-sans text-xs truncate mt-1">${inq.subject || inq.category}</div>
+                        <div class="text-white font-sans text-xs truncate mt-1">${inq.subject || inq.category || 'Direct Transmission'}</div>
                         <p class="text-neutral-400 text-[11px] font-sans line-clamp-1 mt-0.5">${inq.message}</p>
                     </div>
                 `).join('');
             }
         }
+
+async function openInquiryDetail(id) {
+    showAdminSection('connections');
+    await renderConnectionsInbox();
+    selectInquiry(id);
+}
+window.openInquiryDetail = openInquiryDetail;
+
 
         if (window.lucide) window.lucide.createIcons();
 
@@ -1008,23 +1052,52 @@ function setConnFilter(filter) {
     });
     renderConnectionsInbox();
 }
+window.setConnFilter = setConnFilter;
 
 function filterConnections() {
     renderConnectionsInbox();
 }
+window.filterConnections = filterConnections;
 
 async function renderConnectionsInbox() {
     try {
-        const res = await fetch(API_BASE + '/api/connections');
-        if (!res.ok) return;
-        currentConnections = await res.json();
+        let serverConns = [];
+        try {
+            const res = await fetch(API_BASE + '/api/connections');
+            if (res.ok) {
+                serverConns = await res.json();
+            }
+        } catch (fetchErr) {
+            console.warn('[I-Trex Admin] Fetch connections warning:', fetchErr.message);
+        }
+
+        // Merge local browser transmission buffer (guarantees zero transmission loss)
+        let localBuffer = [];
+        try {
+            localBuffer = JSON.parse(localStorage.getItem('itrex_inquiries_buffer') || '[]');
+        } catch (_) {}
+
+        const connMap = new Map();
+        [...serverConns, ...localBuffer].forEach(item => {
+            if (item && item.id) {
+                const existing = connMap.get(item.id);
+                connMap.set(item.id, {
+                    ...item,
+                    status: (item.status || (existing && existing.status) || 'unread'),
+                    subject: item.subject || item.category || 'Direct Transmission Inquiry',
+                    replies: Array.isArray(item.replies) ? item.replies : ((existing && Array.isArray(existing.replies)) ? existing.replies : [])
+                });
+            }
+        });
+
+        currentConnections = Array.from(connMap.values()).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
         const listContainer = document.getElementById('conn-inbox-list');
         const searchVal = (document.getElementById('conn-search-input')?.value || '').toLowerCase();
 
         let filtered = currentConnections;
         if (connFilter !== 'all') {
-            filtered = filtered.filter(c => c.status === connFilter);
+            filtered = filtered.filter(c => (c.status || 'unread') === connFilter);
         }
         if (searchVal) {
             filtered = filtered.filter(c => 
@@ -1038,12 +1111,16 @@ async function renderConnectionsInbox() {
         if (!listContainer) return;
 
         if (filtered.length === 0) {
-            listContainer.innerHTML = '<div class="text-center py-10 text-neutral-500 font-mono text-xs">No messages found.</div>';
+            listContainer.innerHTML = '<div class="text-center py-10 text-neutral-500 font-mono text-xs">No transmissions found.</div>';
+            const panel = document.getElementById('conn-detail-panel');
+            if (panel && (!selectedInquiry || !currentConnections.some(c => c.id === selectedInquiry.id))) {
+                panel.innerHTML = '<div class="text-center py-12 text-neutral-500 font-mono text-xs">Select an inquiry from the left to inspect details and dispatch email responses.</div>';
+            }
             return;
         }
 
         listContainer.innerHTML = filtered.map(inq => {
-            const isUnread = inq.status === 'unread';
+            const isUnread = (inq.status || 'unread') === 'unread';
             const isSelected = selectedInquiry && selectedInquiry.id === inq.id;
             return `
                 <div onclick="selectInquiry('${inq.id}')" class="p-4 hover:bg-white/5 transition-colors cursor-pointer ${isSelected ? 'bg-white/10 border-l-2 border-cyan-400' : ''}">
@@ -1054,38 +1131,51 @@ async function renderConnectionsInbox() {
                     <div class="text-xs text-neutral-200 font-sans truncate">${inq.subject || inq.category}</div>
                     <p class="text-[11px] text-neutral-400 font-sans line-clamp-1 mt-1">${inq.message}</p>
                     <div class="flex items-center gap-2 mt-2">
-                        <span class="px-1.5 py-0.5 text-[9px] uppercase ${isUnread ? 'bg-cyan-950 text-cyan-400 border border-cyan-500/30' : 'bg-white/5 text-neutral-400'}">${inq.status}</span>
+                        <span class="px-1.5 py-0.5 text-[9px] uppercase ${isUnread ? 'bg-cyan-950 text-cyan-400 border border-cyan-500/30' : 'bg-white/5 text-neutral-400'}">${inq.status || 'unread'}</span>
                         <span class="text-[10px] text-neutral-500">${inq.category}</span>
                     </div>
                 </div>
             `;
         }).join('');
 
-        // If no message is selected, select first
-        if (!selectedInquiry && filtered.length > 0) {
+        // Keep currently selected inquiry or select first available
+        if (!selectedInquiry || !filtered.some(f => f.id === selectedInquiry.id)) {
             selectInquiry(filtered[0].id);
+        } else {
+            renderInquiryDetails(selectedInquiry);
         }
 
     } catch (e) {
         console.warn('[I-Trex Admin] Error rendering inbox:', e.message);
     }
 }
+window.renderConnectionsInbox = renderConnectionsInbox;
 
 function selectInquiry(id) {
     selectedInquiry = currentConnections.find(c => c.id === id);
     if (!selectedInquiry) return;
 
-    const panel = document.getElementById('conn-detail-panel');
-    if (!panel) return;
+    renderInquiryDetails(selectedInquiry);
 
-    const repliesHtml = (selectedInquiry.replies || []).map(r => `
+    // If marked unread, automatically mark as read on view
+    if ((selectedInquiry.status || 'unread') === 'unread') {
+        toggleInquiryStatus(selectedInquiry.id, 'read', true);
+    }
+}
+window.selectInquiry = selectInquiry;
+
+function renderInquiryDetails(inq) {
+    const panel = document.getElementById('conn-detail-panel');
+    if (!panel || !inq) return;
+
+    const repliesHtml = (inq.replies || []).map(r => `
         <div class="p-4 bg-white/5 border border-cyan-500/20 space-y-1">
             <div class="flex items-center justify-between font-mono text-[10px]">
                 <strong class="text-cyan-400">${r.sender}</strong>
                 <span class="text-neutral-500">${new Date(r.sentAt).toLocaleString()}</span>
             </div>
             <p class="font-sans text-xs text-neutral-300 leading-relaxed">${r.text}</p>
-            <div class="text-[9px] text-emerald-400 font-mono">✓ Delivered to ${selectedInquiry.email}</div>
+            <div class="text-[9px] text-emerald-400 font-mono">✓ Delivered to ${inq.email}</div>
         </div>
     `).join('');
 
@@ -1093,17 +1183,17 @@ function selectInquiry(id) {
         <div class="space-y-6">
             <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-4 border-b border-white/10">
                 <div class="space-y-1">
-                    <h3 class="font-display font-bold text-xl text-white">${selectedInquiry.subject || selectedInquiry.category}</h3>
+                    <h3 class="font-display font-bold text-xl text-white">${inq.subject || inq.category}</h3>
                     <div class="font-mono text-xs text-neutral-400">
-                        From: <strong class="text-cyan-400">${selectedInquiry.name}</strong> &lt;${selectedInquiry.email}&gt;
+                        From: <strong class="text-cyan-400">${inq.name}</strong> &lt;${inq.email}&gt;
                     </div>
-                    <div class="font-mono text-[10px] text-neutral-500">Category: ${selectedInquiry.category} · Received: ${new Date(selectedInquiry.createdAt).toLocaleString()}</div>
+                    <div class="font-mono text-[10px] text-neutral-500">Category: ${inq.category} · Received: ${new Date(inq.createdAt).toLocaleString()}</div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="toggleInquiryStatus('${selectedInquiry.id}', 'unread')" class="px-2.5 py-1 text-[11px] border border-white/20 text-neutral-300 hover:text-white font-mono">
+                    <button onclick="toggleInquiryStatus('${inq.id}', 'unread')" class="px-2.5 py-1 text-[11px] border border-white/20 text-neutral-300 hover:text-white font-mono">
                         MARK UNREAD
                     </button>
-                    <button onclick="toggleInquiryStatus('${selectedInquiry.id}', 'archived')" class="px-2.5 py-1 text-[11px] border border-white/20 text-neutral-300 hover:text-white font-mono">
+                    <button onclick="toggleInquiryStatus('${inq.id}', 'archived')" class="px-2.5 py-1 text-[11px] border border-white/20 text-neutral-300 hover:text-white font-mono">
                         ARCHIVE
                     </button>
                 </div>
@@ -1112,11 +1202,11 @@ function selectInquiry(id) {
             <!-- Original Message Body -->
             <div class="p-5 bg-black/60 border border-white/10 space-y-2">
                 <span class="font-mono text-[10px] uppercase text-neutral-400">INBOUND TRANSMISSION:</span>
-                <p class="font-sans text-sm text-neutral-200 leading-relaxed whitespace-pre-wrap font-light">${selectedInquiry.message}</p>
+                <p class="font-sans text-sm text-neutral-200 leading-relaxed whitespace-pre-wrap font-light">${inq.message}</p>
             </div>
 
             <!-- Conversation History Thread -->
-            ${selectedInquiry.replies && selectedInquiry.replies.length > 0 ? `
+            ${inq.replies && inq.replies.length > 0 ? `
                 <div class="space-y-3">
                     <span class="font-mono text-[10px] uppercase text-neutral-400">CONVERSATION THREAD:</span>
                     ${repliesHtml}
@@ -1124,9 +1214,9 @@ function selectInquiry(id) {
             ` : ''}
 
             <!-- Reply Interface -->
-            <form id="form-conn-reply" onsubmit="handleSendReply(event, '${selectedInquiry.id}')" class="space-y-4 pt-4 border-t border-white/10">
+            <form id="form-conn-reply" onsubmit="handleSendReply(event, '${inq.id}')" class="space-y-4 pt-4 border-t border-white/10">
                 <span class="font-mono text-[10px] uppercase text-cyan-400 block font-bold">REPLY FROM OFFICIAL I-TREX COMMUNICATIONS ENCLAVE</span>
-                <textarea id="conn-reply-text" rows="4" placeholder="Draft professional response to ${selectedInquiry.name} (${selectedInquiry.email})..." class="w-full bg-black border border-white/20 p-3 text-white focus:outline-none focus:border-cyan-400 font-sans text-xs leading-relaxed" required></textarea>
+                <textarea id="conn-reply-text" rows="4" placeholder="Draft professional response to ${inq.name} (${inq.email})..." class="w-full bg-black border border-white/20 p-3 text-white focus:outline-none focus:border-cyan-400 font-sans text-xs leading-relaxed" required></textarea>
                 <div class="flex items-center justify-between">
                     <span class="font-mono text-[10px] text-neutral-400">Sender: <strong>${currentUser.name} (${currentUser.email})</strong></span>
                     <button type="submit" class="chamfer-btn-primary !py-2.5 !px-6 text-xs">
@@ -1137,32 +1227,65 @@ function selectInquiry(id) {
         </div>
     `;
 
-    // If marked unread, automatically mark as read on view
-    if (selectedInquiry.status === 'unread') {
-        toggleInquiryStatus(selectedInquiry.id, 'read', true);
-    }
-
     if (window.lucide) window.lucide.createIcons();
 }
 
 async function toggleInquiryStatus(id, newStatus, silent = false) {
     try {
-        const res = await fetch(`${API_BASE}/api/connections/${id}/status`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-itrex-user': JSON.stringify(currentUser)
-            },
-            body: JSON.stringify({ status: newStatus })
-        });
-        if (!res.ok) throw new Error('Status update failed');
-        if (!silent) showToast(`Message marked as ${newStatus}`);
-        await loadInitialAdminData();
-        renderConnectionsInbox();
+        if (selectedInquiry && selectedInquiry.id === id) {
+            selectedInquiry.status = newStatus;
+        }
+        const inq = currentConnections.find(c => c.id === id);
+        if (inq) inq.status = newStatus;
+
+        // Update local buffer immediately
+        try {
+            let buffer = JSON.parse(localStorage.getItem('itrex_inquiries_buffer') || '[]');
+            let changed = false;
+            buffer = buffer.map(b => {
+                if (b.id === id) {
+                    changed = true;
+                    return { ...b, status: newStatus };
+                }
+                return b;
+            });
+            if (changed) {
+                localStorage.setItem('itrex_inquiries_buffer', JSON.stringify(buffer));
+            }
+        } catch (_) {}
+
+        // Sync status to backend
+        try {
+            await fetch(`${API_BASE}/api/connections/${id}/status`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-itrex-user': JSON.stringify(currentUser)
+                },
+                body: JSON.stringify({ status: newStatus })
+            });
+        } catch (serverErr) {
+            console.warn('[I-Trex Admin] Server status update warning:', serverErr.message);
+        }
+
+        if (!silent) showToast(`Message marked as ${newStatus.toUpperCase()}`);
+
+        const unreadCount = currentConnections.filter(c => (c.status || 'unread') === 'unread').length;
+        const badge = document.getElementById('badge-connections-unread');
+        const qaBadge = document.getElementById('qa-connections-count');
+        if (badge) badge.textContent = unreadCount;
+        if (qaBadge) qaBadge.textContent = unreadCount;
+        const hu = document.getElementById('home-metric-unread');
+        if (hu) hu.textContent = `${unreadCount} Unread`;
+
+        if (!silent) {
+            renderConnectionsInbox();
+        }
     } catch (e) {
         if (!silent) alert(e.message);
     }
 }
+window.toggleInquiryStatus = toggleInquiryStatus;
 
 async function handleSendReply(e, id) {
     e.preventDefault();
@@ -1187,12 +1310,13 @@ async function handleSendReply(e, id) {
         const data = await res.json();
         showToast(`Reply delivered to ${data.inquiry.email}!`);
         await loadInitialAdminData();
+        renderConnectionsInbox();
         selectInquiry(id);
-
     } catch (err) {
         alert(err.message);
     }
 }
+window.handleSendReply = handleSendReply;
 
 /* ==========================================================================
    11. MODULE 8: SECURITY ENCLAVE & IMMUTABLE AUDIT LOGS

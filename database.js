@@ -466,7 +466,38 @@ class ItrexDatabaseEngine {
     // --- Real-Time Update Notifications ---
     getNotifications(userId = 'all') {
         const notifs = this.getCollection('notifications') || [];
-        return notifs.filter(n => n.user_id === userId || n.user_id === 'all');
+        if (!userId || userId === 'all') {
+            return notifs;
+        }
+        return notifs.filter(n => n.user_id === userId || n.user_id === 'all' || !n.user_id);
+    }
+
+    async syncCloudNotifications(userId = 'all') {
+        try {
+            const queryParam = (userId && userId !== 'all') ? '?userId=' + encodeURIComponent(userId) : '';
+            const res = await fetch(`${this.apiBaseUrl}/api/notifications${queryParam}`);
+            if (res.ok) {
+                const serverNotifs = await res.json();
+                if (Array.isArray(serverNotifs) && serverNotifs.length > 0) {
+                    const localNotifs = this.getCollection('notifications') || [];
+                    const map = new Map();
+                    localNotifs.forEach(n => { if (n && n.id) map.set(n.id, n); });
+                    serverNotifs.forEach(n => {
+                        if (n && n.id) {
+                            const localItem = map.get(n.id);
+                            const isRead = localItem ? localItem.is_read : (n.is_read || false);
+                            map.set(n.id, Object.assign({}, n, { is_read: isRead }));
+                        }
+                    });
+                    const merged = Array.from(map.values()).sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+                    this.setCollection('notifications', merged);
+                    return this.getNotifications(userId);
+                }
+            }
+        } catch (e) {
+            console.warn('[Itrex DB] Notification cloud sync error:', e);
+        }
+        return this.getNotifications(userId);
     }
 
     addNotification(notif) {

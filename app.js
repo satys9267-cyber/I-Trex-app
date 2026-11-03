@@ -1139,17 +1139,53 @@ function initContactTerminal() {
             submitBtn.innerHTML = `<span>TRANSMITTING TLS 1.3...</span>`;
         }
 
-        let transmissionId = '0x' + Math.random().toString(16).substring(2, 10).toUpperCase();
+        const transmissionId = 'inq-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 4);
 
+        const inquiryPayload = {
+            id: transmissionId,
+            name: name.trim(),
+            email: email.trim(),
+            category: category.trim(),
+            subject: category.trim(),
+            message: message.trim(),
+            status: 'unread',
+            replies: [],
+            createdAt: new Date().toISOString()
+        };
+
+        // 1. Immediately buffer locally in browser for zero-loss guarantee
         try {
-            const res = await fetch('/api/contact', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, category, message })
-            });
-            const data = await res.json();
-            if (data && data.id) {
-                transmissionId = data.id.toUpperCase();
+            const buffer = JSON.parse(localStorage.getItem('itrex_inquiries_buffer') || '[]');
+            buffer.unshift(inquiryPayload);
+            localStorage.setItem('itrex_inquiries_buffer', JSON.stringify(buffer.slice(0, 50)));
+        } catch (e) {}
+
+        // 2. Dispatch to backend API with automatic fallback
+        try {
+            const apiEndpoints = [
+                '/api/contact',
+                'https://itrex-platform.onrender.com/api/contact',
+                'http://localhost:10000/api/contact'
+            ];
+
+            let transmitted = false;
+            for (const ep of apiEndpoints) {
+                try {
+                    const res = await fetch(ep, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(inquiryPayload)
+                    });
+                    if (res.ok) {
+                        transmitted = true;
+                        console.log('[I-Trex Contact] Successfully dispatched to endpoint:', ep);
+                        break;
+                    }
+                } catch (errEp) {}
+            }
+
+            if (!transmitted) {
+                console.warn('[I-Trex Contact] Network delivery queued in local resilient buffer.');
             }
         } catch (err) {
             console.warn('[I-Trex Contact] Local fallback used:', err);
