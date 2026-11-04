@@ -61,6 +61,13 @@
 </head>
 <body class="bg-black text-white font-sans antialiased selection:bg-white selection:text-black">
 
+    <!-- 00. ACCESSIBILITY & TELEMETRY PROGRESS -->
+    <a href="#main-content" class="skip-to-content sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[99999] focus:px-4 focus:py-2 focus:bg-white focus:text-black focus:font-bold focus:shadow-2xl focus:border focus:border-black font-mono text-xs uppercase tracking-wider">
+        Skip to main content
+    </a>
+    <div id="scroll-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Page scroll progress"></div>
+
+
     <!-- ======================================================================
          SECTION 01: INTRODUCTORY CINEMATIC EXPERIENCE (PRELOADER)
          ====================================================================== -->
@@ -125,8 +132,18 @@
                 </a>
             </div>
 
-            <!-- Right: Connect With Us CTA -->
-            <div class="flex items-center">
+            <!-- Right: Search, Theme Toggle, and Connect With Us CTA -->
+            <div class="flex items-center gap-1 sm:gap-2">
+                <!-- Site Search Trigger (Ctrl+K) -->
+                <button id="search-trigger-btn" class="p-2 rounded-lg text-neutral-400 hover:text-white transition-colors focus:outline-none flex items-center gap-1.5" aria-label="Search platform (Ctrl+K)" title="Search site (Ctrl+K)">
+                    <i data-lucide="search" class="w-4 h-4 text-white"></i>
+                    <kbd class="hidden md:inline-block px-1.5 py-0.5 text-[9px] font-mono text-neutral-400 bg-white/10 border border-white/10 rounded">⌘K</kbd>
+                </button>
+                <!-- Dark / Light Mode Toggle -->
+                <button id="theme-toggle-btn" class="p-2 rounded-lg text-neutral-400 hover:text-white transition-colors focus:outline-none mr-1" aria-label="Toggle theme mode" title="Toggle Light / Dark Mode">
+                    <i data-lucide="sun" class="w-4 h-4 theme-sun-icon hidden text-amber-400"></i>
+                    <i data-lucide="moon" class="w-4 h-4 theme-moon-icon text-cyan-400"></i>
+                </button>
                 <a href="#contact" class="chamfer-btn-primary !py-2 !px-3 sm:!py-2.5 sm:!px-6 !text-[10px] sm:!text-[11px] font-display font-bold uppercase tracking-[0.14em] sm:tracking-[0.18em] whitespace-nowrap">
                     <span>CONNECT<span class="hidden sm:inline">&nbsp;WITH US</span></span>
                 </a>
@@ -200,6 +217,10 @@
                         <span>LEADERSHIP & TEAM</span>
                         <i data-lucide="chevron-right" class="w-4 h-4"></i>
                     </a>
+                    <a href="#faq" onclick="closeMenu()" class="lamborghini-menu-row">
+                        <span>FREQUENTLY ASKED QUESTIONS</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </a>
                     <a href="#contact" onclick="closeMenu()" class="lamborghini-menu-row">
                         <span>FOUNDER CONTACT</span>
                         <i data-lucide="chevron-right" class="w-4 h-4"></i>
@@ -248,6 +269,7 @@
     <!-- ======================================================================
          SECTION 02: CINEMATIC HOMEPAGE HERO (100VH)
          ====================================================================== -->
+    <main id="main-content">
     <section id="home" class="relative w-full min-h-screen flex items-center justify-center overflow-hidden pt-20">
         <!-- Interactive 3D Canvas Matrix Background -->
         <canvas id="hero-particle-canvas"></canvas>
@@ -257,18 +279,13 @@
 
         <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 text-center py-16 flex flex-col items-center">
             
-            <!-- Category Tag -->
-            <div class="mb-6 title-reveal">
-                <span class="tech-tag">DEEP TECH · AUTONOMOUS SYSTEMS · NEURAL KERNEL</span>
-            </div>
-
             <!-- Massive Steel Editorial Headline with Masked Word-by-Word Slide Reveal -->
             <h1 id="hero-headline" class="title-hero text-5xl sm:text-7xl md:text-8xl lg:text-[104px] tracking-tight text-white mb-6">
                 <span class="word-mask-line">
                     <span class="hero-word-char text-white">ONE</span>&nbsp;<span class="hero-word-char text-white">PLATFORM.</span>
                 </span>
                 <span class="word-mask-line">
-                    <span class="hero-word-char text-chrome">INFINITE</span>&nbsp;<span class="hero-word-char text-chrome">TRAJECTORY.</span>
+                    <span class="hero-word-char text-white">INFINITE</span>&nbsp;<span class="hero-word-char text-white">TRAJECTORY.</span>
                 </span>
             </h1>
 
@@ -330,7 +347,7 @@
             <!-- Section Header -->
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                    <span class="tech-tag mb-3">AUTONOMOUS COMPUTING PARADIGM</span>
+                    
                     <h2 class="title-section text-4xl sm:text-6xl text-white">
                         EXPERIENCE THE VISION
                     </h2>
@@ -399,7 +416,7 @@
             <!-- Section Title -->
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                    <span class="tech-tag mb-3">AUTONOMOUS PRODUCT MATRIX</span>
+                    
                     <h2 class="title-section text-4xl sm:text-6xl text-white">
                         ENGINEERED FOR TRAJECTORY.
                     </h2>
@@ -439,10 +456,10 @@
             
             <!-- Section Title -->
             <div class="text-center max-w-3xl mx-auto space-y-4">
-                <span class="tech-tag">ARCHITECTURAL SYSTEM</span>
+                
                 <h2 class="title-section text-4xl sm:text-6xl text-white">
                     FOUR PILLARS.<br>
-                    <span class="text-chrome">ONE CORE INTELLIGENCE.</span>
+                    <span class="text-white">ONE CORE INTELLIGENCE.</span>
                 </h2>
                 <p class="font-sans text-neutral-400 text-sm sm:text-base leading-relaxed font-light">
                     Continuous multi-frequency neural stream interconnecting autonomous microkernels, planetary mesh, eBPF security, and spatial perception.
@@ -453,8 +470,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Pillar 01: TrexOS Kernel -->
                 <div class="arch-pillar-card p-6 border border-white/10 bg-black/60 rounded-none corner-brackets cursor-pointer transition-all duration-300 hover:border-cyan-400 group" data-pillar="0">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="font-mono text-xs font-bold text-cyan-400">01 // KERNEL</span>
+                    <div class="flex items-center justify-end mb-4">
                         <i data-lucide="cpu" class="w-5 h-5 text-cyan-400"></i>
                     </div>
                     <h3 class="font-display font-bold text-2xl text-white group-hover:text-cyan-400 transition-colors">TrexOS Kernel</h3>
@@ -469,8 +485,7 @@
 
                 <!-- Pillar 02: TrexCore Mesh -->
                 <div class="arch-pillar-card p-6 border border-white/10 bg-black/60 rounded-none corner-brackets cursor-pointer transition-all duration-300 hover:border-orange-400 group" data-pillar="1">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="font-mono text-xs font-bold text-orange-400">02 // MESH</span>
+                    <div class="flex items-center justify-end mb-4">
                         <i data-lucide="network" class="w-5 h-5 text-orange-400"></i>
                     </div>
                     <h3 class="font-display font-bold text-2xl text-white group-hover:text-orange-400 transition-colors">TrexCore Mesh</h3>
@@ -485,8 +500,7 @@
 
                 <!-- Pillar 03: TrexShield SecOps -->
                 <div class="arch-pillar-card p-6 border border-white/10 bg-black/60 rounded-none corner-brackets cursor-pointer transition-all duration-300 hover:border-emerald-400 group" data-pillar="2">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="font-mono text-xs font-bold text-emerald-400">03 // SECOPS</span>
+                    <div class="flex items-center justify-end mb-4">
                         <i data-lucide="shield-check" class="w-5 h-5 text-emerald-400"></i>
                     </div>
                     <h3 class="font-display font-bold text-2xl text-white group-hover:text-emerald-400 transition-colors">TrexShield SecOps</h3>
@@ -501,8 +515,7 @@
 
                 <!-- Pillar 04: TrexVision SLAM -->
                 <div class="arch-pillar-card p-6 border border-white/10 bg-black/60 rounded-none corner-brackets cursor-pointer transition-all duration-300 hover:border-cyan-300 group" data-pillar="3">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="font-mono text-xs font-bold text-cyan-300">04 // SLAM</span>
+                    <div class="flex items-center justify-end mb-4">
                         <i data-lucide="eye" class="w-5 h-5 text-cyan-300"></i>
                     </div>
                     <h3 class="font-display font-bold text-2xl text-white group-hover:text-cyan-300 transition-colors">TrexVision SLAM</h3>
@@ -544,7 +557,7 @@
             
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                    <span class="tech-tag mb-3">ENGINEERING BENCHMARKS</span>
+                    
                     <h2 class="title-section text-4xl sm:text-6xl text-white">
                         CAPABILITIES MATRIX
                     </h2>
@@ -558,7 +571,6 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Cap 01 -->
                 <div class="p-8 border border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent corner-brackets space-y-4 hover:border-white/30 transition-colors">
-                    <span class="font-mono text-xs text-neutral-500 font-bold tracking-widest">01 // CORE SCHEDULING</span>
                     <h3 class="font-display font-bold text-2xl text-white">Sub-ms Microkernel</h3>
                     <p class="font-sans text-sm text-neutral-400 leading-relaxed">
                         Deterministic neural scheduler anticipating execution workloads across heterogeneous edge CPU cores with zero POSIX overhead.
@@ -567,7 +579,6 @@
 
                 <!-- Cap 02 -->
                 <div class="p-8 border border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent corner-brackets space-y-4 hover:border-white/30 transition-colors">
-                    <span class="font-mono text-xs text-neutral-500 font-bold tracking-widest">02 // EDGE FABRIC</span>
                     <h3 class="font-display font-bold text-2xl text-white">Global Edge Mesh</h3>
                     <p class="font-sans text-sm text-neutral-400 leading-relaxed">
                         Planetary compute network spanning 180+ global edge locations with automated data residency and sub-50ms multi-cloud failover.
@@ -576,7 +587,6 @@
 
                 <!-- Cap 03 -->
                 <div class="p-8 border border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent corner-brackets space-y-4 hover:border-white/30 transition-colors">
-                    <span class="font-mono text-xs text-neutral-500 font-bold tracking-widest">03 // SECOPS ENCLAVE</span>
                     <h3 class="font-display font-bold text-2xl text-white">Autonomous Zero-Trust</h3>
                     <p class="font-sans text-sm text-neutral-400 leading-relaxed">
                         Kernel-level eBPF behavioral quarantine neutralizing unauthorized memory tampering and lateral movements in under 4 milliseconds.
@@ -585,7 +595,6 @@
 
                 <!-- Cap 04 -->
                 <div class="p-8 border border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent corner-brackets space-y-4 hover:border-white/30 transition-colors">
-                    <span class="font-mono text-xs text-neutral-500 font-bold tracking-widest">04 // SPATIAL PERCEPTION</span>
                     <h3 class="font-display font-bold text-2xl text-white">Spatial Intelligence</h3>
                     <p class="font-sans text-sm text-neutral-400 leading-relaxed">
                         WebGPU and Vulkan accelerated 3D odometry processing 4K multi-sensor point clouds locked at a flawless 120 FPS directly at the edge.
@@ -594,7 +603,6 @@
 
                 <!-- Cap 05 -->
                 <div class="p-8 border border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent corner-brackets space-y-4 hover:border-white/30 transition-colors">
-                    <span class="font-mono text-xs text-neutral-500 font-bold tracking-widest">05 // CONSENSUS ENGINE</span>
                     <h3 class="font-display font-bold text-2xl text-white">Distributed State Sync</h3>
                     <p class="font-sans text-sm text-neutral-400 leading-relaxed">
                         Bidirectional edge-to-core state consensus via WireGuard mTLS tunnels providing sub-12ms latency across distributed clusters.
@@ -603,7 +611,6 @@
 
                 <!-- Cap 06 -->
                 <div class="p-8 border border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent corner-brackets space-y-4 hover:border-white/30 transition-colors">
-                    <span class="font-mono text-xs text-neutral-500 font-bold tracking-widest">06 // HARDWARE INTEGRATION</span>
                     <h3 class="font-display font-bold text-2xl text-white">Kernel-Level Security</h3>
                     <p class="font-sans text-sm text-neutral-400 leading-relaxed">
                         Continuous cryptographic attestations generated at Ring 0, fulfilling strict ISO 27001, SOC 2 Type II, and FedRAMP standards.
@@ -620,7 +627,7 @@
         <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
             
             <div class="lg:col-span-6 space-y-8">
-                <span class="tech-tag">FOUNDING MANIFESTO</span>
+                
                 <h2 class="title-section text-4xl sm:text-6xl text-white">
                     BUILT FROM FIRST PRINCIPLES BY SATYAM.
                 </h2>
@@ -654,9 +661,8 @@
                 <div class="aerodynamic-frame p-8 sm:p-12 corner-brackets relative">
                     <div class="flex items-center justify-between border-b border-white/10 pb-6 mb-8">
                         <div>
-                            <span class="font-mono text-xs text-cyan-400 font-bold tracking-widest block uppercase">EXECUTIVE ARCHITECT</span>
-                            <h3 class="font-display font-extrabold text-2xl text-white mt-1">Satyam Swami</h3>
-                            <span class="font-sans text-xs text-neutral-400">Founder & Chief Systems Architect</span>
+                            <h3 class="font-display font-extrabold text-2xl text-white">Satyam Swami</h3>
+                            <span class="font-sans text-xs text-neutral-400 block mt-1">Founder & Chief Systems Architect</span>
                         </div>
                         <img src="assets/images/itrex_logo_silver_transparent.png" alt="Silver Badge" class="h-10 w-auto opacity-70">
                     </div>
@@ -682,10 +688,10 @@
             
             <!-- Our Vision -->
             <div class="text-center space-y-6">
-                <span class="tech-tag">STRATEGIC HORIZON</span>
+                
                 <h2 class="title-section text-4xl sm:text-6xl text-white">OUR VISION</h2>
                 <blockquote class="font-display font-bold text-2xl sm:text-4xl text-neutral-300 max-w-4xl mx-auto leading-tight">
-                    “To make every enterprise operate with zero latency, adaptive intelligence, and seamless transparency under one unified platform.”
+                    “To make every enterprise operate with zero latency, adaptive intelligence, and absolute operational transparency under one unified platform.”
                 </blockquote>
 
                 <!-- Strategic Progress Flow Rail (DISCOVER -> ARCHITECT -> DEPLOY -> SCALE -> TRANSCEND) -->
@@ -724,10 +730,10 @@
 
             <!-- Our Mission -->
             <div class="text-center space-y-6 pt-16 border-t border-white/10">
-                <span class="tech-tag">MANDATE & PURPOSE</span>
+                
                 <h2 class="title-section text-4xl sm:text-6xl text-white">OUR MISSION</h2>
                 <blockquote class="font-display font-bold text-2xl sm:text-4xl text-neutral-300 max-w-4xl mx-auto leading-tight">
-                    “Build one unified autonomous operating system that powers public technology innovation and internal enterprise execution seamlessly.”
+                    “Build one unified autonomous operating system that powers public technology innovation and internal enterprise execution with uncompromising precision.”
                 </blockquote>
             </div>
         </div>
@@ -741,7 +747,7 @@
             
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                    <span class="tech-tag mb-3">EXECUTION HORIZON</span>
+                    
                     <h2 class="title-section text-4xl sm:text-6xl text-white">
                         STRATEGIC ROADMAP
                     </h2>
@@ -754,63 +760,73 @@
             <!-- Milestone Progression Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 <!-- Milestone 1 -->
-                <div class="p-6 border border-white/10 bg-black/60 corner-brackets space-y-3 relative group hover:border-cyan-400 transition-colors">
-                    <div class="flex items-center justify-between">
+                <div class="p-6 border border-white/10 bg-black/60 corner-brackets space-y-3 relative group hover:border-cyan-400 transition-colors flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <h3 class="font-display font-bold text-lg text-white">Genesis & Neural Core</h3>
+                        <p class="font-sans text-xs text-neutral-400 leading-relaxed font-light">
+                            Satyam initiates I-Trex. Architecture proof-of-concept for zero-trust microkernel and bare-metal Ring 0 schedulers.
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-between pt-3 border-t border-white/10">
                         <span class="font-mono text-xs text-cyan-400 font-bold">Q1 2025</span>
                         <span class="font-mono text-[9px] px-2 py-0.5 bg-cyan-950 text-cyan-400 border border-cyan-500/30">COMPLETED</span>
                     </div>
-                    <h3 class="font-display font-bold text-lg text-white">Genesis & Neural Core</h3>
-                    <p class="font-sans text-xs text-neutral-400 leading-relaxed font-light">
-                        Satyam initiates I-Trex. Architecture proof-of-concept for zero-trust microkernel and bare-metal Ring 0 schedulers.
-                    </p>
                 </div>
 
                 <!-- Milestone 2 -->
-                <div class="p-6 border border-white/10 bg-black/60 corner-brackets space-y-3 relative group hover:border-cyan-400 transition-colors">
-                    <div class="flex items-center justify-between">
+                <div class="p-6 border border-white/10 bg-black/60 corner-brackets space-y-3 relative group hover:border-cyan-400 transition-colors flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <h3 class="font-display font-bold text-lg text-white">TrexOS Alpha Release</h3>
+                        <p class="font-sans text-xs text-neutral-400 leading-relaxed font-light">
+                            Successful execution of 0.42ms scheduler. Secured initial tier-one institutional backing and strategic enterprise pilots.
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-between pt-3 border-t border-white/10">
                         <span class="font-mono text-xs text-cyan-400 font-bold">Q3 2025</span>
                         <span class="font-mono text-[9px] px-2 py-0.5 bg-cyan-950 text-cyan-400 border border-cyan-500/30">COMPLETED</span>
                     </div>
-                    <h3 class="font-display font-bold text-lg text-white">TrexOS Alpha Release</h3>
-                    <p class="font-sans text-xs text-neutral-400 leading-relaxed font-light">
-                        Successful execution of 0.42ms scheduler. Secured initial tier-one institutional backing and strategic enterprise pilots.
-                    </p>
                 </div>
 
                 <!-- Milestone 3 -->
-                <div class="p-6 border border-white/10 bg-black/60 corner-brackets space-y-3 relative group hover:border-cyan-400 transition-colors">
-                    <div class="flex items-center justify-between">
+                <div class="p-6 border border-white/10 bg-black/60 corner-brackets space-y-3 relative group hover:border-cyan-400 transition-colors flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <h3 class="font-display font-bold text-lg text-white">TrexCore Global Mesh</h3>
+                        <p class="font-sans text-xs text-neutral-400 leading-relaxed font-light">
+                            Distributed edge network deployed across North America, Europe, and Asia with sub-12ms state consensus fabric.
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-between pt-3 border-t border-white/10">
                         <span class="font-mono text-xs text-cyan-400 font-bold">Q1 2026</span>
                         <span class="font-mono text-[9px] px-2 py-0.5 bg-cyan-950 text-cyan-400 border border-cyan-500/30">COMPLETED</span>
                     </div>
-                    <h3 class="font-display font-bold text-lg text-white">TrexCore Global Mesh</h3>
-                    <p class="font-sans text-xs text-neutral-400 leading-relaxed font-light">
-                        Distributed edge network deployed across North America, Europe, and Asia with sub-12ms state consensus fabric.
-                    </p>
                 </div>
 
                 <!-- Milestone 4 -->
-                <div class="p-6 border border-cyan-400/50 bg-black/80 corner-brackets space-y-3 relative group shadow-[0_0_20px_rgba(0,242,254,0.15)]">
-                    <div class="flex items-center justify-between">
+                <div class="p-6 border border-cyan-400/50 bg-black/80 corner-brackets space-y-3 relative group shadow-[0_0_20px_rgba(0,242,254,0.15)] flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <h3 class="font-display font-bold text-lg text-white">TrexVision Spatial Engine</h3>
+                        <p class="font-sans text-xs text-neutral-300 leading-relaxed font-light">
+                            Enterprise pilots in automated robotics, aerospace, and spatial visual telemetry locked at 120 FPS WebGPU speeds.
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-between pt-3 border-t border-white/10">
                         <span class="font-mono text-xs text-cyan-400 font-bold">Q3 2026</span>
                         <span class="font-mono text-[9px] px-2 py-0.5 bg-cyan-500 text-black font-bold">IN PROGRESS</span>
                     </div>
-                    <h3 class="font-display font-bold text-lg text-white">TrexVision Spatial Engine</h3>
-                    <p class="font-sans text-xs text-neutral-300 leading-relaxed font-light">
-                        Enterprise pilots in automated robotics, aerospace, and spatial visual telemetry locked at 120 FPS WebGPU speeds.
-                    </p>
                 </div>
 
                 <!-- Milestone 5 -->
-                <div class="p-6 border border-white/10 bg-black/40 corner-brackets space-y-3 relative opacity-70 group hover:opacity-100 transition-opacity">
-                    <div class="flex items-center justify-between">
+                <div class="p-6 border border-white/10 bg-black/40 corner-brackets space-y-3 relative opacity-70 group hover:opacity-100 transition-opacity flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <h3 class="font-display font-bold text-lg text-white">Autonomous Fleet</h3>
+                        <p class="font-sans text-xs text-neutral-400 leading-relaxed font-light">
+                            Full commercial availability of unified public & private self-governing workspace across autonomous enterprise fleets.
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-between pt-3 border-t border-white/10">
                         <span class="font-mono text-xs text-neutral-400 font-bold">Q1 2027</span>
                         <span class="font-mono text-[9px] px-2 py-0.5 bg-neutral-900 text-neutral-400 border border-white/10">UPCOMING</span>
                     </div>
-                    <h3 class="font-display font-bold text-lg text-white">Autonomous Fleet</h3>
-                    <p class="font-sans text-xs text-neutral-400 leading-relaxed font-light">
-                        Full commercial availability of unified public & private self-governing workspace across autonomous enterprise fleets.
-                    </p>
                 </div>
             </div>
         </div>
@@ -823,7 +839,7 @@
         <div class="max-w-7xl mx-auto space-y-16">
             
             <div class="text-center max-w-2xl mx-auto space-y-4">
-                <span class="tech-tag">LEADERSHIP & ARCHITECTURE</span>
+                
                 <h2 class="title-section text-4xl sm:text-6xl text-white">
                     THE PEOPLE BEHIND THE PLATFORM.
                 </h2>
@@ -887,51 +903,91 @@
                 </div>
             </div>
 
-            <!-- Core Engineering Leads Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Elena Vance -->
-                <div class="p-6 border border-white/10 bg-black/60 corner-brackets space-y-3">
-                    <span class="font-mono text-[10px] text-cyan-400 font-bold uppercase tracking-widest">KERNEL ARCHITECTURE</span>
-                    <h4 class="font-display font-bold text-lg text-white">Elena Vance</h4>
-                    <span class="font-sans text-xs text-neutral-400 block">Lead Systems Architect</span>
-                    <p class="font-sans text-xs text-neutral-400 font-light leading-relaxed">Microkernel memory isolation, Rust concurrency, and distributed consensus.</p>
+
+        </div>
+    </section>
+
+        <!-- ======================================================================
+         SECTION 10.5: TECHNICAL ARCHITECTURE & ENTERPRISE FAQ
+         ====================================================================== -->
+    <section id="faq" class="relative py-28 px-6 lg:px-12 border-t border-white/10 bg-black">
+        <div class="max-w-4xl mx-auto space-y-12">
+            <div class="text-center space-y-4">
+                <h2 class="title-section text-4xl sm:text-6xl text-white">
+                    FREQUENTLY ASKED QUESTIONS
+                </h2>
+                <p class="font-sans text-neutral-400 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed font-light">
+                    Direct technical answers regarding kernel architecture, zero-trust cryptographic enclaves, and enterprise infrastructure integration.
+                </p>
+            </div>
+
+            <div class="space-y-4 font-sans" id="faq-accordion-container">
+                <!-- FAQ Item 1 -->
+                <div class="border border-white/10 bg-[#07090e] hover:border-white/20 transition-colors">
+                    <button type="button" class="faq-question-btn w-full p-6 text-left flex items-center justify-between gap-4 focus:outline-none" aria-expanded="false">
+                        <span class="font-display font-bold text-base sm:text-lg text-white">What is the core architecture of the TrexOS Autonomous Kernel?</span>
+                        <i data-lucide="chevron-down" class="faq-chevron w-5 h-5 text-neutral-400 transition-transform duration-300 shrink-0"></i>
+                    </button>
+                    <div class="faq-answer-panel hidden px-6 pb-6 text-xs sm:text-sm text-neutral-300 leading-relaxed font-light border-t border-white/5 pt-4">
+                        TrexOS is built from first principles on a high-throughput microkernel utilizing eBPF scheduling hooks. By moving non-critical drivers to isolated userspace memory domains and enforcing sub-0.35ms context switching, TrexOS guarantees deterministic real-time execution for neural workloads and aerospace telemetry without kernel panic vulnerabilities.
+                    </div>
                 </div>
 
-                <!-- Marcus Chen -->
-                <div class="p-6 border border-white/10 bg-black/60 corner-brackets space-y-3">
-                    <span class="font-mono text-[10px] text-cyan-400 font-bold uppercase tracking-widest">NEURAL & VISION</span>
-                    <h4 class="font-display font-bold text-lg text-white">Marcus Chen</h4>
-                    <span class="font-sans text-xs text-neutral-400 block">Principal AI Research Engineer</span>
-                    <p class="font-sans text-xs text-neutral-400 font-light leading-relaxed">Low-precision quantization, spatial vision, and on-device neuromorphic models.</p>
+                <!-- FAQ Item 2 -->
+                <div class="border border-white/10 bg-[#07090e] hover:border-white/20 transition-colors">
+                    <button type="button" class="faq-question-btn w-full p-6 text-left flex items-center justify-between gap-4 focus:outline-none" aria-expanded="false">
+                        <span class="font-display font-bold text-base sm:text-lg text-white">How does the Zero-Trust SecOps Enclave ensure lateral threat isolation?</span>
+                        <i data-lucide="chevron-down" class="faq-chevron w-5 h-5 text-neutral-400 transition-transform duration-300 shrink-0"></i>
+                    </button>
+                    <div class="faq-answer-panel hidden px-6 pb-6 text-xs sm:text-sm text-neutral-300 leading-relaxed font-light border-t border-white/5 pt-4">
+                        TrexShield applies continuous cryptographic verification at every boundary. No component implicitly trusts another. In the event of an anomalous memory access or lateral movement attempt, automated honeypots isolate the affected memory segment in under 4 milliseconds while generating an immutable SHA-256 audit entry.
+                    </div>
                 </div>
 
-                <!-- Sarah Miller -->
-                <div class="p-6 border border-white/10 bg-black/60 corner-brackets space-y-3">
-                    <span class="font-mono text-[10px] text-cyan-400 font-bold uppercase tracking-widest">PRODUCT EXPERIENCE</span>
-                    <h4 class="font-display font-bold text-lg text-white">Sarah Miller</h4>
-                    <span class="font-sans text-xs text-neutral-400 block">VP of Product Experience</span>
-                    <p class="font-sans text-xs text-neutral-400 font-light leading-relaxed">Frictionless human-computer interactions and enterprise engineering design.</p>
+                <!-- FAQ Item 3 -->
+                <div class="border border-white/10 bg-[#07090e] hover:border-white/20 transition-colors">
+                    <button type="button" class="faq-question-btn w-full p-6 text-left flex items-center justify-between gap-4 focus:outline-none" aria-expanded="false">
+                        <span class="font-display font-bold text-base sm:text-lg text-white">Can I-Trex platforms run on on-premise heterogeneous bare-metal servers?</span>
+                        <i data-lucide="chevron-down" class="faq-chevron w-5 h-5 text-neutral-400 transition-transform duration-300 shrink-0"></i>
+                    </button>
+                    <div class="faq-answer-panel hidden px-6 pb-6 text-xs sm:text-sm text-neutral-300 leading-relaxed font-light border-t border-white/5 pt-4">
+                        Yes. TrexCore Edge Mesh abstracts multi-vendor compute hardware (AMD EPYC, ARM Neoverse, NVIDIA Hopper/Blackwell) into a unified, latency-routed computational plane. Organizations can deploy on sovereign on-premise clusters, air-gapped data centers, or hybrid multi-cloud topologies.
+                    </div>
                 </div>
 
-                <!-- Kavita Rao -->
-                <div class="p-6 border border-white/10 bg-black/60 corner-brackets space-y-3">
-                    <span class="font-mono text-[10px] text-cyan-400 font-bold uppercase tracking-widest">EDGE INFRASTRUCTURE</span>
-                    <h4 class="font-display font-bold text-lg text-white">Kavita Rao</h4>
-                    <span class="font-sans text-xs text-neutral-400 block">Cloud Infrastructure Lead</span>
-                    <p class="font-sans text-xs text-neutral-400 font-light leading-relaxed">Geo-distributed edge meshes, low-latency BGP routing, and autonomous failover.</p>
+                <!-- FAQ Item 4 -->
+                <div class="border border-white/10 bg-[#07090e] hover:border-white/20 transition-colors">
+                    <button type="button" class="faq-question-btn w-full p-6 text-left flex items-center justify-between gap-4 focus:outline-none" aria-expanded="false">
+                        <span class="font-display font-bold text-base sm:text-lg text-white">What enterprise support, telemetry pipelines, and SLAs are offered?</span>
+                        <i data-lucide="chevron-down" class="faq-chevron w-5 h-5 text-neutral-400 transition-transform duration-300 shrink-0"></i>
+                    </button>
+                    <div class="faq-answer-panel hidden px-6 pb-6 text-xs sm:text-sm text-neutral-300 leading-relaxed font-light border-t border-white/5 pt-4">
+                        Enterprise partners receive guaranteed 99.999% uptime SLAs, direct L3 kernel engineer support, bespoke neural model optimization, and round-the-clock telemetry monitoring from the I-Trex Executive Operations Enclave.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 5 -->
+                <div class="border border-white/10 bg-[#07090e] hover:border-white/20 transition-colors">
+                    <button type="button" class="faq-question-btn w-full p-6 text-left flex items-center justify-between gap-4 focus:outline-none" aria-expanded="false">
+                        <span class="font-display font-bold text-base sm:text-lg text-white">How do I initiate an architecture review or pilot deployment?</span>
+                        <i data-lucide="chevron-down" class="faq-chevron w-5 h-5 text-neutral-400 transition-transform duration-300 shrink-0"></i>
+                    </button>
+                    <div class="faq-answer-panel hidden px-6 pb-6 text-xs sm:text-sm text-neutral-300 leading-relaxed font-light border-t border-white/5 pt-4">
+                        Transmit your operational scope directly through the Direct Transmission Terminal below. Inquiries are routed immediately to Satyam Swami's executive queue, with technical scoping calls scheduled within 24 operational hours.
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ======================================================================
+<!-- ======================================================================
          SECTION 11: CONTACT / FOUNDER TRANSMISSION TERMINAL
          ====================================================================== -->
     <section id="contact" class="relative py-28 px-6 lg:px-12 border-t border-white/10 bg-[#05070a]">
         <div class="max-w-4xl mx-auto space-y-14">
             
             <div class="text-center space-y-4">
-                <span class="tech-tag">COMMUNICATION VECTOR</span>
+                
                 <h2 class="title-section text-4xl sm:text-6xl text-white">
                     HAVE A VISION IN MIND?
                 </h2>
@@ -986,7 +1042,20 @@
                     </span>
                 </div>
 
-                <form id="founder-contact-form" class="space-y-6">
+                <form id="founder-contact-form" novalidate class="space-y-6">
+                    <!-- Inline Form Success Receipt State -->
+                    <div id="contact-inline-success" class="hidden p-4 bg-emerald-950/40 border border-emerald-500/50 rounded-none corner-brackets text-emerald-300 font-mono text-xs flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 shrink-0"></i>
+                            <div>
+                                <span class="font-bold text-white block">TRANSMISSION CONFIRMED</span>
+                                <span class="text-[10px] text-neutral-300">Reference: <strong id="success-ref-id" class="text-cyan-400 font-mono select-all"></strong></span>
+                            </div>
+                        </div>
+                        <button type="button" onclick="copyToClipboard(document.getElementById('success-ref-id').textContent, this)" class="px-2.5 py-1 text-[10px] border border-emerald-500/40 text-emerald-300 hover:text-white uppercase transition-colors shrink-0">
+                            COPY REF
+                        </button>
+                    </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
                             <label class="block font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-2">FULL NAME *</label>
@@ -1036,11 +1105,21 @@
                 <h3 class="font-display font-extrabold text-2xl text-white uppercase tracking-wider">Transmission Verified</h3>
                 <p id="contact-modal-text" class="font-mono text-xs text-neutral-300 leading-relaxed"></p>
             </div>
-            <button onclick="closeContactModal()" class="chamfer-btn-outline w-full !text-xs">
-                <span>CLOSE CONSOLE</span>
-            </button>
+            <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                <button type="button" id="modal-copy-id-btn" class="chamfer-btn-primary flex-1 !text-xs">
+                    <span>COPY TRANSMISSION ID</span>
+                </button>
+                <button onclick="closeContactModal()" class="chamfer-btn-secondary flex-1 !text-xs">
+                    <span>CLOSE CONSOLE</span>
+                </button>
+            </div>
         </div>
     </div>
+
+    <!-- ======================================================================
+         SECTION 12: MONOLITHIC DARK FOOTER
+         ====================================================================== -->
+    </main>
 
     <!-- ======================================================================
          SECTION 12: MONOLITHIC DARK FOOTER
@@ -1116,9 +1195,13 @@
                 </div>
             </div>
 
-            <!-- Bottom Legal & Back to Top -->
+            <!-- Bottom Legal, Last Updated & Back to Top -->
             <div class="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between font-mono text-[10px] text-neutral-500 gap-4">
-                <span>© 2026 I-TREX INNOVATIONS INC. ALL RIGHTS RESERVED.</span>
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                    <span>© 2026 I-TREX INNOVATIONS INC. ALL RIGHTS RESERVED.</span>
+                    <span class="text-neutral-600 hidden sm:inline">|</span>
+                    <span class="text-neutral-400">LAST PLATFORM UPDATE: NOVEMBER 2026 // v2.4.0</span>
+                </div>
                 <div class="flex items-center space-x-6">
                     <span>ZERO-TRUST ENCRYPTED</span>
                     <a href="#home" class="text-neutral-400 hover:text-white uppercase flex items-center gap-1.5 transition-colors">
@@ -1132,5 +1215,59 @@
 
     <!-- Master Application Script -->
     <script src="app.js"></script>
+
+    <!-- Floating Quick Direct Transmission Button -->
+    <a href="#contact" id="floating-contact-btn" class="fixed bottom-6 left-6 z-40 inline-flex items-center gap-2 px-4 py-2.5 bg-black/85 border border-cyan-500/40 hover:border-cyan-400 text-white backdrop-blur-md rounded-full shadow-2xl transition-all duration-300 hover:scale-105 group focus:outline-none" title="Direct Transmission Terminal">
+        <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-400"></span>
+        </span>
+        <i data-lucide="send" class="w-3.5 h-3.5 text-cyan-400 group-hover:translate-x-0.5 transition-transform"></i>
+        <span class="font-mono text-[11px] font-bold uppercase tracking-wider text-neutral-200 group-hover:text-white hidden sm:inline">Direct Transmission</span>
+    </a>
+
+    <!-- Floating Back to Top Button -->
+    <button id="back-to-top-btn" onclick="scrollToTop()" class="fixed bottom-6 right-6 z-40 w-11 h-11 bg-black/80 border border-white/20 hover:border-cyan-400 text-white hover:text-cyan-400 backdrop-blur-md rounded-full shadow-2xl flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 hover:scale-110 focus:outline-none" aria-label="Back to top" title="Scroll to top">
+        <i data-lucide="chevron-up" class="w-5 h-5"></i>
+    </button>
+
+    <!-- Simple Essential Cookie Banner -->
+    <aside id="cookie-consent-banner" class="fixed bottom-6 left-4 right-4 sm:left-1/2 sm:-translate-x-1/2 sm:max-w-xl z-[9990] bg-black/95 text-white border border-white/20 p-5 shadow-2xl backdrop-blur-2xl rounded-xl transition-all duration-300 opacity-0 pointer-events-none" role="dialog" aria-label="Privacy and Cookie Consent">
+        <div class="space-y-3 font-sans">
+            <div class="flex items-start justify-between gap-3">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-cyan-400"></i>
+                    <span class="font-mono text-xs font-bold uppercase tracking-wider text-white">Security & Telemetry</span>
+                </div>
+                <button onclick="dismissCookieBanner('dismissed')" class="text-neutral-400 hover:text-white text-xs p-1" aria-label="Close">✕</button>
+            </div>
+            <p class="text-[12px] text-neutral-300 leading-relaxed font-light">
+                We use strictly essential cryptographic cookies and local telemetry to verify zero-trust authentication and optimize edge routing performance.
+            </p>
+            <div class="flex items-center gap-2 pt-1 font-mono text-[11px]">
+                <button onclick="dismissCookieBanner('accepted')" class="chamfer-btn-primary !py-1.5 !px-4 text-[10px] font-bold">ACCEPT ALL</button>
+                <button onclick="dismissCookieBanner('essential')" class="chamfer-btn-secondary !py-1.5 !px-3 text-[10px]">ESSENTIAL ONLY</button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Site Search Command Palette Modal (Ctrl+K) -->
+    <div id="site-search-modal" class="fixed inset-0 z-[9995] bg-black/80 backdrop-blur-md hidden items-start justify-center pt-20 px-4 transition-opacity duration-200">
+        <div class="aerodynamic-frame max-w-2xl w-full bg-[#0a0d14] border border-white/20 p-6 corner-brackets shadow-2xl space-y-4">
+            <div class="flex items-center gap-3 border-b border-white/10 pb-4">
+                <i data-lucide="search" class="w-5 h-5 text-cyan-400"></i>
+                <input id="site-search-input" type="text" placeholder="Search products, architecture, roadmap, founders, docs... (ESC to exit)" class="w-full bg-transparent text-white placeholder-neutral-500 font-sans text-sm focus:outline-none" autocomplete="off">
+                <kbd class="hidden sm:inline-block px-2 py-0.5 text-[10px] font-mono text-neutral-400 bg-white/5 border border-white/10 rounded">ESC</kbd>
+            </div>
+            <div id="site-search-results" class="max-h-80 overflow-y-auto space-y-2 font-sans text-xs no-scrollbar">
+                <!-- Search results rendered dynamically -->
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-white/10 text-[10px] font-mono text-neutral-500">
+                <span>Use ↑↓ to navigate · Enter to select</span>
+                <span>I-Trex Core Index</span>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

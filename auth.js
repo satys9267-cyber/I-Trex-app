@@ -477,6 +477,28 @@ function initAuthController() {
         });
     }
 
+    const toggleRegConfirmBtn = document.getElementById('toggle-reg-confirm');
+    const regConfirmInput = document.getElementById('reg-confirm');
+    if (toggleRegConfirmBtn && regConfirmInput) {
+        toggleRegConfirmBtn.addEventListener('click', () => {
+            const isPass = regConfirmInput.getAttribute('type') === 'password';
+            regConfirmInput.setAttribute('type', isPass ? 'text' : 'password');
+            toggleRegConfirmBtn.innerHTML = isPass ? '<i data-lucide="eye-off" class="w-4 h-4"></i>' : '<i data-lucide="eye" class="w-4 h-4"></i>';
+            if (window.lucide) window.lucide.createIcons();
+        });
+    }
+
+    const toggleResetConfirmBtn = document.getElementById('toggle-reset-confirm');
+    const resetConfirmInput = document.getElementById('reset-confirm-password');
+    if (toggleResetConfirmBtn && resetConfirmInput) {
+        toggleResetConfirmBtn.addEventListener('click', () => {
+            const isPass = resetConfirmInput.getAttribute('type') === 'password';
+            resetConfirmInput.setAttribute('type', isPass ? 'text' : 'password');
+            toggleResetConfirmBtn.innerHTML = isPass ? '<i data-lucide="eye-off" class="w-4 h-4"></i>' : '<i data-lucide="eye" class="w-4 h-4"></i>';
+            if (window.lucide) window.lucide.createIcons();
+        });
+    }
+
     // Dynamic Password Strength Meter
     if (regPassInput) {
         regPassInput.addEventListener('input', () => {

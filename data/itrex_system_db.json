@@ -211,6 +211,42 @@
   "activity_logs": [],
   "change_logs": [
     {
+      "id": "clog-mw268gbr-glvl",
+      "user_id": "public-visitor",
+      "user_name": "Alexander Vance",
+      "action_type": "CONTACT_TRANSMISSION",
+      "target_entity": "inquiries",
+      "target_id": "inq-mw268gbl",
+      "change_details": "{\"email\":\"alexander.vance@vance-aerospace.com\",\"category\":\"Enterprise Deployment\"}",
+      "ip_address": "::1",
+      "level": "INFO",
+      "created_at": "2026-11-04T13:47:29.320Z"
+    },
+    {
+      "id": "clog-mw265ydn-o95v",
+      "user_id": "public-visitor",
+      "user_name": "Sophia Sterling",
+      "action_type": "CONTACT_TRANSMISSION",
+      "target_entity": "inquiries",
+      "target_id": "inq-mw265ydl",
+      "change_details": "{\"email\":\"sophia.sterling@spacex-telemetry.com\",\"category\":\"Enterprise Deployment\"}",
+      "ip_address": "::1",
+      "level": "INFO",
+      "created_at": "2026-11-04T13:45:32.748Z"
+    },
+    {
+      "id": "clog-mw24gk45-jlrv",
+      "user_id": "public-visitor",
+      "user_name": "Sophia Sterling",
+      "action_type": "CONTACT_TRANSMISSION",
+      "target_entity": "inquiries",
+      "target_id": "inq-mw24gk43",
+      "change_details": "{\"email\":\"sophia.sterling@spacex-telemetry.com\",\"category\":\"Enterprise Deployment\"}",
+      "ip_address": "::1",
+      "level": "INFO",
+      "created_at": "2026-11-04T12:57:48.246Z"
+    },
+    {
       "id": "clog-mw0bki6p-ffyf",
       "user_id": "public-visitor",
       "user_name": "Alexander Vance",
@@ -453,6 +489,66 @@
   ],
   "notifications": [
     {
+      "id": "notif-mw268gbx-lzj3",
+      "user_id": "usr-002",
+      "title": "New Transmission from Alexander Vance",
+      "message": "Category: Enterprise Deployment | Email: alexander.vance@vance-aerospace.com",
+      "type": "info",
+      "is_read": false,
+      "link": "admin.html#connections",
+      "created_at": "2026-11-04T13:47:29.326Z"
+    },
+    {
+      "id": "notif-mw268gbw-co69",
+      "user_id": "usr-001",
+      "title": "New Transmission from Alexander Vance",
+      "message": "Category: Enterprise Deployment | Email: alexander.vance@vance-aerospace.com",
+      "type": "info",
+      "is_read": false,
+      "link": "admin.html#connections",
+      "created_at": "2026-11-04T13:47:29.324Z"
+    },
+    {
+      "id": "notif-mw265ydq-f5a7",
+      "user_id": "usr-002",
+      "title": "New Transmission from Sophia Sterling",
+      "message": "Category: Enterprise Deployment | Email: sophia.sterling@spacex-telemetry.com",
+      "type": "info",
+      "is_read": false,
+      "link": "admin.html#connections",
+      "created_at": "2026-11-04T13:45:32.751Z"
+    },
+    {
+      "id": "notif-mw265ydp-r4of",
+      "user_id": "usr-001",
+      "title": "New Transmission from Sophia Sterling",
+      "message": "Category: Enterprise Deployment | Email: sophia.sterling@spacex-telemetry.com",
+      "type": "info",
+      "is_read": false,
+      "link": "admin.html#connections",
+      "created_at": "2026-11-04T13:45:32.750Z"
+    },
+    {
+      "id": "notif-mw24gk4x-5n0r",
+      "user_id": "usr-002",
+      "title": "New Transmission from Sophia Sterling",
+      "message": "Category: Enterprise Deployment | Email: sophia.sterling@spacex-telemetry.com",
+      "type": "info",
+      "is_read": false,
+      "link": "admin.html#connections",
+      "created_at": "2026-11-04T12:57:48.274Z"
+    },
+    {
+      "id": "notif-mw24gk4l-m0kv",
+      "user_id": "usr-001",
+      "title": "New Transmission from Sophia Sterling",
+      "message": "Category: Enterprise Deployment | Email: sophia.sterling@spacex-telemetry.com",
+      "type": "info",
+      "is_read": false,
+      "link": "admin.html#connections",
+      "created_at": "2026-11-04T12:57:48.262Z"
+    },
+    {
       "id": "notif-mw0bki76-rqpm",
       "user_id": "usr-002",
       "title": "New Transmission from Alexander Vance",
@@ -544,6 +640,49 @@
     }
   ],
   "contact_inquiries": [
+    {
+      "id": "inq-mw268gbl",
+      "name": "Alexander Vance",
+      "email": "alexander.vance@vance-aerospace.com",
+      "category": "Enterprise Deployment",
+      "subject": "Enterprise Deployment",
+      "message": "Requesting direct technical consultation on high-speed low-latency eBPF deployment for aerospace edge nodes.",
+      "status": "replied",
+      "replies": [
+        {
+          "id": "rep-mw268msn",
+          "sender": "Satyam Swami",
+          "senderEmail": "satys9267@gmail.com",
+          "text": "Thank you Alexander. The I-Trex engineering team has allocated bandwidth for your deployment review.",
+          "sentAt": "2026-11-04T13:47:37.704Z",
+          "delivered": true
+        }
+      ],
+      "createdAt": "2026-11-04T13:47:29.313Z",
+      "updatedAt": "2026-11-04T13:47:37.704Z"
+    },
+    {
+      "id": "inq-mw265ydl",
+      "name": "Sophia Sterling",
+      "email": "sophia.sterling@spacex-telemetry.com",
+      "category": "Enterprise Deployment",
+      "subject": "Enterprise Deployment",
+      "message": "Inquiry regarding zero-trust FIPS telemetry deployment across low-Earth orbit satellites.",
+      "status": "unread",
+      "replies": [],
+      "createdAt": "2026-11-04T13:45:32.745Z"
+    },
+    {
+      "id": "inq-mw24gk43",
+      "name": "Sophia Sterling",
+      "email": "sophia.sterling@spacex-telemetry.com",
+      "category": "Enterprise Deployment",
+      "subject": "Enterprise Deployment",
+      "message": "Inquiry regarding zero-trust FIPS telemetry deployment across low-Earth orbit satellites.",
+      "status": "unread",
+      "replies": [],
+      "createdAt": "2026-11-04T12:57:48.243Z"
+    },
     {
       "id": "inq-mw0bki6l",
       "name": "Alexander Vance",
@@ -681,7 +820,7 @@
       "status": "published",
       "stage": "Production v2.4",
       "assurance": "99.999% ASSURANCE",
-      "leadArchitect": "Satyam Swami & Elena Vance",
+      "leadArchitect": "Satyam Swami",
       "pricing": "$49 / node / month",
       "shortDescription": "Deterministic real-time microkernel operating system built for autonomous robotics, spatial computing, and safety-critical edge infrastructure.",
       "detailedDescription": "TrexOS replaces legacy POSIX thread schedulers with an autonomous neural orchestrator that anticipates resource spikes before they occur. Written in bare-metal memory-safe systems architecture, it guarantees sub-millisecond execution times for robotics, autonomous vehicles, and deep-edge nodes.",
@@ -704,7 +843,7 @@
         "footprint": "1.4 MB Binary Size"
       },
       "banner": "assets/images/itrex_logo_silver_transparent.png",
-      "demoLink": "https://i-trex.internal/demo/trexos",
+      "demoLink": "",
       "githubLink": "https://github.com/satys9267-cyber/I-Trex-app",
       "docLink": "https://docs.i-trex.internal/trexos",
       "launchDate": "2026-04-15",
@@ -720,7 +859,7 @@
       "status": "published",
       "stage": "Global Beta",
       "assurance": "180+ GLOBAL POPS",
-      "leadArchitect": "Kavita Rao & Satyam Swami",
+      "leadArchitect": "Satyam Swami",
       "pricing": "$0.00015 / req",
       "shortDescription": "Decentralized high-throughput compute mesh delivering planetary-scale zero-cold-start execution with millisecond consensus.",
       "detailedDescription": "Deploy once, execute simultaneously across 180+ global edge points of presence with automatic data residency compliance and zero cold-start overhead. TrexCore utilizes a peer-to-peer mTLS WireGuard mesh fabric that reconciles globally distributed state in sub-12ms.",
@@ -743,7 +882,7 @@
         "footprint": "180+ Global Points of Presence"
       },
       "banner": "assets/images/itrex_logo_silver_transparent.png",
-      "demoLink": "https://i-trex.internal/demo/trexcore",
+      "demoLink": "",
       "githubLink": "https://github.com/satys9267-cyber/I-Trex-app",
       "docLink": "https://docs.i-trex.internal/trexcore",
       "launchDate": "2026-06-01",
@@ -759,7 +898,7 @@
       "status": "published",
       "stage": "Production v1.8",
       "assurance": "120 FPS HARDWARE ACCELERATED",
-      "leadArchitect": "Ishwari Patil & Marcus Chen",
+      "leadArchitect": "Ishwari Patil",
       "pricing": "$89 / stream / month",
       "shortDescription": "Photorealistic neural rendering and real-time volumetric spatial reasoning running entirely inside WebGPU hardware pipelines.",
       "detailedDescription": "TrexVision brings spatial machine learning to the client browser without remote cloud GPU latency. Utilizing WebGPU compute shaders and tensor decomposition, it processes live multi-camera feeds with sub-8ms 6-DOF tracking.",
@@ -782,7 +921,7 @@
         "footprint": "Client-Side In-Browser Execution"
       },
       "banner": "assets/images/itrex_logo_silver_transparent.png",
-      "demoLink": "https://i-trex.internal/demo/trexvision",
+      "demoLink": "",
       "githubLink": "https://github.com/satys9267-cyber/I-Trex-app",
       "docLink": "https://docs.i-trex.internal/trexvision",
       "launchDate": "2026-05-20",
@@ -798,7 +937,7 @@
       "status": "published",
       "stage": "Enterprise v3.1",
       "assurance": "ZERO-TRUST VERIFIED",
-      "leadArchitect": "Devin Thorne & Satyam Swami",
+      "leadArchitect": "Satyam Swami",
       "pricing": "$120 / cluster / month",
       "shortDescription": "Zero-trust kernel-level security fabric powered by continuous eBPF telemetry, anomaly trapping, and quantum-resistant encryption.",
       "detailedDescription": "TrexShield protects against zero-day supply chain compromises by monitoring every syscall at Ring 0. Rogue process behavior is trapped and neutralized within 2 microseconds before arbitrary code execution can compromise host memory.",
@@ -821,7 +960,7 @@
         "footprint": "Compatible with Kubernetes & Linux 6.x"
       },
       "banner": "assets/images/itrex_logo_silver_transparent.png",
-      "demoLink": "https://i-trex.internal/demo/trexshield",
+      "demoLink": "",
       "githubLink": "https://github.com/satys9267-cyber/I-Trex-app",
       "docLink": "https://docs.i-trex.internal/trexshield",
       "launchDate": "2026-07-10",
@@ -837,7 +976,7 @@
       "status": "published",
       "stage": "Release Candidate",
       "assurance": "SUB-MICROSECOND INTEROP",
-      "leadArchitect": "Sarah Miller & Satyam Swami",
+      "leadArchitect": "Satyam Swami & Ishwari Patil",
       "pricing": "Enterprise Custom",
       "shortDescription": "High-density asynchronous RPC communication protocol engineered for inter-satellite links, avionics buses, and deep-space telemetry.",
       "detailedDescription": "TrexConnect eliminates JSON parsing latency with flat-binary zero-copy serialization. Designed to operate across intermittent radio links and satellite laser crosslinks, it guarantees transactional data integrity in high-loss environments.",
@@ -860,7 +999,7 @@
         "footprint": "C99 / Rust / Embedded compliant"
       },
       "banner": "assets/images/itrex_logo_silver_transparent.png",
-      "demoLink": "https://i-trex.internal/demo/trexconnect",
+      "demoLink": "",
       "githubLink": "https://github.com/satys9267-cyber/I-Trex-app",
       "docLink": "https://docs.i-trex.internal/trexconnect",
       "launchDate": "2026-08-30",
@@ -1004,6 +1143,18 @@
     }
   ],
   "admin_audit_logs": [
+    {
+      "id": "alog-mw268mso-qu25",
+      "action": "CONNECTION_REPLIED",
+      "actorId": "usr-001",
+      "actorName": "Satyam Swami",
+      "actorRole": "founder",
+      "targetType": "inquiry",
+      "targetId": "inq-mw268gbl",
+      "details": "{\"recipientEmail\":\"alexander.vance@vance-aerospace.com\",\"sender\":\"Satyam Swami\"}",
+      "ipAddress": "::1",
+      "timestamp": "2026-11-04T13:47:37.705Z"
+    },
     {
       "id": "alog-mw0bkoto-akx6",
       "action": "CONNECTION_REPLIED",

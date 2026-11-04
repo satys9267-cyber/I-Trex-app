@@ -99,7 +99,12 @@
             </div>
 
             <!-- Right: Firebase Connection Status & Enclave Badge -->
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button type="button" id="theme-toggle-btn" class="p-2 rounded-lg text-neutral-400 hover:text-white transition-colors focus:outline-none" title="Toggle Light / Dark Mode">
+                    <i data-lucide="sun" class="w-4 h-4 theme-sun-icon hidden text-amber-400"></i>
+                    <i data-lucide="moon" class="w-4 h-4 theme-moon-icon text-cyan-400"></i>
+                </button>
+
                 <button type="button" id="btn-open-firebase-modal" class="font-mono text-[10px] px-2.5 py-1 border transition-colors flex items-center gap-1.5" title="Configure or View Firebase Project Credentials">
                     <span id="firebase-status-dot" class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span>
                     <span id="firebase-status-text" class="text-neutral-300 uppercase">FIREBASE CONFIG</span>
@@ -122,9 +127,7 @@
                 
                 <!-- Terminal Header -->
                 <div class="text-center mb-6 pb-6 border-b border-white/10">
-                    <div class="inline-flex items-center gap-2 mb-3">
-                        <span class="tech-tag" id="auth-kicker">IDENTITY ENCLAVE // AUTHENTICATION</span>
-                    </div>
+                    <span id="auth-kicker" class="hidden"></span>
                     <h1 class="font-display font-extrabold text-3xl sm:text-4xl tracking-tight text-white uppercase">
                         I-TREX
                     </h1>
@@ -365,12 +368,17 @@
                             <label for="reg-confirm" class="block font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-1.5">
                                 CONFIRM PASSWORD *
                             </label>
-                            <input id="reg-confirm" 
-                                   type="password" 
-                                   required 
-                                   placeholder="••••••••••••" 
-                                   autocomplete="new-password"
-                                   class="tech-input">
+                            <div class="relative">
+                                <input id="reg-confirm" 
+                                       type="password" 
+                                       required 
+                                       placeholder="••••••••••••" 
+                                       autocomplete="new-password"
+                                       class="tech-input pr-11">
+                                <button type="button" id="toggle-reg-confirm" class="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white transition-colors" title="Toggle visibility">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Legal Consents -->
@@ -514,10 +522,6 @@
                      ========================================================== -->
                 <div id="view-reset-confirm" class="auth-view space-y-6 hidden">
                     <div class="space-y-2">
-                        <div class="flex items-center gap-2">
-                            <span class="tech-tag" style="--color-neon-cyan: #10b981">ACTION VERIFIED</span>
-                            <span class="font-mono text-[10px] text-neutral-400 uppercase">RECOVERY ACCESS</span>
-                        </div>
                         <h3 class="font-display font-bold text-xl text-white uppercase tracking-wider">Set New Password</h3>
                         <p class="font-sans text-xs text-neutral-300 leading-relaxed font-light">
                             Your recovery authorization token is verified for <strong id="reset-target-email" class="text-cyan-400 font-mono"></strong>. Please establish your new secure password:
@@ -560,8 +564,11 @@
                                        required 
                                        minlength="8"
                                        placeholder="••••••••••••" 
-                                       class="tech-input pl-11">
+                                       class="tech-input pl-11 pr-11">
                                 <i data-lucide="check-circle" class="w-4 h-4 text-neutral-500 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                                <button type="button" id="toggle-reset-confirm" class="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white transition-colors" title="Toggle visibility">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                </button>
                             </div>
                         </div>
 

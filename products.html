@@ -61,6 +61,11 @@
 </head>
 <body class="bg-black text-white font-sans antialiased selection:bg-white selection:text-black">
 
+    <!-- Accessibility & Telemetry -->
+    <a href="#main-content" class="skip-to-content sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[99999] focus:px-4 focus:py-2 focus:bg-white focus:text-black focus:font-bold focus:shadow-2xl focus:border focus:border-black font-mono text-xs uppercase tracking-wider">Skip to main content</a>
+    <div id="scroll-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Page scroll progress"></div>
+
+
     <!-- Minimalist Header -->
     <header class="fixed top-0 left-0 right-0 z-50 header-glass">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 h-16 sm:h-20 flex items-center justify-between">
@@ -79,7 +84,11 @@
                 </a>
             </div>
 
-            <div class="flex items-center space-x-4 sm:space-x-6">
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button id="theme-toggle-btn" class="p-2 rounded-lg text-neutral-400 hover:text-white transition-colors focus:outline-none" aria-label="Toggle theme mode" title="Toggle Light / Dark Mode">
+                    <i data-lucide="sun" class="w-4 h-4 theme-sun-icon hidden text-amber-400"></i>
+                    <i data-lucide="moon" class="w-4 h-4 theme-moon-icon text-cyan-400"></i>
+                </button>
                 <a href="index.html#contact" class="chamfer-btn-primary !py-2 !px-3 sm:!py-2.5 sm:!px-6 !text-[10px] sm:!text-[11px] font-display font-bold uppercase tracking-[0.14em] sm:tracking-[0.18em] whitespace-nowrap">
                     <span>CONNECT<span class="hidden sm:inline">&nbsp;WITH US</span></span>
                 </a>
@@ -103,15 +112,16 @@
         </div>
     </div>
 
+    <main id="main-content">
     <!-- Hero Title Stage -->
     <section class="relative pt-36 pb-20 px-6 lg:px-12 border-b border-white/10 bg-gradient-to-b from-black via-[#05070a] to-black overflow-hidden">
         <!-- Glowing Micro-Stars Particle Canvas -->
         <canvas id="hero-particle-canvas"></canvas>
         <div class="relative z-10 max-w-7xl mx-auto text-center space-y-6">
-            <span class="tech-tag">PRODUCT SHOWROOM & BENCHMARKS</span>
+            
             <h1 class="title-hero text-5xl sm:text-7xl md:text-8xl text-white">
                 PURPOSE-BUILT<br>
-                <span class="text-chrome">AUTONOMOUS SUITE.</span>
+                <span class="text-white">AUTONOMOUS SUITE.</span>
             </h1>
             <p class="font-sans text-neutral-400 text-base sm:text-lg max-w-2xl mx-auto font-light leading-relaxed">
                 Explore the deep architecture, telemetry guarantees, memory footprints, and kernel benchmarks of each I-Trex innovation.
@@ -125,9 +135,8 @@
         <div class="max-w-7xl mx-auto space-y-12">
             <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-white/10">
                 <div>
-                    <span class="tech-tag" style="--color-neon-cyan: #00f2fe">FLAGSHIP // TRX-01</span>
-                    <h2 class="title-section text-4xl sm:text-6xl text-white mt-2">TREXOS</h2>
-                    <p class="font-mono text-sm text-cyan-400 mt-1 uppercase tracking-wider">Deterministic Neural Microkernel Architecture</p>
+                    <h2 class="title-section text-4xl sm:text-6xl text-white">TREXOS</h2>
+                    <p class="font-mono text-sm text-cyan-400 mt-1 uppercase tracking-wider">Deterministic Neural Microkernel Architecture · TRX-01</p>
                 </div>
                 <div class="flex items-center gap-4">
                     <span class="font-mono text-xs text-neutral-400">STATUS: PRODUCTION v2.4</span>
@@ -157,7 +166,7 @@
                         </div>
                         <div class="flex justify-between">
                             <span class="text-neutral-400">LEAD SYSTEMS ARCHITECT</span>
-                            <span class="text-cyan-400 font-bold">Satyam Swami & Elena Vance</span>
+                            <span class="text-cyan-400 font-bold">Satyam Swami</span>
                         </div>
                     </div>
 
@@ -203,9 +212,8 @@ pub unsafe fn schedule_thread(
         <div class="max-w-7xl mx-auto space-y-12">
             <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-white/10">
                 <div>
-                    <span class="tech-tag" style="--color-neon-cyan: #f97316">INFRASTRUCTURE // TRX-02</span>
-                    <h2 class="title-section text-4xl sm:text-6xl text-white mt-2">TREXCORE</h2>
-                    <p class="font-mono text-sm text-orange-400 mt-1 uppercase tracking-wider">Planetary Edge Cloud Fabric & State Mesh</p>
+                    <h2 class="title-section text-4xl sm:text-6xl text-white">TREXCORE</h2>
+                    <p class="font-mono text-sm text-orange-400 mt-1 uppercase tracking-wider">Planetary Edge Cloud Fabric & State Mesh · TRX-02</p>
                 </div>
                 <div class="flex items-center gap-4">
                     <span class="font-mono text-xs text-neutral-400">STATUS: GLOBAL BETA</span>
@@ -233,8 +241,8 @@ pub unsafe fn schedule_thread(
                             <span class="text-white font-bold">&lt; 45 ms Automatic Anycast</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-neutral-400">LEAD CLOUD ARCHITECT</span>
-                            <span class="text-orange-400 font-bold">Kavita Rao</span>
+                            <span class="text-neutral-400">CHIEF ARCHITECT</span>
+                            <span class="text-orange-400 font-bold">Satyam Swami</span>
                         </div>
                     </div>
 
@@ -278,9 +286,8 @@ pub unsafe fn schedule_thread(
         <div class="max-w-7xl mx-auto space-y-12">
             <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-white/10">
                 <div>
-                    <span class="tech-tag" style="--color-neon-cyan: #38bdf8">PERCEPTION & AI // TRX-03</span>
-                    <h2 class="title-section text-4xl sm:text-6xl text-white mt-2">TREXVISION</h2>
-                    <p class="font-mono text-sm text-cyan-300 mt-1 uppercase tracking-wider">Spatial Intelligence and SLAM Engine</p>
+                    <h2 class="title-section text-4xl sm:text-6xl text-white">TREXVISION</h2>
+                    <p class="font-mono text-sm text-cyan-300 mt-1 uppercase tracking-wider">Spatial Intelligence and SLAM Engine · TRX-03</p>
                 </div>
                 <div class="flex items-center gap-4">
                     <span class="font-mono text-xs text-neutral-400">STATUS: RELEASE CANDIDATE</span>
@@ -308,8 +315,8 @@ pub unsafe fn schedule_thread(
                             <span class="text-white font-bold">100% Local Processing (Air-Gapped)</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-neutral-400">PRINCIPAL RESEARCHER</span>
-                            <span class="text-cyan-300 font-bold">Marcus Chen & Ishwari Patil</span>
+                            <span class="text-neutral-400">AI SYSTEMS LEAD</span>
+                            <span class="text-cyan-300 font-bold">Ishwari Patil</span>
                         </div>
                     </div>
 
@@ -353,9 +360,8 @@ fn computeOdometry(
         <div class="max-w-7xl mx-auto space-y-12">
             <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-white/10">
                 <div>
-                    <span class="tech-tag" style="--color-neon-cyan: #10b981">CYBERSECURITY // TRX-04</span>
-                    <h2 class="title-section text-4xl sm:text-6xl text-white mt-2">TREXSHIELD</h2>
-                    <p class="font-mono text-sm text-emerald-400 mt-1 uppercase tracking-wider">eBPF Zero-Trust Hardware Enclave & Defense</p>
+                    <h2 class="title-section text-4xl sm:text-6xl text-white">TREXSHIELD</h2>
+                    <p class="font-mono text-sm text-emerald-400 mt-1 uppercase tracking-wider">eBPF Zero-Trust Hardware Enclave & Defense · TRX-04</p>
                 </div>
                 <div class="flex items-center gap-4">
                     <span class="font-mono text-xs text-neutral-400">STATUS: PRODUCTION v3.1</span>
@@ -429,9 +435,8 @@ int trace_syscall(struct trace_event_raw_sys_enter *ctx) {
         <div class="max-w-7xl mx-auto space-y-12">
             <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-white/10">
                 <div>
-                    <span class="tech-tag" style="--color-neon-cyan: #e2e8f0">NETWORKING // TRX-05</span>
-                    <h2 class="title-section text-4xl sm:text-6xl text-white mt-2">TREXCONNECT</h2>
-                    <p class="font-mono text-sm text-neutral-300 mt-1 uppercase tracking-wider">Ultra-Low Latency Multiplexed Protocol Mesh</p>
+                    <h2 class="title-section text-4xl sm:text-6xl text-white">TREXCONNECT</h2>
+                    <p class="font-mono text-sm text-neutral-300 mt-1 uppercase tracking-wider">Ultra-Low Latency Multiplexed Protocol Mesh · TRX-05</p>
                 </div>
                 <div class="flex items-center gap-4">
                     <span class="font-mono text-xs text-neutral-400">STATUS: PRODUCTION v2.1</span>
@@ -460,7 +465,7 @@ int trace_syscall(struct trace_event_raw_sys_enter *ctx) {
                         </div>
                         <div class="flex justify-between">
                             <span class="text-neutral-400">CORE ARCHITECTS</span>
-                            <span class="text-white font-bold">Satyam Swami & Kavita Rao</span>
+                            <span class="text-white font-bold">Satyam Swami & Ishwari Patil</span>
                         </div>
                     </div>
 
@@ -503,7 +508,6 @@ int trace_syscall(struct trace_event_raw_sys_enter *ctx) {
     <!-- Bottom Action CTA -->
     <section class="py-24 px-6 lg:px-12 border-t border-white/10 bg-gradient-to-t from-black via-[#05070a] to-black text-center">
         <div class="max-w-4xl mx-auto space-y-8">
-            <span class="tech-tag">INTEGRATION & PILOT</span>
             <h2 class="title-section text-4xl sm:text-6xl text-white">READY TO DEPLOY?</h2>
             <p class="font-sans text-neutral-400 text-base max-w-xl mx-auto font-light leading-relaxed">
                 Schedule a direct architectural consultation with Satyam and evaluate the I-Trex deterministic autonomous stack in your infrastructure.
@@ -534,5 +538,46 @@ int trace_syscall(struct trace_event_raw_sys_enter *ctx) {
     <!-- Master Application Script with Thematic Animations -->
     <script src="products-sync.js"></script>
     <script src="app.js"></script>
+
+    <!-- Floating Back to Top Button -->
+    <button id="back-to-top-btn" onclick="scrollToTop()" class="fixed bottom-6 right-6 z-40 w-11 h-11 bg-black/80 border border-white/20 hover:border-cyan-400 text-white hover:text-cyan-400 backdrop-blur-md rounded-full shadow-2xl flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 hover:scale-110 focus:outline-none" aria-label="Back to top" title="Scroll to top">
+        <i data-lucide="chevron-up" class="w-5 h-5"></i>
+    </button>
+
+
+    <script>
+        // Theme & Scroll Engine for Products
+        const savedTheme = localStorage.getItem('itrex_theme') || 'dark';
+        if (savedTheme === 'light') document.documentElement.classList.add('light');
+        const themeBtn = document.getElementById('theme-toggle-btn');
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                const isLight = document.documentElement.classList.contains('light');
+                const nextTheme = isLight ? 'dark' : 'light';
+                if (nextTheme === 'light') document.documentElement.classList.add('light');
+                else document.documentElement.classList.remove('light');
+                localStorage.setItem('itrex_theme', nextTheme);
+            });
+        }
+        window.addEventListener('scroll', () => {
+            const bar = document.getElementById('scroll-progress-bar');
+            if (bar) {
+                const total = document.documentElement.scrollHeight - window.innerHeight;
+                bar.style.width = (total > 0 ? (window.scrollY / total) * 100 : 0) + '%';
+            }
+            const topBtn = document.getElementById('back-to-top-btn');
+            if (topBtn) {
+                if (window.scrollY > 350) {
+                    topBtn.classList.remove('opacity-0', 'pointer-events-none');
+                    topBtn.classList.add('opacity-100', 'pointer-events-auto');
+                } else {
+                    topBtn.classList.add('opacity-0', 'pointer-events-none');
+                    topBtn.classList.remove('opacity-100', 'pointer-events-auto');
+                }
+            }
+        }, { passive: true });
+        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    </script>
+
 </body>
 </html>

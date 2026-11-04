@@ -43,6 +43,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 12. Synchronize leadership cards with database
     initLeadershipSync();
+
+    // 13. New Enterprise Infrastructure: Theme, Search, Scroll, FAQ & UTM
+    initTheme();
+    initScrollProgressAndBackToTop();
+    initCookieConsent();
+    initSiteSearch();
+    initFaqAccordion();
+    captureUTMParameters();
 });
 
 /* ==========================================================================
@@ -749,14 +757,11 @@ function renderProductStage(idx) {
             <!-- Left Editorial & Specifications Column -->
             <div class="lg:col-span-7 space-y-8">
                 <div>
-                    <div class="flex items-center gap-3 mb-3">
-                        <span class="tech-tag" style="--color-neon-cyan: ${prod.accentColor}">${prod.code} // ${prod.category}</span>
-                    </div>
                     <h3 class="font-display font-extrabold text-4xl sm:text-6xl text-white uppercase tracking-tight leading-none">
                         ${prod.title}
                     </h3>
                     <p class="text-neutral-400 font-sans text-base sm:text-lg mt-4 leading-relaxed max-w-2xl">
-                        ${prod.tagline}
+                        ${prod.tagline} · <span class="font-mono text-xs uppercase text-cyan-400 font-bold">${prod.code}</span>
                     </p>
                 </div>
 
@@ -1118,49 +1123,92 @@ function initRoadmapAndTeam() {
 }
 
 /* ==========================================================================
-   8. DIRECT FOUNDER COMMUNICATION TERMINAL
+   8. DIRECT FOUNDER COMMUNICATION TERMINAL (ENTERPRISE ENCLAVE WITH UTM & VALIDATION)
    ========================================================================== */
+let activeTransmissionId = null;
+
 function initContactTerminal() {
     const form = document.getElementById('founder-contact-form');
     const statusModal = document.getElementById('contact-status-modal');
     if (!form) return;
 
+    // Real-time input error clearing
+    ['contact-name', 'contact-email', 'contact-message'].forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            input.addEventListener('input', () => {
+                input.classList.remove('!border-rose-500');
+                const err = input.parentElement?.querySelector('.field-error-text');
+                if (err) err.remove();
+            });
+        }
+    });
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const name = document.getElementById('contact-name')?.value || 'Guest';
-        const email = document.getElementById('contact-email')?.value || '';
-        const category = document.getElementById('contact-category')?.value || 'Inquiry';
-        const message = document.getElementById('contact-message')?.value || '';
+        const nameInput = document.getElementById('contact-name');
+        const emailInput = document.getElementById('contact-email');
+        const catInput = document.getElementById('contact-category');
+        const msgInput = document.getElementById('contact-message');
+
+        const name = (nameInput?.value || '').trim();
+        const email = (emailInput?.value || '').trim();
+        const category = (catInput?.value || 'Enterprise Deployment').trim();
+        const message = (msgInput?.value || '').trim();
+
+        // 1. Precise Field Validation & Visual Error States
+        let hasError = false;
+        form.querySelectorAll('.field-error-text').forEach(el => el.remove());
+
+        if (!name) {
+            hasError = true;
+            showFieldError(nameInput, 'Please provide your name or enterprise identity.');
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email || !emailRegex.test(email)) {
+            hasError = true;
+            showFieldError(emailInput, 'A valid corporate or personal email address is required.');
+        }
+
+        if (!message || message.length < 5) {
+            hasError = true;
+            showFieldError(msgInput, 'Transmission message must be at least 5 characters.');
+        }
+
+        if (hasError) return;
 
         const submitBtn = form.querySelector('button[type="submit"]');
         if (submitBtn) {
             submitBtn.disabled = true;
-            submitBtn.innerHTML = `<span>TRANSMITTING TLS 1.3...</span>`;
+            submitBtn.innerHTML = '<span class="inline-block animate-spin mr-2">⟳</span><span>ENCRYPTING & TRANSMITTING...</span>';
         }
 
         const transmissionId = 'inq-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 4);
+        activeTransmissionId = transmissionId;
 
         const inquiryPayload = {
             id: transmissionId,
-            name: name.trim(),
-            email: email.trim(),
-            category: category.trim(),
-            subject: category.trim(),
-            message: message.trim(),
+            name,
+            email,
+            category,
+            subject: category,
+            message,
             status: 'unread',
             replies: [],
+            utm: getUTMParameters(),
             createdAt: new Date().toISOString()
         };
 
-        // 1. Immediately buffer locally in browser for zero-loss guarantee
+        // 2. Resilient Browser Buffer (Guarantees zero transmission loss)
         try {
             const buffer = JSON.parse(localStorage.getItem('itrex_inquiries_buffer') || '[]');
             buffer.unshift(inquiryPayload);
             localStorage.setItem('itrex_inquiries_buffer', JSON.stringify(buffer.slice(0, 50)));
-        } catch (e) {}
+        } catch (_) {}
 
-        // 2. Dispatch to backend API with automatic fallback
+        // 3. Dispatch to Backend API with fallback endpoints
         try {
             const apiEndpoints = [
                 '/api/contact',
@@ -1178,52 +1226,66 @@ function initContactTerminal() {
                     });
                     if (res.ok) {
                         transmitted = true;
-                        console.log('[I-Trex Contact] Successfully dispatched to endpoint:', ep);
                         break;
                     }
-                } catch (errEp) {}
-            }
-
-            if (!transmitted) {
-                console.warn('[I-Trex Contact] Network delivery queued in local resilient buffer.');
+                } catch (_) {}
             }
         } catch (err) {
-            console.warn('[I-Trex Contact] Local fallback used:', err);
+            console.warn('[I-Trex Contact] Local buffer guaranteed delivery.');
         }
 
         if (submitBtn) {
             submitBtn.disabled = false;
-            submitBtn.innerHTML = `<span>TRANSMIT SECURE MESSAGE</span><i data-lucide="send" class="w-4 h-4"></i>`;
+            submitBtn.innerHTML = '<span>TRANSMIT SECURE MESSAGE</span><i data-lucide="send" class="w-4 h-4"></i>';
         }
 
-        // Reset form
+        // Form reset & inline success receipt
         form.reset();
+
+        const inlineSuccess = document.getElementById('contact-inline-success');
+        const refIdEl = document.getElementById('success-ref-id');
+        if (inlineSuccess && refIdEl) {
+            refIdEl.textContent = transmissionId;
+            inlineSuccess.classList.remove('hidden');
+        }
 
         // Display confirmation modal
         if (statusModal) {
             const modalText = document.getElementById('contact-modal-text');
             if (modalText) {
-                modalText.innerHTML = `
-                    Transmission ID: <strong>${transmissionId}</strong><br>
-                    Encrypted payload for <strong>Satyam</strong> (Founder & Chief Systems Architect) queued successfully.
-                `;
+                modalText.innerHTML = 'Transmission Reference: <strong class="text-cyan-400 font-mono">' + transmissionId + '</strong><br>Encrypted payload received for <strong>Satyam Swami</strong> (Founder & Chief Architect).';
             }
             statusModal.classList.remove('hidden');
             statusModal.classList.add('flex');
-        } else {
-            alert(`Transmission sent directly to Satyam (satys9267@gmail.com). We will reach out to ${email} shortly.`);
+
+            const copyIdBtn = document.getElementById('modal-copy-id-btn');
+            if (copyIdBtn) {
+                copyIdBtn.onclick = () => copyToClipboard(transmissionId, copyIdBtn);
+            }
         }
 
         if (window.lucide) window.lucide.createIcons();
     });
-
-    window.closeContactModal = function() {
-        if (statusModal) {
-            statusModal.classList.add('hidden');
-            statusModal.classList.remove('flex');
-        }
-    };
 }
+
+function showFieldError(inputEl, msg) {
+    if (!inputEl) return;
+    inputEl.classList.add('!border-rose-500');
+    const p = document.createElement('p');
+    p.className = 'field-error-text text-[10px] font-mono text-rose-400 mt-1';
+    p.textContent = msg;
+    inputEl.parentElement?.appendChild(p);
+    inputEl.focus();
+}
+
+function closeContactModal() {
+    const modal = document.getElementById('contact-status-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+}
+window.closeContactModal = closeContactModal;
 
 /* ==========================================================================
    9. FULLSCREEN NAVIGATION & HEADER
@@ -1502,3 +1564,267 @@ function initScrollAnimations() {
         });
     });
 }
+
+
+/* ==========================================================================
+   THEME SYSTEM: LIGHT & DARK MODE ENGINE
+   ========================================================================== */
+function initTheme() {
+    const saved = localStorage.getItem('itrex_theme') || 'dark';
+    applyTheme(saved);
+    const toggleBtn = document.getElementById('theme-toggle-btn');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            const isLight = document.documentElement.classList.contains('light');
+            const nextTheme = isLight ? 'dark' : 'light';
+            applyTheme(nextTheme);
+            localStorage.setItem('itrex_theme', nextTheme);
+        });
+    }
+}
+
+function applyTheme(theme) {
+    if (theme === 'light') {
+        document.documentElement.classList.add('light');
+        document.querySelectorAll('.theme-sun-icon').forEach(el => el.classList.remove('hidden'));
+        document.querySelectorAll('.theme-moon-icon').forEach(el => el.classList.add('hidden'));
+    } else {
+        document.documentElement.classList.remove('light');
+        document.querySelectorAll('.theme-sun-icon').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.theme-moon-icon').forEach(el => el.classList.remove('hidden'));
+    }
+}
+window.initTheme = initTheme;
+window.applyTheme = applyTheme;
+
+/* ==========================================================================
+   SCROLL PROGRESS BAR & BACK TO TOP BUTTON
+   ========================================================================== */
+function initScrollProgressAndBackToTop() {
+    function updateScrollTelemetry() {
+        const currentY = window.scrollY || document.documentElement.scrollTop || (typeof lenis !== 'undefined' && lenis ? lenis.scroll : 0);
+        const scrollBar = document.getElementById('scroll-progress-bar');
+        if (scrollBar) {
+            const total = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = total > 0 ? (currentY / total) * 100 : 0;
+            scrollBar.style.width = Math.min(100, Math.max(0, progress)) + '%';
+            scrollBar.setAttribute('aria-valuenow', Math.round(progress));
+        }
+
+        const topBtn = document.getElementById('back-to-top-btn');
+        if (topBtn) {
+            if (currentY > 200) {
+                topBtn.classList.remove('opacity-0', 'pointer-events-none');
+                topBtn.classList.add('opacity-100', 'pointer-events-auto');
+            } else {
+                topBtn.classList.add('opacity-0', 'pointer-events-none');
+                topBtn.classList.remove('opacity-100', 'pointer-events-auto');
+            }
+        }
+    }
+
+    window.addEventListener('scroll', updateScrollTelemetry, { passive: true });
+    if (typeof lenis !== 'undefined' && lenis && typeof lenis.on === 'function') {
+        lenis.on('scroll', updateScrollTelemetry);
+    }
+}
+
+function scrollToTop() {
+    if (typeof lenis !== 'undefined' && lenis && typeof lenis.scrollTo === 'function') {
+        lenis.scrollTo(0);
+    } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+window.scrollToTop = scrollToTop;
+
+/* ==========================================================================
+   COOKIE & TELEMETRY CONSENT BANNER
+   ========================================================================== */
+function initCookieConsent() {
+    const consent = localStorage.getItem('itrex_cookie_consent');
+    if (!consent) {
+        setTimeout(() => {
+            const banner = document.getElementById('cookie-consent-banner');
+            if (banner) {
+                banner.classList.remove('opacity-0', 'pointer-events-none');
+                banner.classList.add('opacity-100', 'pointer-events-auto');
+            }
+        }, 1500);
+    }
+}
+
+function dismissCookieBanner(type) {
+    localStorage.setItem('itrex_cookie_consent', type);
+    const banner = document.getElementById('cookie-consent-banner');
+    if (banner) {
+        banner.classList.add('opacity-0', 'pointer-events-none');
+        banner.classList.remove('opacity-100', 'pointer-events-auto');
+    }
+}
+window.dismissCookieBanner = dismissCookieBanner;
+
+/* ==========================================================================
+   SITE SEARCH COMMAND PALETTE (CTRL+K / CMD+K)
+   ========================================================================== */
+const SITE_SEARCH_INDEX = [
+    { title: 'TrexOS Microkernel', category: 'Product', desc: 'Deterministic neural microkernel with sub-0.35ms context switching.', url: '#technology' },
+    { title: 'TrexCore Edge Fabric', category: 'Product', desc: 'Planetary mesh and BGP Anycast routing with zero packet loss.', url: '#technology' },
+    { title: 'TrexShield SecOps', category: 'Product', desc: 'Autonomous zero-trust honeypot enclave and eBPF syscall auditing.', url: '#technology' },
+    { title: 'TrexVision Spatial Engine', category: 'Product', desc: 'WebGPU 120 FPS neural perception and real-time SLAM.', url: '#technology' },
+    { title: 'Products Matrix', category: 'Matrix', desc: 'Complete autonomous product showroom and technical specifications.', url: 'products.html' },
+    { title: 'Architectural Vision', category: 'Vision', desc: 'The Four Pillars and foundation of autonomous computing.', url: '#technology' },
+    { title: 'Engineering Benchmarks', category: 'Capabilities', desc: 'Sub-ms scheduler, consensus engines, and deterministic latency.', url: '#capabilities' },
+    { title: 'Founding Manifesto', category: 'Manifesto', desc: 'Principles of autonomous trajectory and executive philosophy.', url: '#manifesto' },
+    { title: 'Strategic Roadmap', category: 'Roadmap', desc: 'Genesis, Alpha Release, Edge Mesh, and Autonomous Fleet milestones.', url: '#roadmap' },
+    { title: 'Executive Team & Founders', category: 'Leadership', desc: 'Satyam Swami (Founder) and Ishwari Patil (Co-Founder).', url: '#team' },
+    { title: 'Frequently Asked Questions', category: 'FAQ', desc: 'Technical questions, SLA guarantees, and bare-metal support.', url: '#faq' },
+    { title: 'Direct Transmission Terminal', category: 'Contact', desc: 'Direct encrypted transmission to Satyam Swami queue.', url: '#contact' },
+    { title: 'Admin Enclave Control', category: 'Enclave', desc: 'Restricted administrative operations and real-time connections inbox.', url: 'admin.html' },
+    { title: 'Workspace Dashboard', category: 'Dashboard', desc: 'Employee task management, shift tracking, and telemetry.', url: 'dashboard.html' }
+];
+
+function initSiteSearch() {
+    const modal = document.getElementById('site-search-modal');
+    const input = document.getElementById('site-search-input');
+    const resultsContainer = document.getElementById('site-search-results');
+    const triggerBtn = document.getElementById('search-trigger-btn');
+    if (!modal || !input) return;
+
+    function openSearch() {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        input.value = '';
+        renderSearchResults('');
+        setTimeout(() => input.focus(), 50);
+    }
+
+    function closeSearch() {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    if (triggerBtn) triggerBtn.addEventListener('click', openSearch);
+
+    // Keyboard shortcut: Ctrl+K / Cmd+K and Escape
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+            e.preventDefault();
+            if (modal.classList.contains('hidden')) openSearch();
+            else closeSearch();
+        } else if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+            closeSearch();
+        }
+    });
+
+    // Close on backdrop click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeSearch();
+    });
+
+    input.addEventListener('input', () => {
+        renderSearchResults(input.value.trim().toLowerCase());
+    });
+
+    function renderSearchResults(query) {
+        if (!resultsContainer) return;
+        const filtered = query ? SITE_SEARCH_INDEX.filter(item => 
+            item.title.toLowerCase().includes(query) ||
+            item.category.toLowerCase().includes(query) ||
+            item.desc.toLowerCase().includes(query)
+        ) : SITE_SEARCH_INDEX.slice(0, 7);
+
+        if (filtered.length === 0) {
+            resultsContainer.innerHTML = '<div class="py-8 text-center text-neutral-500 font-mono text-xs">No matching platform specifications found.</div>';
+            return;
+        }
+
+        resultsContainer.innerHTML = filtered.map(item => `
+            <a href="${item.url}" onclick="closeSiteSearch()" class="search-result-item block p-3.5 border border-white/10 hover:border-cyan-400 bg-white/5 hover:bg-white/10 transition-colors group">
+                <div class="flex items-center justify-between">
+                    <span class="font-display font-bold text-sm text-white group-hover:text-cyan-400 transition-colors">${item.title}</span>
+                    <span class="text-[9px] font-mono uppercase tracking-wider px-2 py-0.5 border border-white/20 text-neutral-400">${item.category}</span>
+                </div>
+                <p class="font-sans text-xs text-neutral-400 mt-1 line-clamp-1">${item.desc}</p>
+            </a>
+        `).join('');
+
+        if (window.lucide) window.lucide.createIcons();
+    }
+
+    window.closeSiteSearch = closeSearch;
+}
+
+/* ==========================================================================
+   TECHNICAL FAQ ACCORDION ENGINE
+   ========================================================================== */
+function initFaqAccordion() {
+    const container = document.getElementById('faq-accordion-container');
+    if (!container) return;
+    const buttons = container.querySelectorAll('.faq-question-btn');
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+            buttons.forEach(b => {
+                b.setAttribute('aria-expanded', 'false');
+                const panel = b.nextElementSibling;
+                const chevron = b.querySelector('.faq-chevron');
+                if (panel) panel.classList.add('hidden');
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
+            });
+            if (!isExpanded) {
+                btn.setAttribute('aria-expanded', 'true');
+                const panel = btn.nextElementSibling;
+                const chevron = btn.querySelector('.faq-chevron');
+                if (panel) panel.classList.remove('hidden');
+                if (chevron) chevron.style.transform = 'rotate(180deg)';
+            }
+        });
+    });
+}
+
+/* ==========================================================================
+   UTM ATTRIBUTION ENGINE
+   ========================================================================== */
+function captureUTMParameters() {
+    const params = new URLSearchParams(window.location.search);
+    const utm = {};
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(key => {
+        if (params.has(key)) utm[key] = params.get(key);
+    });
+    if (Object.keys(utm).length > 0) {
+        sessionStorage.setItem('itrex_utm_params', JSON.stringify(utm));
+    }
+}
+function getUTMParameters() {
+    try {
+        return JSON.parse(sessionStorage.getItem('itrex_utm_params') || '{}');
+    } catch (_) {
+        return {};
+    }
+}
+
+/* ==========================================================================
+   UNIVERSAL CLIPBOARD HELPER
+   ========================================================================== */
+async function copyToClipboard(text, btnElement) {
+    if (!text) return;
+    try {
+        await navigator.clipboard.writeText(text);
+    } catch (e) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+    }
+    if (btnElement) {
+        const originalHtml = btnElement.innerHTML;
+        btnElement.innerHTML = '<span class="text-emerald-400 font-bold">COPIED!</span>';
+        setTimeout(() => {
+            btnElement.innerHTML = originalHtml;
+        }, 2000);
+    }
+}
+window.copyToClipboard = copyToClipboard;

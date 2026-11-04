@@ -62,9 +62,8 @@ async function initDynamicProductShowroom() {
                     <div class="max-w-7xl mx-auto space-y-12">
                         <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-white/10">
                             <div>
-                                <span class="tech-tag" style="--color-neon-cyan: ${accentColor}">SPEC // ${p.code || 'TRX-' + num}</span>
-                                <h2 class="title-section text-4xl sm:text-6xl text-white mt-2">${(p.name || '').toUpperCase()}</h2>
-                                <p class="font-mono text-sm ${textAccent} mt-1 uppercase tracking-wider">${p.tagline || ''}</p>
+                                <h2 class="title-section text-4xl sm:text-6xl text-white">${(p.name || '').toUpperCase()}</h2>
+                                <p class="font-mono text-sm ${textAccent} mt-1 uppercase tracking-wider">${p.tagline || ''} · ${p.code || 'TRX-' + num}</p>
                             </div>
                             <div class="flex items-center gap-4">
                                 <span class="font-mono text-xs text-neutral-400">STAGE: ${p.stage || 'PRODUCTION'}</span>
@@ -115,7 +114,7 @@ async function initDynamicProductShowroom() {
                                 </div>
 
                                 <div class="flex items-center gap-3">
-                                    ${p.demoLink ? `<a href="${p.demoLink}" target="_blank" class="chamfer-btn-primary flex-1 !py-3 !text-xs text-center"><span>LIVE DEMO</span></a>` : ''}
+                                    ${p.demoLink && !p.demoLink.includes('internal/demo') ? `<a href="${p.demoLink}" target="_blank" class="chamfer-btn-primary flex-1 !py-3 !text-xs text-center"><span>LIVE SYSTEM</span></a>` : ''}
                                     ${p.githubLink ? `<a href="${p.githubLink}" target="_blank" class="chamfer-btn-outline flex-1 !py-3 !text-xs text-center"><span>SOURCE REPO</span></a>` : ''}
                                 </div>
                             </div>
