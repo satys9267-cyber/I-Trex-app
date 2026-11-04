@@ -381,7 +381,7 @@ module.exports = function configureAdminRoutes(helpers) {
                 });
             }
 
-            if (targetId === 'usr-002' && caller.id !== 'usr-002' && caller.email !== 'ishwari.patil@itrex.internal') {
+            if (targetId === 'usr-002' && caller.id !== 'usr-002' && caller.email !== 'ishwari.patil@itrex.internal' && caller.email !== 'ishwarip267@gmail.com') {
                 return res.status(403).json({
                     error: 'Access Denied: Only the Co-Founder (Ishwari Patil) can modify the Co-Founder profile. Founders, Admins, and Employees cannot edit this account.'
                 });

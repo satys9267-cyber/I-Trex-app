@@ -9,7 +9,7 @@
       "department": "Executive Systems & Kernel",
       "avatar": "👑",
       "phone": "+91 74998 25344",
-      "bio": "Founding visionary of I-Trex Innovations. Leading autonomous neural microkernels, eBPF security enclaves, and distributed state consensus.",
+      "bio": "Founding visionary of I-Trex Innovations. Leading autonomous neural microkernels, eBPF security enclaves, and distributed state consensus. Verified update 1793805083729.",
       "provider": "Google OAuth (Verified)",
       "verified": true,
       "totalShiftHours": "142.5",
@@ -18,7 +18,8 @@
         "Microkernel Systems",
         "eBPF Security Enclaves",
         "Consensus Protocols",
-        "Bare-Metal Rust"
+        "Bare-Metal Rust",
+        "Distributed Mesh"
       ],
       "social": {
         "linkedin": "https://linkedin.com/in/satyam-swami",
@@ -27,7 +28,7 @@
       },
       "status": "active",
       "joiningDate": "2025-01-01",
-      "updatedAt": "2026-10-30T17:01:13.938Z"
+      "updatedAt": "2026-11-04T15:11:24.728Z"
     },
     {
       "id": "usr-002",
@@ -1097,6 +1098,36 @@
       "launchDate": "2026-10-30",
       "createdAt": "2026-10-30T17:01:13.902Z",
       "updatedAt": "2026-10-30T17:01:13.922Z"
+    },
+    {
+      "id": "trx-mw298g8c",
+      "slug": "trexneural-engine-7905",
+      "code": "TRX-08",
+      "name": "TrexNeural-Engine-7905",
+      "tagline": "Autonomous edge execution framework",
+      "category": "Operating Systems & Kernel",
+      "status": "published",
+      "stage": "Active Development",
+      "assurance": "ENTERPRISE READY",
+      "leadArchitect": "Satyam Swami",
+      "pricing": "Contact Sales",
+      "shortDescription": "Ultra-low latency microkernel acceleration for edge neural networks.",
+      "detailedDescription": "Ultra-low latency microkernel acceleration for edge neural networks.",
+      "technologies": [
+        "Rust",
+        "eBPF",
+        "WasmEdge",
+        "DMA Enclaves"
+      ],
+      "keyFeatures": [],
+      "specs": {},
+      "banner": "assets/images/itrex_logo_silver_transparent.png",
+      "demoLink": "",
+      "githubLink": "",
+      "docLink": "",
+      "launchDate": "2026-11-04",
+      "createdAt": "2026-11-04T15:11:28.044Z",
+      "updatedAt": "2026-11-04T15:11:28.044Z"
     }
   ],
   "approval_requests": [
@@ -1186,6 +1217,54 @@
     }
   ],
   "admin_audit_logs": [
+    {
+      "id": "alog-mw298g8e-k4pe",
+      "action": "PRODUCT_CREATED",
+      "actorId": "usr-001",
+      "actorName": "Satyam Swami",
+      "actorRole": "founder",
+      "targetType": "product",
+      "targetId": "trx-mw298g8c",
+      "details": "{\"name\":\"TrexNeural-Engine-7905\",\"code\":\"TRX-08\"}",
+      "ipAddress": "::1",
+      "timestamp": "2026-11-04T15:11:28.046Z"
+    },
+    {
+      "id": "alog-mw298doa-tdyl",
+      "action": "PROFILE_UPDATED",
+      "actorId": "usr-001",
+      "actorName": "Satyam Swami",
+      "actorRole": "founder",
+      "targetType": "user",
+      "targetId": "usr-001",
+      "details": "{\"name\":\"Satyam Swami\",\"title\":\"Founder & Chief Architect\"}",
+      "ipAddress": "::1",
+      "timestamp": "2026-11-04T15:11:24.730Z"
+    },
+    {
+      "id": "alog-mw296iel-ibj7",
+      "action": "PROFILE_UPDATED",
+      "actorId": "usr-001",
+      "actorName": "Satyam Swami",
+      "actorRole": "founder",
+      "targetType": "user",
+      "targetId": "usr-001",
+      "details": "{\"name\":\"Satyam Swami\",\"title\":\"Founder & Chief Architect\"}",
+      "ipAddress": "::1",
+      "timestamp": "2026-11-04T15:09:57.549Z"
+    },
+    {
+      "id": "alog-mw294ppb-i15o",
+      "action": "PROFILE_UPDATED",
+      "actorId": "usr-001",
+      "actorName": "Satyam Swami",
+      "actorRole": "founder",
+      "targetType": "user",
+      "targetId": "usr-001",
+      "details": "{\"name\":\"Satyam Swami\",\"title\":\"Founder & Chief Architect\"}",
+      "ipAddress": "::1",
+      "timestamp": "2026-11-04T15:08:33.695Z"
+    },
     {
       "id": "alog-mw268mso-qu25",
       "action": "CONNECTION_REPLIED",

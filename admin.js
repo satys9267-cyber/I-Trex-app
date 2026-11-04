@@ -24,6 +24,79 @@ let selectedInquiry = null;
 let activeProfileTargetId = 'usr-001'; // Default to Founder
 let dashboardTimeFilter = 'weekly';
 
+function getCurrentUser() {
+    if (!currentUser) {
+        try {
+            const stored = localStorage.getItem('itrex_auth_user');
+            if (stored) currentUser = JSON.parse(stored);
+        } catch (_) {}
+    }
+    return currentUser;
+}
+
+/**
+ * Safely extracts a minimal user identity header strictly restricted to standard printable ASCII (32-126).
+ * This eliminates the "String contains non ISO-8859-1 code point" DOMException caused by emojis (e.g. 👑)
+ * or non-Latin Unicode characters in user names or profile metadata.
+ */
+function getSafeUserHeader(user) {
+    const u = user || getCurrentUser();
+    if (!u) return '';
+    try {
+        const clean = {
+            id: String(u.id || '').replace(/[^\x20-\x7E]/g, ''),
+            email: String(u.email || '').replace(/[^\x20-\x7E]/g, ''),
+            role: String(u.role || '').replace(/[^\x20-\x7E]/g, ''),
+            name: String(u.name || '').replace(/[^\x20-\x7E]/g, '')
+        };
+        return JSON.stringify(clean).replace(/[^\x20-\x7E]/g, '');
+    } catch (_) {
+        return '';
+    }
+}
+
+/**
+ * Unified robust HTTP client for Admin Enclave operations.
+ * - Sanitizes all header keys and values to ISO-8859-1 (code points <= 255).
+ * - Automatically attaches sanitized 'x-itrex-user' and 'Authorization' headers.
+ * - Guarantees zero non-ISO-8859-1 code point exceptions across all modern browsers.
+ */
+async function adminFetch(url, options = {}) {
+    const opts = { ...options };
+    const headers = { ...(opts.headers || {}) };
+
+    const u = getCurrentUser();
+    if (u) {
+        if (!headers['Authorization'] && !headers['authorization']) {
+            const bearerToken = String(u.id || u.email || 'usr-001').replace(/[^\x20-\x7E]/g, '');
+            headers['Authorization'] = `Bearer ${bearerToken}`;
+        }
+        headers['x-itrex-user'] = getSafeUserHeader(u);
+    } else if (headers['x-itrex-user']) {
+        try {
+            if (typeof headers['x-itrex-user'] === 'string') {
+                const parsed = JSON.parse(headers['x-itrex-user']);
+                headers['x-itrex-user'] = getSafeUserHeader(parsed);
+            }
+        } catch (_) {
+            headers['x-itrex-user'] = String(headers['x-itrex-user']).replace(/[^\x20-\x7E]/g, '');
+        }
+    }
+
+    // ByteString / ISO-8859-1 absolute safety guarantee on all headers
+    const sanitizedHeaders = {};
+    for (const [key, val] of Object.entries(headers)) {
+        if (typeof val === 'string') {
+            sanitizedHeaders[key] = val.replace(/[^\x00-\xFF]/g, '');
+        } else if (val !== undefined && val !== null) {
+            sanitizedHeaders[key] = String(val).replace(/[^\x00-\xFF]/g, '');
+        }
+    }
+    opts.headers = sanitizedHeaders;
+
+    return await fetch(url, opts);
+}
+
 // ==========================================================================
 // IMMEDIATE AIR-GAPPED ACCESS GUARD
 // Executes synchronously before DOM parsing to prevent any unauthorized UI exposure
@@ -287,12 +360,12 @@ function initLiveClock() {
 async function loadInitialAdminData() {
     try {
         const [overviewRes, productsRes, employeesRes, approvalsRes, connectionsRes, auditRes] = await Promise.all([
-            fetch(API_BASE + '/api/admin/overview'),
-            fetch(API_BASE + '/api/products'),
-            fetch(API_BASE + '/api/employees'),
-            fetch(API_BASE + '/api/approvals'),
-            fetch(API_BASE + '/api/connections'),
-            fetch(API_BASE + '/api/admin/audit-logs')
+            adminFetch(API_BASE + '/api/admin/overview'),
+            adminFetch(API_BASE + '/api/products'),
+            adminFetch(API_BASE + '/api/employees'),
+            adminFetch(API_BASE + '/api/approvals'),
+            adminFetch(API_BASE + '/api/connections'),
+            adminFetch(API_BASE + '/api/admin/audit-logs')
         ]);
 
         if (overviewRes.ok) {
@@ -374,7 +447,7 @@ function updateOverviewCounters(summary) {
    ========================================================================== */
 async function renderAdminHome() {
     try {
-        const response = await fetch(API_BASE + '/api/admin/overview');
+        const response = await adminFetch(API_BASE + '/api/admin/overview');
         if (!response.ok) return;
         const data = await response.json();
 
@@ -465,7 +538,7 @@ function setDashboardTimeFilter(filter) {
 
 async function renderAdminDashboard() {
     try {
-        const response = await fetch(API_BASE + '/api/admin/overview');
+        const response = await adminFetch(API_BASE + '/api/admin/overview');
         if (!response.ok) return;
         const data = await response.json();
 
@@ -521,7 +594,7 @@ async function renderAdminDashboard() {
    ========================================================================== */
 async function renderProductsTable() {
     try {
-        const response = await fetch(API_BASE + '/api/products');
+        const response = await adminFetch(API_BASE + '/api/products');
         if (!response.ok) return;
         currentProducts = await response.json();
 
@@ -683,11 +756,10 @@ async function handleProductSubmit(e) {
         const url = editId ? `${API_BASE}/api/products/${editId}` : `${API_BASE}/api/products`;
         const method = editId ? 'PUT' : 'POST';
 
-        const res = await fetch(url, {
+        const res = await adminFetch(url, {
             method,
             headers: {
-                'Content-Type': 'application/json',
-                'x-itrex-user': JSON.stringify(currentUser)
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify(payload)
         });
@@ -710,11 +782,10 @@ async function handleProductSubmit(e) {
 async function toggleProductStatus(id, currentStatus) {
     const nextStatus = currentStatus === 'published' ? 'draft' : 'published';
     try {
-        const res = await fetch(`${API_BASE}/api/products/${id}/status`, {
+        const res = await adminFetch(`${API_BASE}/api/products/${id}/status`, {
             method: 'PATCH',
             headers: {
-                'Content-Type': 'application/json',
-                'x-itrex-user': JSON.stringify(currentUser)
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({ status: nextStatus })
         });
@@ -730,9 +801,8 @@ async function toggleProductStatus(id, currentStatus) {
 async function handleDeleteProduct(id, name) {
     if (!confirm(`Are you sure you want to archive product "${name}"? It will be removed from the public showroom.`)) return;
     try {
-        const res = await fetch(`${API_BASE}/api/products/${id}`, {
-            method: 'DELETE',
-            headers: { 'x-itrex-user': JSON.stringify(currentUser) }
+        const res = await adminFetch(`${API_BASE}/api/products/${id}`, {
+            method: 'DELETE'
         });
         if (!res.ok) throw new Error('Delete failed');
         showToast(`Product "${name}" archived successfully.`);
@@ -764,7 +834,7 @@ function switchProfileTab(userId) {
 
 async function loadProfileData(userId) {
     try {
-        const res = await fetch(`${API_BASE}/api/profiles/${userId}`);
+        const res = await adminFetch(`${API_BASE}/api/profiles/${userId}`);
         if (!res.ok) return;
         const profile = await res.json();
 
@@ -830,11 +900,10 @@ async function handleSaveProfile(e) {
     };
 
     try {
-        const res = await fetch(`${API_BASE}/api/profiles/${activeProfileTargetId}`, {
+        const res = await adminFetch(`${API_BASE}/api/profiles/${activeProfileTargetId}`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json',
-                'x-itrex-user': JSON.stringify(currentUser)
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({ name, title, department, phone, bio, skills, social })
         });
@@ -856,7 +925,7 @@ async function handleSaveProfile(e) {
    ========================================================================== */
 async function renderEmployeesTable() {
     try {
-        const res = await fetch(API_BASE + '/api/employees');
+        const res = await adminFetch(API_BASE + '/api/employees');
         if (!res.ok) return;
         currentEmployees = await res.json();
 
@@ -914,7 +983,7 @@ async function renderEmployeesTable() {
 
 async function openEmployeeDetailModal(id) {
     try {
-        const res = await fetch(`${API_BASE}/api/employees/${id}`);
+        const res = await adminFetch(`${API_BASE}/api/employees/${id}`);
         if (!res.ok) return;
         const data = await res.json();
         const p = data.profile;
@@ -930,7 +999,7 @@ async function openEmployeeDetailModal(id) {
    ========================================================================== */
 async function renderApprovalsList() {
     try {
-        const res = await fetch(API_BASE + '/api/approvals');
+        const res = await adminFetch(API_BASE + '/api/approvals');
         if (!res.ok) return;
         currentApprovals = await res.json();
 
@@ -1013,11 +1082,10 @@ async function submitApprovalDecision(id, decision) {
     if (reason === null) return; // User cancelled
 
     try {
-        const res = await fetch(`${API_BASE}/api/approvals/${id}/decision`, {
+        const res = await adminFetch(`${API_BASE}/api/approvals/${id}/decision`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'x-itrex-user': JSON.stringify(currentUser)
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({ decision, reason })
         });
@@ -1063,7 +1131,7 @@ async function renderConnectionsInbox() {
     try {
         let serverConns = [];
         try {
-            const res = await fetch(API_BASE + '/api/connections');
+            const res = await adminFetch(API_BASE + '/api/connections');
             if (res.ok) {
                 serverConns = await res.json();
             }
@@ -1256,11 +1324,10 @@ async function toggleInquiryStatus(id, newStatus, silent = false) {
 
         // Sync status to backend
         try {
-            await fetch(`${API_BASE}/api/connections/${id}/status`, {
+            await adminFetch(`${API_BASE}/api/connections/${id}/status`, {
                 method: 'PATCH',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'x-itrex-user': JSON.stringify(currentUser)
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ status: newStatus })
             });
@@ -1293,11 +1360,10 @@ async function handleSendReply(e, id) {
     if (!replyText) return;
 
     try {
-        const res = await fetch(`${API_BASE}/api/connections/${id}/reply`, {
+        const res = await adminFetch(`${API_BASE}/api/connections/${id}/reply`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'x-itrex-user': JSON.stringify(currentUser)
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({ replyText })
         });
@@ -1323,7 +1389,7 @@ window.handleSendReply = handleSendReply;
    ========================================================================== */
 async function renderSecurityEnclave() {
     try {
-        const res = await fetch(API_BASE + '/api/admin/audit-logs');
+        const res = await adminFetch(API_BASE + '/api/admin/audit-logs');
         if (!res.ok) return;
         const logs = await res.json();
 
