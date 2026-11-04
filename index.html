@@ -107,162 +107,205 @@
     </div>
 
     <!-- ======================================================================
-         MINIMALIST AEROSPACE NAVIGATION HEADER (LAMBORGHINI STANDARD: MENU | LOGO | CONNECT)
+         MINIMALIST AEROSPACE NAVIGATION HEADER (ROLLS-ROYCE MOTOR CARS STANDARD: MENU | LOGO | SEARCH)
          ====================================================================== -->
     <header id="main-header" class="fixed top-0 left-0 right-0 z-50 header-glass transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 h-16 sm:h-20 flex items-center justify-between">
             
-            <!-- Left: Minimalist Menu Trigger (Exact Lamborghini Style) -->
+            <!-- Left: Rolls-Royce Minimalist Menu Trigger (= MENU) -->
             <div class="flex items-center">
-                <button id="menu-toggle-btn" class="flex items-center gap-2 sm:gap-3 text-white hover:text-neutral-300 transition-colors group focus:outline-none" aria-label="Open Navigation">
+                <button id="menu-toggle-btn" class="flex items-center gap-2 sm:gap-3 text-white hover:text-cyan-400 transition-colors group focus:outline-none" aria-label="Open Navigation">
                     <span class="flex flex-col gap-1 sm:gap-1.5 w-4 sm:w-5">
                         <span class="block w-4 sm:w-5 h-[1.5px] bg-white group-hover:bg-cyan-400 transition-all duration-300"></span>
                         <span class="block w-4 sm:w-5 h-[1.5px] bg-white group-hover:bg-cyan-400 transition-all duration-300"></span>
                     </span>
-                    <span class="font-display font-bold text-[11px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.22em] text-white">MENU</span>
+                    <span class="font-display font-bold text-[11px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.24em] text-white group-hover:text-cyan-400 transition-colors">MENU</span>
                 </button>
             </div>
 
-            <!-- Center: Official Silver Metallic I-Trex Logo -->
+            <!-- Center: Official Silver Metallic I-Trex Logo Monogram -->
             <div class="absolute left-1/2 -translate-x-1/2 flex items-center pointer-events-auto">
-                <a href="#home" class="flex items-center group">
+                <a href="#home" class="flex items-center group" aria-label="I-Trex Home">
                     <img src="assets/images/itrex_logo_silver_transparent.png" 
                          alt="I-Trex Official Logo" 
                          class="h-8 sm:h-10 md:h-12 w-auto transition-transform duration-300 group-hover:scale-105 filter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
                 </a>
             </div>
 
-            <!-- Right: Search, Theme Toggle, and Connect With Us CTA -->
-            <div class="flex items-center gap-1 sm:gap-2">
-                <!-- Site Search Trigger (Ctrl+K) -->
-                <button id="search-trigger-btn" class="p-2 rounded-lg text-neutral-400 hover:text-white transition-colors focus:outline-none flex items-center gap-1.5" aria-label="Search platform (Ctrl+K)" title="Search site (Ctrl+K)">
-                    <i data-lucide="search" class="w-4 h-4 text-white"></i>
-                    <kbd class="hidden md:inline-block px-1.5 py-0.5 text-[9px] font-mono text-neutral-400 bg-white/10 border border-white/10 rounded">⌘K</kbd>
+            <!-- Right: Rolls-Royce Search & Theme Toggle (Replaced bulky Connect Us button with Search) -->
+            <div class="flex items-center gap-3 sm:gap-5">
+                <!-- Site Search Trigger -->
+                <button id="search-trigger-btn" class="search-trigger-btn flex items-center gap-1.5 sm:gap-2 text-white hover:text-cyan-400 transition-colors group focus:outline-none" aria-label="Search platform (Ctrl+K)" title="Search site (Ctrl+K)">
+                    <i data-lucide="search" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white group-hover:text-cyan-400 transition-colors"></i>
+                    <span class="font-display font-bold text-[11px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.24em] text-white group-hover:text-cyan-400 transition-colors">SEARCH</span>
+                    <kbd class="hidden md:inline-block px-1.5 py-0.5 text-[9px] font-mono text-neutral-400 bg-white/10 border border-white/10 rounded ml-1">⌘K</kbd>
                 </button>
                 <!-- Dark / Light Mode Toggle -->
-                <button id="theme-toggle-btn" class="p-2 rounded-lg text-neutral-400 hover:text-white transition-colors focus:outline-none mr-1" aria-label="Toggle theme mode" title="Toggle Light / Dark Mode">
+                <button id="theme-toggle-btn" class="theme-toggle-btn p-1.5 sm:p-2 rounded text-neutral-400 hover:text-white transition-colors focus:outline-none" aria-label="Toggle theme mode" title="Toggle Light / Dark Mode">
                     <i data-lucide="sun" class="w-4 h-4 theme-sun-icon hidden text-amber-400"></i>
                     <i data-lucide="moon" class="w-4 h-4 theme-moon-icon text-cyan-400"></i>
                 </button>
-                <a href="#contact" class="chamfer-btn-primary !py-2 !px-3 sm:!py-2.5 sm:!px-6 !text-[10px] sm:!text-[11px] font-display font-bold uppercase tracking-[0.14em] sm:tracking-[0.18em] whitespace-nowrap">
-                    <span>CONNECT<span class="hidden sm:inline">&nbsp;WITH US</span></span>
-                </a>
             </div>
         </div>
     </header>
 
     <!-- ======================================================================
-         FULLSCREEN ARCHITECTURAL NAVIGATION OVERLAY (LAMBORGHINI 3-COLUMN ARCHITECTURE)
+         FULLSCREEN ARCHITECTURAL NAVIGATION OVERLAY (ROLLS-ROYCE MOTOR CARS STANDARD)
          ====================================================================== -->
     <div id="fullscreen-nav-drawer" class="fullscreen-nav-drawer">
-        <!-- Top Bar inside Drawer -->
-        <div class="max-w-7xl mx-auto w-full px-6 lg:px-12 h-20 flex items-center justify-between border-b border-white/10 shrink-0">
-            <button id="nav-drawer-close" class="flex items-center gap-3 text-white hover:text-neutral-300 transition-colors focus:outline-none">
-                <i data-lucide="x" class="w-5 h-5 text-white"></i>
-                <span class="font-display font-bold text-xs uppercase tracking-[0.22em] text-white">MENU</span>
+        <!-- Top Bar inside Drawer: CLOSE (Left) | Centered Monogram | SEARCH + THEME (Right) -->
+        <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-12 h-16 sm:h-20 flex items-center justify-between border-b border-white/10 shrink-0">
+            <button id="nav-drawer-close" class="flex items-center gap-2 sm:gap-3 text-white hover:text-cyan-400 transition-colors focus:outline-none group" aria-label="Close Navigation">
+                <i data-lucide="x" class="w-4 h-4 sm:w-5 sm:h-5 text-white group-hover:text-cyan-400 transition-colors"></i>
+                <span class="font-display font-bold text-[11px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.24em] text-white group-hover:text-cyan-400 transition-colors">CLOSE</span>
             </button>
 
-            <a href="#home" onclick="closeMenu()" class="flex items-center">
-                <img src="assets/images/itrex_logo_silver_transparent.png" alt="I-Trex Logo" class="h-10 sm:h-12 w-auto">
+            <a href="#home" onclick="closeMenu()" class="flex items-center group" aria-label="I-Trex Home">
+                <img src="assets/images/itrex_logo_silver_transparent.png" alt="I-Trex Logo" class="h-8 sm:h-10 md:h-12 w-auto transition-transform duration-300 group-hover:scale-105 filter drop-shadow-[0_0_15px_rgba(255,255,255,0.25)]">
             </a>
 
-            <a href="#contact" onclick="closeMenu()" class="chamfer-btn-primary !py-2.5 !px-6 !text-[11px]">
-                <span>CONNECT WITH US</span>
-            </a>
-        </div>
-
-        <!-- 3-Column Luxury Navigation Matrix -->
-        <div class="max-w-7xl mx-auto w-full px-6 lg:px-12 py-10 lg:py-16 my-auto">
-            <!-- Tier 1: Primary Architectural Sectors -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-14">
-                <!-- Col 1 -->
-                <div>
-                    <a href="#ecosystem" onclick="closeMenu()" class="lamborghini-menu-row">
-                        <span>ECOSYSTEM</span>
-                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                    </a>
-                    <a href="products.html" onclick="closeMenu()" class="lamborghini-menu-row">
-                        <span>PRODUCTS</span>
-                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                    </a>
-                    <a href="#vision" onclick="closeMenu()" class="lamborghini-menu-row">
-                        <span>EXPERIENCE VISION</span>
-                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                    </a>
-                </div>
-
-                <!-- Col 2 -->
-                <div>
-                    <a href="#technology" onclick="closeMenu()" class="lamborghini-menu-row">
-                        <span>ARCHITECTURE</span>
-                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                    </a>
-                    <a href="#about" onclick="closeMenu()" class="lamborghini-menu-row">
-                        <span>ABOUT I-TREX</span>
-                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                    </a>
-                    <a href="#roadmap" onclick="closeMenu()" class="lamborghini-menu-row">
-                        <span>STRATEGIC ROADMAP</span>
-                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                    </a>
-                </div>
-
-                <!-- Col 3 -->
-                <div>
-                    <a href="#capabilities" onclick="closeMenu()" class="lamborghini-menu-row">
-                        <span>CAPABILITIES</span>
-                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                    </a>
-                    <a href="#team" onclick="closeMenu()" class="lamborghini-menu-row">
-                        <span>LEADERSHIP & TEAM</span>
-                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                    </a>
-                    <a href="#faq" onclick="closeMenu()" class="lamborghini-menu-row">
-                        <span>FREQUENTLY ASKED QUESTIONS</span>
-                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                    </a>
-                    <a href="#contact" onclick="closeMenu()" class="lamborghini-menu-row">
-                        <span>FOUNDER CONTACT</span>
-                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Continuous Architectural Divider Line -->
-            <div class="w-full h-px bg-white/20 my-10 lg:my-14"></div>
-
-            <!-- Tier 2: Secondary Autonomous Models & Corporate Channels -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-14">
-                <!-- Sub Col 1 -->
-                <div>
-                    <a href="products.html#trexos" onclick="closeMenu()" class="lamborghini-sub-row">TRX-01 TrexOS Microkernel</a>
-                    <a href="products.html#trexcore" onclick="closeMenu()" class="lamborghini-sub-row">TRX-02 TrexCore Mesh</a>
-                    <a href="products.html#trexvision" onclick="closeMenu()" class="lamborghini-sub-row">TRX-03 TrexVision Spatial</a>
-                </div>
-
-                <!-- Sub Col 2 -->
-                <div>
-                    <a href="products.html#trexshield" onclick="closeMenu()" class="lamborghini-sub-row">TRX-04 TrexShield SecOps</a>
-                    <a href="products.html#trexconnect" onclick="closeMenu()" class="lamborghini-sub-row">TRX-05 TrexConnect Protocol</a>
-                    <a href="#about" onclick="closeMenu()" class="lamborghini-sub-row">First Principles Philosophy</a>
-                </div>
-
-                <!-- Sub Col 3 -->
-                <div>
-                    <a href="mailto:satys9267@gmail.com" class="lamborghini-sub-row">Founder Email: satys9267@gmail.com</a>
-                    <a href="tel:+917499825344" class="lamborghini-sub-row">Founder Line: +91 74998 25344</a>
-                    <a href="login.html" onclick="closeMenu()" class="lamborghini-sub-row text-cyan-400 hover:text-white">Enterprise Terminal & Login ↗</a>
-                </div>
+            <div class="flex items-center gap-3 sm:gap-5">
+                <button onclick="closeMenu(); window.openSiteSearch && window.openSiteSearch();" class="flex items-center gap-1.5 sm:gap-2 text-white hover:text-cyan-400 transition-colors group focus:outline-none" aria-label="Search Platform">
+                    <i data-lucide="search" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white group-hover:text-cyan-400 transition-colors"></i>
+                    <span class="font-display font-bold text-[11px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.24em] text-white group-hover:text-cyan-400 transition-colors">SEARCH</span>
+                </button>
+                <button onclick="toggleTheme()" class="theme-toggle-btn p-1.5 sm:p-2 rounded text-neutral-400 hover:text-white transition-colors focus:outline-none" aria-label="Toggle theme mode" title="Toggle Light / Dark Mode">
+                    <i data-lucide="sun" class="w-4 h-4 theme-sun-icon hidden text-amber-400"></i>
+                    <i data-lucide="moon" class="w-4 h-4 theme-moon-icon text-cyan-400"></i>
+                </button>
             </div>
         </div>
 
-        <!-- Bottom Status Bar -->
-        <div class="max-w-7xl mx-auto w-full px-6 lg:px-12 py-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-neutral-500 font-mono text-[10px] gap-4 shrink-0">
-            <span>© 2026 I-TREX INNOVATIONS · ALL RIGHTS RESERVED</span>
-            <span class="flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
-                <span>SYSTEM HEALTH: 100% SECURE // TLS 1.3</span>
-            </span>
+        <!-- Rolls-Royce 4-Column Luxury Navigation Matrix -->
+        <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-12 py-8 sm:py-12 lg:py-16 my-auto overflow-y-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
+                
+                <!-- Col 1: MODELS // PRODUCT SHOWROOM -->
+                <div class="space-y-4">
+                    <div class="font-mono text-[10px] uppercase tracking-[0.25em] text-cyan-400 border-b border-white/10 pb-2">
+                        01 // MODELS & RUNTIMES
+                    </div>
+                    <div class="space-y-1">
+                        <a href="products.html#trexos" onclick="closeMenu()" class="rolls-menu-row group">
+                            <span>TRX-01 TrexOS</span>
+                            <span class="text-[10px] font-mono text-neutral-500 group-hover:text-cyan-400 transition-colors">KERNEL ↗</span>
+                        </a>
+                        <a href="products.html#trexcore" onclick="closeMenu()" class="rolls-menu-row group">
+                            <span>TRX-02 TrexCore</span>
+                            <span class="text-[10px] font-mono text-neutral-500 group-hover:text-cyan-400 transition-colors">MESH ↗</span>
+                        </a>
+                        <a href="products.html#trexvision" onclick="closeMenu()" class="rolls-menu-row group">
+                            <span>TRX-03 TrexVision</span>
+                            <span class="text-[10px] font-mono text-neutral-500 group-hover:text-cyan-400 transition-colors">SPATIAL ↗</span>
+                        </a>
+                        <a href="products.html#trexshield" onclick="closeMenu()" class="rolls-menu-row group">
+                            <span>TRX-04 TrexShield</span>
+                            <span class="text-[10px] font-mono text-neutral-500 group-hover:text-cyan-400 transition-colors">SECOPS ↗</span>
+                        </a>
+                        <a href="products.html#trexconnect" onclick="closeMenu()" class="rolls-menu-row group">
+                            <span>TRX-05 TrexConnect</span>
+                            <span class="text-[10px] font-mono text-neutral-500 group-hover:text-cyan-400 transition-colors">TELEMETRY ↗</span>
+                        </a>
+                        <a href="products.html" onclick="closeMenu()" class="rolls-menu-cta mt-3 block py-2 text-xs font-mono text-cyan-400 hover:text-white transition-colors">
+                            VIEW FULL SHOWROOM & SPECS →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Col 2: ARCHITECTURE & FIRST PRINCIPLES -->
+                <div class="space-y-4">
+                    <div class="font-mono text-[10px] uppercase tracking-[0.25em] text-cyan-400 border-b border-white/10 pb-2">
+                        02 // ARCHITECTURE & VISION
+                    </div>
+                    <div class="space-y-1">
+                        <a href="#technology" onclick="closeMenu()" class="rolls-menu-row">
+                            <span>FOUR PILLARS BLUEPRINT</span>
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        </a>
+                        <a href="#ecosystem" onclick="closeMenu()" class="rolls-menu-row">
+                            <span>PRODUCT ECOSYSTEM</span>
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        </a>
+                        <a href="#capabilities" onclick="closeMenu()" class="rolls-menu-row">
+                            <span>CAPABILITIES MATRIX</span>
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        </a>
+                        <a href="#about" onclick="closeMenu()" class="rolls-menu-row">
+                            <span>FIRST PRINCIPLES ETHOS</span>
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        </a>
+                        <a href="#vision" onclick="closeMenu()" class="rolls-menu-row">
+                            <span>ENTERPRISE TRAJECTORY</span>
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Col 3: INSPIRING GREATNESS & LEADERSHIP -->
+                <div class="space-y-4">
+                    <div class="font-mono text-[10px] uppercase tracking-[0.25em] text-cyan-400 border-b border-white/10 pb-2">
+                        03 // INSPIRING GREATNESS
+                    </div>
+                    <div class="space-y-1">
+                        <a href="#roadmap" onclick="closeMenu()" class="rolls-menu-row">
+                            <span>STRATEGIC ROADMAP (2025–2027)</span>
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        </a>
+                        <a href="#team" onclick="closeMenu()" class="rolls-menu-row">
+                            <span>LEADERSHIP & COUNCIL</span>
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        </a>
+                        <a href="#faq" onclick="closeMenu()" class="rolls-menu-row">
+                            <span>TECHNICAL SPECIFICATIONS FAQ</span>
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        </a>
+                        <a href="#contact" onclick="closeMenu()" class="rolls-menu-row">
+                            <span>DIRECT TRANSMISSION TERMINAL</span>
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Col 4: CLIENT ENCLAVES & TRANSMISSION -->
+                <div class="space-y-4">
+                    <div class="font-mono text-[10px] uppercase tracking-[0.25em] text-cyan-400 border-b border-white/10 pb-2">
+                        04 // ENCLAVES & CONTACT
+                    </div>
+                    <div class="space-y-1">
+                        <a href="login.html" onclick="closeMenu()" class="rolls-menu-row group text-cyan-400">
+                            <span class="text-white group-hover:text-cyan-400">AUTHENTICATION TERMINAL</span>
+                            <span class="text-[10px] font-mono text-cyan-400">SECURE ↗</span>
+                        </a>
+                        <a href="admin.html" onclick="closeMenu()" class="rolls-menu-row group">
+                            <span class="text-white group-hover:text-cyan-400">ADMIN ENCLAVE</span>
+                            <span class="text-[10px] font-mono text-neutral-500">STAFF ↗</span>
+                        </a>
+                        <a href="tel:+917499825344" class="rolls-sub-row">
+                            <span class="text-neutral-500 text-[10px] block font-mono">FOUNDER LINE</span>
+                            <span class="text-white font-medium">+91 74998 25344</span>
+                        </a>
+                        <a href="mailto:satys9267@gmail.com" class="rolls-sub-row">
+                            <span class="text-neutral-500 text-[10px] block font-mono">DIRECT INQUIRIES</span>
+                            <span class="text-white font-medium">satys9267@gmail.com</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rolls-Royce Bottom Editorial Status Bar -->
+        <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-12 py-5 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-neutral-500 font-mono text-[10px] gap-3 shrink-0">
+            <span class="tracking-wider">ORIGIN: PUNE, MAHARASHTRA, INDIA // GLOBAL HQ</span>
+            <div class="flex items-center gap-4">
+                <span class="flex items-center gap-1.5 text-cyan-400">
+                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+                    <span>SYSTEM LATENCY: 0.35 MS</span>
+                </span>
+                <span class="hidden md:inline">·</span>
+                <span class="hidden md:inline">TLS 1.3 HARDENED</span>
+                <span>·</span>
+                <span>© 2026 I-TREX INNOVATIONS</span>
+            </div>
         </div>
     </div>
 
@@ -672,7 +715,7 @@
                     </blockquote>
 
                     <div class="pt-6 border-t border-white/10 flex items-center justify-between font-mono text-xs">
-                        <span class="text-neutral-500">ORIGIN: SAN FRANCISCO / GLOBAL HQ</span>
+                        <span class="text-neutral-500">ORIGIN: PUNE, MAHARASHTRA, INDIA // GLOBAL HQ</span>
                         <span class="text-cyan-400 font-bold">EST. 2025</span>
                     </div>
                 </div>
@@ -1142,7 +1185,7 @@
                     </p>
                     <div class="font-mono text-xs text-neutral-400 space-y-1">
                         <div>FOUNDER: <span class="text-white">Satyam Swami</span></div>
-                        <div>HEADQUARTERS: <span class="text-white">San Francisco / Distributed</span></div>
+                        <div>HEADQUARTERS: <span class="text-white">Pune, Maharashtra, India // Global HQ</span></div>
                     </div>
                 </div>
 

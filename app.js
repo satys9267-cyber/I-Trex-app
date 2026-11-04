@@ -1319,7 +1319,7 @@ function initNavigation() {
     }
 
     // Close on any menu link click
-    const menuLinks = document.querySelectorAll('.lamborghini-menu-row, .lamborghini-sub-row, .nav-drawer-link');
+    const menuLinks = document.querySelectorAll('.lamborghini-menu-row, .lamborghini-sub-row, .rolls-menu-row, .rolls-sub-row, .rolls-menu-cta, .nav-drawer-link');
     menuLinks.forEach(link => {
         link.addEventListener('click', () => {
             window.closeMenu();
@@ -1512,18 +1512,21 @@ function initScrollAnimations() {
 /* ==========================================================================
    THEME SYSTEM: LIGHT & DARK MODE ENGINE
    ========================================================================== */
+function toggleTheme() {
+    const isLight = document.documentElement.classList.contains('light');
+    const nextTheme = isLight ? 'dark' : 'light';
+    applyTheme(nextTheme);
+    localStorage.setItem('itrex_theme', nextTheme);
+}
+window.toggleTheme = toggleTheme;
+
 function initTheme() {
     const saved = localStorage.getItem('itrex_theme') || 'dark';
     applyTheme(saved);
-    const toggleBtn = document.getElementById('theme-toggle-btn');
-    if (toggleBtn) {
-        toggleBtn.addEventListener('click', () => {
-            const isLight = document.documentElement.classList.contains('light');
-            const nextTheme = isLight ? 'dark' : 'light';
-            applyTheme(nextTheme);
-            localStorage.setItem('itrex_theme', nextTheme);
-        });
-    }
+    const toggleBtns = document.querySelectorAll('#theme-toggle-btn, .theme-toggle-btn');
+    toggleBtns.forEach(btn => {
+        btn.addEventListener('click', toggleTheme);
+    });
 }
 
 function applyTheme(theme) {
@@ -1647,7 +1650,10 @@ function initSiteSearch() {
         modal.classList.remove('flex');
     }
 
-    if (triggerBtn) triggerBtn.addEventListener('click', openSearch);
+    const triggerBtns = document.querySelectorAll('#search-trigger-btn, .search-trigger-btn');
+    triggerBtns.forEach(btn => btn.addEventListener('click', openSearch));
+    window.openSiteSearch = openSearch;
+    window.closeSiteSearch = closeSearch;
 
     // Keyboard shortcut: Ctrl+K / Cmd+K and Escape
     document.addEventListener('keydown', (e) => {

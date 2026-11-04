@@ -14,7 +14,7 @@ const ITREX_INITIAL_DATA = {
     mission: "To eliminate the friction between external market impact and internal engineering momentum through AI-augmented operating systems.",
     vision: "A world where every enterprise operates with zero latency, adaptive intelligence, and seamless transparency.",
     founded: "2025",
-    headquarters: "Global Hub / Distributed",
+    headquarters: "Pune, Maharashtra, India // Global HQ",
     stats: [
       { label: "Active Edge Nodes", value: "84,200+", delta: "+38% this quarter" },
       { label: "Kernel Execution Speed", value: "0.42 ms", delta: "Sub-millisecond" },
@@ -114,7 +114,7 @@ const ITREX_INITIAL_DATA = {
       status: "Active",
       avatar: "👑",
       joinedDate: "2025-01-15",
-      location: "San Francisco / Global HQ",
+      location: "Pune, Maharashtra, India // Global HQ",
       phone: "+1 (555) 019-8821",
       bio: "Founding visionary of I-Trex. Driving the convergence of autonomous kernels, anti-gravity computing, and distributed systems."
     },
@@ -144,7 +144,7 @@ const ITREX_INITIAL_DATA = {
       status: "Active",
       avatar: "👨‍🔬",
       joinedDate: "2025-06-01",
-      location: "San Francisco, CA",
+      location: "Pune, Maharashtra, India",
       phone: "+1 (555) 019-3341",
       bio: "Focusing on low-precision quantization, spatial multimodal vision, and on-device neuromorphic models."
     },

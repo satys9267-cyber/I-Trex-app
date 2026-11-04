@@ -352,42 +352,57 @@ html.lenis, html.lenis body {
   pointer-events: auto;
 }
 
-.lamborghini-menu-row {
+.lamborghini-menu-row,
+.rolls-menu-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   color: #ffffff;
   font-family: var(--font-display);
-  font-size: clamp(15px, 1.3vw, 20px);
+  font-size: clamp(12px, 1.1vw, 15px);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   text-decoration: none;
-  transition: all 0.25s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.lamborghini-menu-row:hover {
-  color: #ffffff;
-  border-bottom-color: #ffffff;
-  padding-left: 10px;
+.lamborghini-menu-row:hover,
+.rolls-menu-row:hover {
+  color: #00f2fe;
+  border-bottom-color: rgba(0, 242, 254, 0.4);
+  padding-left: 6px;
 }
-.lamborghini-menu-row svg {
-  opacity: 0.5;
+.lamborghini-menu-row svg,
+.rolls-menu-row svg {
+  opacity: 0.4;
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
-.lamborghini-menu-row:hover svg {
+.lamborghini-menu-row:hover svg,
+.rolls-menu-row:hover svg {
   opacity: 1;
-  transform: translateX(6px);
+  transform: translateX(4px);
+  color: #00f2fe;
 }
 
-.lamborghini-sub-row {
+.lamborghini-sub-row,
+.rolls-sub-row {
   display: block;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   color: #94a3b8;
   font-family: var(--font-body);
   font-size: 13px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+.lamborghini-sub-row:hover,
+.rolls-sub-row:hover {
+  color: #ffffff;
+  border-bottom-color: rgba(255, 255, 255, 0.2);
+  padding-left: 4px;
+}
   font-weight: 400;
   text-decoration: none;
   transition: all 0.2s ease;
@@ -793,7 +808,7 @@ html, body {
 
 
 /* ==========================================================================
-   THEME SYSTEM: LIGHT & DARK MODE SUPPORT
+   THEME SYSTEM: LIGHT & DARK MODE SUPPORT (COMPREHENSIVE LUXURY CONTRAST)
    ========================================================================== */
 html.light {
   color-scheme: light;
@@ -802,57 +817,108 @@ html.light body {
   background-color: #f8fafc !important;
   color: #0f172a !important;
 }
-html.light .header-glass {
-  background: rgba(248, 250, 252, 0.9) !important;
+
+/* Fundamental typography & contrast overrides in light mode */
+html.light .text-white {
+  color: #0f172a !important;
+  --tw-text-opacity: 1 !important;
+}
+html.light .text-neutral-300,
+html.light .text-neutral-400 {
+  color: #334155 !important;
+}
+html.light .text-neutral-500 {
+  color: #64748b !important;
+}
+html.light .text-neutral-600 {
+  color: #475569 !important;
+}
+html.light p {
+  color: #334155 !important;
+}
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
+html.light h5,
+html.light h6,
+html.light .title-hero,
+html.light .title-section,
+html.light #hero-headline,
+html.light .hero-word-char {
+  color: #0f172a !important;
+  --tw-text-opacity: 1 !important;
+}
+
+/* Suppress ambient white glow blurs in light mode to eliminate blinding washout glare */
+html.light .blur-\[140px\],
+html.light .blur-\[160px\],
+html.light .blur-\[100px\],
+html.light .hero-ambient-glow {
+  opacity: 0 !important;
+  display: none !important;
+}
+html.light #hero-particle-canvas {
+  opacity: 0.3 !important;
+}
+
+/* Header in Light Mode */
+html.light .header-glass,
+html.light #main-header {
+  background: rgba(255, 255, 255, 0.94) !important;
   border-bottom: 1px solid rgba(15, 23, 42, 0.1) !important;
   box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05) !important;
 }
-html.light .header-glass #menu-toggle-btn span.block {
+html.light #menu-toggle-btn span.block {
   background-color: #0f172a !important;
 }
-html.light .header-glass #menu-toggle-btn span.font-display {
+html.light #menu-toggle-btn span.font-display {
   color: #0f172a !important;
 }
-html.light .header-glass #search-trigger-btn,
-html.light .header-glass #theme-toggle-btn {
+html.light #search-trigger-btn,
+html.light #search-trigger-btn *,
+html.light .search-trigger-btn,
+html.light .search-trigger-btn * {
   color: #0f172a !important;
 }
-html.light .aerodynamic-frame,
-html.light .tech-card,
-html.light .tech-card-subtle {
-  background: #ffffff !important;
-  border-color: rgba(15, 23, 42, 0.12) !important;
-  color: #0f172a !important;
-  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.05) !important;
-}
-html.light .title-hero,
-html.light .title-section,
-html.light h1, html.light h2, html.light h3, html.light h4 {
+html.light #theme-toggle-btn,
+html.light #theme-toggle-btn *,
+html.light .theme-toggle-btn,
+html.light .theme-toggle-btn * {
   color: #0f172a !important;
 }
-html.light p,
-html.light .text-neutral-400,
-html.light .text-neutral-300 {
-  color: #475569 !important;
-}
-html.light .tech-input {
-  background: #f1f5f9 !important;
-  border-color: #cbd5e1 !important;
-  color: #0f172a !important;
-}
-html.light .tech-input:focus {
-  border-color: #00f2fe !important;
-  background: #ffffff !important;
-}
+
+/* Buttons in Light Mode */
 html.light .chamfer-btn-primary {
   background: #0f172a !important;
   color: #ffffff !important;
   border-color: #0f172a !important;
 }
+html.light .chamfer-btn-primary *,
+html.light .chamfer-btn-primary span,
+html.light .chamfer-btn-primary .text-white {
+  color: #ffffff !important;
+}
 html.light .chamfer-btn-primary:hover {
   background: #0284c7 !important;
   border-color: #0284c7 !important;
   color: #ffffff !important;
+}
+html.light .chamfer-btn-primary:hover * {
+  color: #ffffff !important;
+}
+html.light .chamfer-btn-outline {
+  color: #0f172a !important;
+  border-color: rgba(15, 23, 42, 0.3) !important;
+  background: rgba(15, 23, 42, 0.03) !important;
+}
+html.light .chamfer-btn-outline * {
+  color: #0f172a !important;
+}
+html.light .chamfer-btn-outline:hover {
+  color: #000000 !important;
+  border-color: #0f172a !important;
+  background: rgba(15, 23, 42, 0.08) !important;
 }
 html.light .chamfer-btn-secondary {
   background: transparent !important;
@@ -863,52 +929,160 @@ html.light .chamfer-btn-secondary:hover {
   background: rgba(15, 23, 42, 0.06) !important;
   border-color: #0f172a !important;
 }
-html.light #footer {
-  background: #f1f5f9 !important;
-  border-top-color: #e2e8f0 !important;
+
+/* Cards, Frames and Four Pillars in Light Mode */
+html.light .aerodynamic-frame,
+html.light .tech-card,
+html.light .tech-card-subtle,
+html.light .glass-card,
+html.light .chamfer-card,
+html.light .arch-pillar-card {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+  color: #0f172a !important;
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.06) !important;
 }
-html.light .bg-black {
-  background-color: #f8fafc !important;
-}
-html.light .bg-\[\#05070a\] {
-  background-color: #f1f5f9 !important;
-}
-html.light .bg-\[\#07090e\] {
-  background-color: #ffffff !important;
-}
-html.light .bg-\[\#0a0d14\] {
-  background-color: #ffffff !important;
-}
-html.light .bg-black\/60,
-html.light .bg-black\/80,
-html.light .bg-black\/85,
-html.light .bg-black\/90 {
-  background-color: rgba(255, 255, 255, 0.92) !important;
-}
-html.light .border-white\/10,
-html.light .border-white\/20 {
-  border-color: rgba(15, 23, 42, 0.1) !important;
-}
-html.light .border-white\/5 {
-  border-color: rgba(15, 23, 42, 0.06) !important;
-}
-html.light #cookie-consent-banner {
-  background: rgba(255, 255, 255, 0.95) !important;
-  border-color: rgba(15, 23, 42, 0.15) !important;
+html.light .arch-pillar-card h3 {
   color: #0f172a !important;
 }
-html.light #cookie-consent-banner p {
+html.light .arch-pillar-card p {
   color: #475569 !important;
 }
-html.light #cookie-consent-banner span.font-mono {
+html.light .arch-pillar-card span {
+  color: #64748b !important;
+}
+html.light .arch-pillar-card .text-white {
   color: #0f172a !important;
 }
+html.light .arch-pillar-card .border-t {
+  border-color: rgba(15, 23, 42, 0.1) !important;
+}
+html.light .corner-brackets::before,
+html.light .corner-brackets::after {
+  border-color: rgba(15, 23, 42, 0.25) !important;
+}
+
+/* Quotes & Manifestos */
+html.light blockquote {
+  border-left-color: #0f172a !important;
+  color: #1e293b !important;
+}
+
+/* Inputs & Forms */
+html.light .tech-input {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+html.light .tech-input:focus {
+  border-color: #0284c7 !important;
+  background: #ffffff !important;
+}
+html.light .tech-input::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Background Color utilities in light mode */
+html.light .bg-black,
+html.light .bg-\[\#000000\],
+html.light .bg-\[\#05070a\],
+html.light .bg-\[\#07090e\],
+html.light .bg-\[\#0a0d14\] {
+  background-color: #f8fafc !important;
+}
+html.light .bg-black\/60,
+html.light .bg-black\/70,
+html.light .bg-black\/80,
+html.light .bg-black\/85,
+html.light .bg-black\/90,
+html.light .bg-black\/95 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+html.light .bg-white\/5,
+html.light .bg-white\/10 {
+  background-color: rgba(15, 23, 42, 0.05) !important;
+}
+
+/* Borders in light mode */
+html.light .border-white\/5,
+html.light .border-white\/10,
+html.light .border-white\/20,
+html.light .border-white\/30 {
+  border-color: rgba(15, 23, 42, 0.1) !important;
+}
+html.light .border-white {
+  border-color: #0f172a !important;
+}
+
+/* Fullscreen Rolls-Royce Navigation Drawer in Light Mode */
+html.light .fullscreen-nav-drawer,
+html.light #fullscreen-nav-drawer {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+html.light .fullscreen-nav-drawer .border-b,
+html.light .fullscreen-nav-drawer .border-t {
+  border-color: rgba(15, 23, 42, 0.1) !important;
+}
+html.light #nav-drawer-close,
+html.light #nav-drawer-close * {
+  color: #0f172a !important;
+}
+html.light .rolls-menu-row,
+html.light .lamborghini-menu-row {
+  color: #0f172a !important;
+  border-bottom-color: rgba(15, 23, 42, 0.1) !important;
+}
+html.light .rolls-menu-row:hover,
+html.light .lamborghini-menu-row:hover {
+  color: #0284c7 !important;
+  border-bottom-color: #0284c7 !important;
+}
+html.light .rolls-menu-row svg,
+html.light .lamborghini-menu-row svg {
+  color: #0f172a !important;
+}
+html.light .rolls-sub-row,
+html.light .lamborghini-sub-row {
+  color: #475569 !important;
+  border-bottom-color: rgba(15, 23, 42, 0.06) !important;
+}
+html.light .rolls-sub-row:hover,
+html.light .lamborghini-sub-row:hover {
+  color: #0f172a !important;
+}
+html.light .rolls-sub-row .text-white {
+  color: #0f172a !important;
+}
+html.light .rolls-sub-row .text-neutral-500 {
+  color: #64748b !important;
+}
+
+/* Sticky product subnavigation on products.html */
+html.light .sticky.top-20 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-bottom-color: rgba(15, 23, 42, 0.1) !important;
+}
+html.light #product-subnav-links a {
+  color: #475569 !important;
+}
+html.light #product-subnav-links a:hover {
+  color: #0284c7 !important;
+  border-bottom-color: #0284c7 !important;
+}
+
+/* Modals, Search & Interactive Panels in Light Mode */
 html.light #site-search-modal .aerodynamic-frame {
   background: #ffffff !important;
   border-color: rgba(15, 23, 42, 0.15) !important;
 }
 html.light #site-search-input {
   color: #0f172a !important;
+}
+html.light #site-search-modal kbd {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
 }
 html.light #site-search-results .search-result-item {
   border-color: rgba(15, 23, 42, 0.08) !important;
@@ -927,6 +1101,57 @@ html.light #floating-contact-btn {
 }
 html.light #floating-contact-btn span {
   color: #0f172a !important;
+}
+html.light #cookie-consent-banner {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-color: rgba(15, 23, 42, 0.15) !important;
+  color: #0f172a !important;
+}
+html.light #cookie-consent-banner p {
+  color: #475569 !important;
+}
+html.light #cookie-consent-banner span.font-mono {
+  color: #0f172a !important;
+}
+html.light .faq-item {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+}
+html.light .faq-question {
+  color: #0f172a !important;
+}
+html.light .faq-answer {
+  color: #475569 !important;
+}
+html.light .oauth-btn {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.15) !important;
+  color: #0f172a !important;
+}
+html.light .product-tab-btn {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+  color: #475569 !important;
+}
+html.light .product-tab-btn.active {
+  color: #0f172a !important;
+  border-color: #0284c7 !important;
+  background: #f0f9ff !important;
+}
+html.light .telemetry-pill {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+  color: #0f172a !important;
+}
+html.light .founder-stamp {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.15) !important;
+  color: #0f172a !important;
+}
+html.light #footer,
+html.light footer {
+  background: #f1f5f9 !important;
+  border-top-color: #e2e8f0 !important;
 }
 
 /* ==========================================================================

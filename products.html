@@ -84,14 +84,18 @@
                 </a>
             </div>
 
-            <div class="flex items-center gap-2 sm:gap-3">
-                <button id="theme-toggle-btn" class="p-2 rounded-lg text-neutral-400 hover:text-white transition-colors focus:outline-none" aria-label="Toggle theme mode" title="Toggle Light / Dark Mode">
+            <div class="flex items-center gap-3 sm:gap-5">
+                <!-- Site Search Trigger -->
+                <button id="search-trigger-btn" class="search-trigger-btn flex items-center gap-1.5 sm:gap-2 text-white hover:text-cyan-400 transition-colors group focus:outline-none" aria-label="Search platform (Ctrl+K)" title="Search site (Ctrl+K)">
+                    <i data-lucide="search" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white group-hover:text-cyan-400 transition-colors"></i>
+                    <span class="font-display font-bold text-[11px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.24em] text-white group-hover:text-cyan-400 transition-colors">SEARCH</span>
+                    <kbd class="hidden md:inline-block px-1.5 py-0.5 text-[9px] font-mono text-neutral-400 bg-white/10 border border-white/10 rounded ml-1">⌘K</kbd>
+                </button>
+                <!-- Dark / Light Mode Toggle -->
+                <button id="theme-toggle-btn" class="theme-toggle-btn p-1.5 sm:p-2 rounded text-neutral-400 hover:text-white transition-colors focus:outline-none" aria-label="Toggle theme mode" title="Toggle Light / Dark Mode">
                     <i data-lucide="sun" class="w-4 h-4 theme-sun-icon hidden text-amber-400"></i>
                     <i data-lucide="moon" class="w-4 h-4 theme-moon-icon text-cyan-400"></i>
                 </button>
-                <a href="index.html#contact" class="chamfer-btn-primary !py-2 !px-3 sm:!py-2.5 sm:!px-6 !text-[10px] sm:!text-[11px] font-display font-bold uppercase tracking-[0.14em] sm:tracking-[0.18em] whitespace-nowrap">
-                    <span>CONNECT<span class="hidden sm:inline">&nbsp;WITH US</span></span>
-                </a>
             </div>
         </div>
     </header>
@@ -578,6 +582,24 @@ int trace_syscall(struct trace_event_raw_sys_enter *ctx) {
         }, { passive: true });
         function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
     </script>
+
+    <!-- Site Search Command Palette Modal (Ctrl+K) -->
+    <div id="site-search-modal" class="fixed inset-0 z-[9995] bg-black/80 backdrop-blur-md hidden items-start justify-center pt-20 px-4 transition-opacity duration-200">
+        <div class="aerodynamic-frame max-w-2xl w-full bg-[#0a0d14] border border-white/20 p-6 corner-brackets shadow-2xl space-y-4">
+            <div class="flex items-center gap-3 border-b border-white/10 pb-4">
+                <i data-lucide="search" class="w-5 h-5 text-cyan-400"></i>
+                <input id="site-search-input" type="text" placeholder="Search products, architecture, roadmap, founders, docs... (ESC to exit)" class="w-full bg-transparent text-white placeholder-neutral-500 font-sans text-sm focus:outline-none" autocomplete="off">
+                <kbd class="hidden sm:inline-block px-2 py-0.5 text-[10px] font-mono text-neutral-400 bg-white/5 border border-white/10 rounded">ESC</kbd>
+            </div>
+            <div id="site-search-results" class="max-h-80 overflow-y-auto space-y-2 font-sans text-xs no-scrollbar">
+                <!-- Search results rendered dynamically -->
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-white/10 text-[10px] font-mono text-neutral-500">
+                <span>Use ↑↓ to navigate · Enter to select</span>
+                <span>I-Trex Core Index</span>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
