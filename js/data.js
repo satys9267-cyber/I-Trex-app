@@ -9,7 +9,7 @@ const ITREX_INITIAL_DATA = {
     brandName: "I-TREX INNOVATIONS",
     founder: "Satyam",
     tagline: "The Autonomous Operating System & Edge Platform for Next-Gen Enterprises",
-    heroHeading: "One Platform. Infinite Trajectory.",
+    heroHeading: "Built for What’s Next.",
     heroSubheading: "Bridging public innovation and private enterprise execution under a unified zero-gravity workspace.",
     mission: "To eliminate the friction between external market impact and internal engineering momentum through AI-augmented operating systems.",
     vision: "A world where every enterprise operates with zero latency, adaptive intelligence, and seamless transparency.",

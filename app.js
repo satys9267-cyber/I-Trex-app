@@ -146,34 +146,24 @@ function initPreloader() {
     if (typeof gsap !== 'undefined') {
         const tl = gsap.timeline();
 
-        // PHASE 1: Initial Appearance (0.0s - 1.0s) - Prominent logo fade-in & scale
+        // PHASE 1: Prominent metallic logo fade-in & smooth scale (0.0s - 0.6s)
         tl.fromTo(logoImg, 
-            { opacity: 0, scale: 0.90, filter: 'drop-shadow(0 0 15px rgba(255,255,255,0.25))' },
-            { opacity: 1, scale: 1.0, filter: 'drop-shadow(0 0 45px rgba(255,255,255,0.55))', duration: 1.0, ease: "power2.out" },
+            { opacity: 0, scale: 0.92 },
+            { opacity: 1, scale: 1.0, duration: 0.6, ease: "power2.out" },
             0
         )
-        // PHASE 2: Brand Typography Reveal (0.8s - 1.6s)
+        // PHASE 2: Brand Typography Reveal (0.35s - 0.85s)
         .fromTo(brandText,
-            { opacity: 0, y: 15 },
-            { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" },
-            0.8
+            { opacity: 0, y: 12 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
+            0.35
         )
-        // Extended +3.0s Majestic Presentation with Ambient Specular Breathing (1.6s - 4.8s)
-        .to(logoImg, {
-            scale: 1.025,
-            filter: 'drop-shadow(0 0 65px rgba(0,242,254,0.45)) drop-shadow(0 0 30px rgba(255,255,255,0.7))',
-            duration: 1.6,
-            ease: "sine.inOut",
-            yoyo: true,
-            repeat: 1
-        }, 1.6)
-        // PHASE 3: Seamless Dissolve & Overlap (Starts at 4.8s — exactly +3.0s extended from original 1.8s)
+        // PHASE 3: Seamless Dissolve into Homepage (Starts at 1.4s, completes by 1.9s)
         .to(preloader, {
             opacity: 0,
-            duration: 0.8,
+            duration: 0.5,
             ease: "power2.inOut",
             onStart: () => {
-                // PHASE 4: Seamless Homepage Reveal overlaps with preloader dissolve
                 triggerHeroHeadlineAnimation();
             },
             onComplete: () => {
@@ -181,7 +171,7 @@ function initPreloader() {
                 sessionStorage.setItem('itrex_intro_seen', 'true');
                 if (preloader.parentNode) preloader.remove();
             }
-        }, 4.8);
+        }, 1.4);
 
         if (skipBtn) skipBtn.addEventListener('click', () => { tl.kill(); completeIntro(); });
         window.addEventListener('keydown', (e) => {
@@ -194,7 +184,7 @@ function initPreloader() {
     } else {
         if (logoImg) logoImg.classList.add('scale-100');
         if (brandText) brandText.classList.remove('opacity-0');
-        const timer = setTimeout(completeIntro, 5600); // Extended by 3000ms
+        const timer = setTimeout(completeIntro, 1800);
         if (skipBtn) skipBtn.addEventListener('click', () => { clearTimeout(timer); completeIntro(); });
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') { clearTimeout(timer); completeIntro(); }
