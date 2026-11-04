@@ -1378,118 +1378,75 @@ function initScrollAnimations() {
 
     gsap.registerPlugin(ScrollTrigger);
 
-    // 1. Kicker Tech Tags (Aerospace telemetry acquisition)
-    const techTags = document.querySelectorAll('.tech-tag');
-    techTags.forEach(tag => {
-        gsap.fromTo(tag,
-            { y: 16, opacity: 0, filter: "blur(4px)", letterSpacing: "0.14em" },
-            {
-                scrollTrigger: {
-                    trigger: tag,
-                    start: "top 90%",
-                    end: "bottom 10%",
-                    toggleActions: "play reverse play reverse"
-                },
-                y: 0,
-                opacity: 1,
-                filter: "blur(0px)",
-                letterSpacing: "0.22em",
-                duration: 0.75,
-                ease: "power2.out"
-            }
-        );
-    });
-
-    // 2. Section Titles (Editorial headings)
+    // 1. Section Titles (Editorial headings) - gentle entrance, always remain 100% visible
     const sectionTitles = document.querySelectorAll('.title-section, section h2');
     sectionTitles.forEach(title => {
-        // Skip hero headline which has its own word-by-word masked reveal
         if (title.id === 'hero-headline') return;
 
-        gsap.fromTo(title,
-            { y: 35, opacity: 0, filter: "blur(6px)" },
-            {
-                scrollTrigger: {
-                    trigger: title,
-                    start: "top 88%",
-                    end: "bottom 10%",
-                    toggleActions: "play reverse play reverse"
-                },
-                y: 0,
-                opacity: 1,
-                filter: "blur(0px)",
-                duration: 0.85,
-                ease: "power3.out"
-            }
-        );
+        gsap.from(title, {
+            scrollTrigger: {
+                trigger: title,
+                start: "top 92%",
+                once: true
+            },
+            y: 20,
+            duration: 0.7,
+            ease: "power2.out",
+            clearProps: "all"
+        });
     });
 
-    // 3. Sub-Headings (H3 and H4 inside sections)
+    // 2. Sub-Headings (H3 and H4 inside sections) - gentle entrance, always remain 100% visible
     const subHeadings = document.querySelectorAll('section h3:not(.hero-word-char), section h4');
     subHeadings.forEach(sub => {
-        gsap.fromTo(sub,
-            { y: 22, opacity: 0, filter: "blur(4px)" },
-            {
-                scrollTrigger: {
-                    trigger: sub,
-                    start: "top 90%",
-                    end: "bottom 10%",
-                    toggleActions: "play reverse play reverse"
-                },
-                y: 0,
-                opacity: 1,
-                filter: "blur(0px)",
-                duration: 0.75,
-                ease: "power2.out"
-            }
-        );
+        gsap.from(sub, {
+            scrollTrigger: {
+                trigger: sub,
+                start: "top 92%",
+                once: true
+            },
+            y: 16,
+            duration: 0.6,
+            ease: "power2.out",
+            clearProps: "all"
+        });
     });
 
-    // 4. Section Lead Paragraphs & Descriptions
+    // 3. Section Lead Paragraphs & Descriptions - gentle entrance, always remain 100% visible
     const leadTexts = document.querySelectorAll('section > div > div > p, section p.text-neutral-400');
     leadTexts.forEach(p => {
         if (p.id === 'hero-desc') return;
 
-        gsap.fromTo(p,
-            { y: 22, opacity: 0, filter: "blur(4px)" },
-            {
-                scrollTrigger: {
-                    trigger: p,
-                    start: "top 88%",
-                    end: "bottom 10%",
-                    toggleActions: "play reverse play reverse"
-                },
-                y: 0,
-                opacity: 1,
-                filter: "blur(0px)",
-                duration: 0.8,
-                ease: "power3.out"
-            }
-        );
+        gsap.from(p, {
+            scrollTrigger: {
+                trigger: p,
+                start: "top 92%",
+                once: true
+            },
+            y: 14,
+            duration: 0.6,
+            ease: "power2.out",
+            clearProps: "all"
+        });
     });
 
-    // 5. Quotations & Founding Manifesto Statements
+    // 4. Quotations & Founding Manifesto Statements - gentle entrance, always remain 100% visible
     const quotes = document.querySelectorAll('blockquote');
     quotes.forEach(quote => {
-        gsap.fromTo(quote,
-            { x: -28, opacity: 0, filter: "blur(6px)" },
-            {
-                scrollTrigger: {
-                    trigger: quote,
-                    start: "top 88%",
-                    end: "bottom 10%",
-                    toggleActions: "play reverse play reverse"
-                },
-                x: 0,
-                opacity: 1,
-                filter: "blur(0px)",
-                duration: 0.95,
-                ease: "power3.out"
-            }
-        );
+        gsap.from(quote, {
+            scrollTrigger: {
+                trigger: quote,
+                start: "top 92%",
+                once: true
+            },
+            x: -16,
+            duration: 0.7,
+            ease: "power2.out",
+            clearProps: "all"
+        });
     });
 
-    // 6. Grid Cards (Architecture Pillars, Capabilities, Roadmap, Team, Contact Cards)
+    // 5. Grid Cards (Architecture Pillars, Capabilities, Roadmap, Team, Contact Cards) - gentle entrance, always remain 100% visible
     const cardSelectors = [
         '.arch-pillar-card',
         '#capabilities .grid > div',
@@ -1504,40 +1461,26 @@ function initScrollAnimations() {
     cardSelectors.forEach(selector => {
         const cards = document.querySelectorAll(selector);
         cards.forEach((card, idx) => {
-            gsap.fromTo(card,
-                { y: 28, opacity: 0, filter: "blur(4px)" },
-                {
-                    scrollTrigger: {
-                        trigger: card,
-                        start: "top 90%",
-                        end: "bottom 10%",
-                        toggleActions: "play reverse play reverse"
-                    },
-                    y: 0,
-                    opacity: 1,
-                    filter: "blur(0px)",
-                    duration: 0.8,
-                    delay: (idx % 3) * 0.05,
-                    ease: "power3.out"
-                }
-            );
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 94%",
+                    once: true
+                },
+                y: 18,
+                duration: 0.6,
+                delay: (idx % 3) * 0.04,
+                ease: "power2.out",
+                clearProps: "all"
+            });
         });
     });
 
-    // 7. Hero Section Exit / Re-enter Transition
+    // 6. Hero Section Stability (Hero stays 100% visible at all times - zero disappearing on scroll)
     const heroContent = document.querySelector('#home .relative.z-10');
     if (heroContent) {
-        gsap.to(heroContent, {
-            scrollTrigger: {
-                trigger: '#home',
-                start: "center center",
-                end: "bottom 15%",
-                scrub: 1.2
-            },
-            y: -50,
-            opacity: 0,
-            filter: "blur(6px)"
-        });
+        heroContent.style.opacity = '1';
+        heroContent.style.filter = 'none';
     }
 
     // 8. Telemetry number counting

@@ -211,6 +211,18 @@
   "activity_logs": [],
   "change_logs": [
     {
+      "id": "clog-mw26i6eu-moga",
+      "user_id": "public-visitor",
+      "user_name": "Sophia Sterling",
+      "action_type": "CONTACT_TRANSMISSION",
+      "target_entity": "inquiries",
+      "target_id": "inq-mw26i6ep",
+      "change_details": "{\"email\":\"sophia.sterling@spacex-telemetry.com\",\"category\":\"Enterprise Deployment\"}",
+      "ip_address": "::1",
+      "level": "INFO",
+      "created_at": "2026-11-04T13:55:03.031Z"
+    },
+    {
       "id": "clog-mw268gbr-glvl",
       "user_id": "public-visitor",
       "user_name": "Alexander Vance",
@@ -489,6 +501,26 @@
   ],
   "notifications": [
     {
+      "id": "notif-mw26i6ex-hqme",
+      "user_id": "usr-002",
+      "title": "New Transmission from Sophia Sterling",
+      "message": "Category: Enterprise Deployment | Email: sophia.sterling@spacex-telemetry.com",
+      "type": "info",
+      "is_read": false,
+      "link": "admin.html#connections",
+      "created_at": "2026-11-04T13:55:03.033Z"
+    },
+    {
+      "id": "notif-mw26i6ew-l8g1",
+      "user_id": "usr-001",
+      "title": "New Transmission from Sophia Sterling",
+      "message": "Category: Enterprise Deployment | Email: sophia.sterling@spacex-telemetry.com",
+      "type": "info",
+      "is_read": false,
+      "link": "admin.html#connections",
+      "created_at": "2026-11-04T13:55:03.032Z"
+    },
+    {
       "id": "notif-mw268gbx-lzj3",
       "user_id": "usr-002",
       "title": "New Transmission from Alexander Vance",
@@ -640,6 +672,17 @@
     }
   ],
   "contact_inquiries": [
+    {
+      "id": "inq-mw26i6ep",
+      "name": "Sophia Sterling",
+      "email": "sophia.sterling@spacex-telemetry.com",
+      "category": "Enterprise Deployment",
+      "subject": "Enterprise Deployment",
+      "message": "Inquiry regarding zero-trust FIPS telemetry deployment across low-Earth orbit satellites.",
+      "status": "unread",
+      "replies": [],
+      "createdAt": "2026-11-04T13:55:03.025Z"
+    },
     {
       "id": "inq-mw268gbl",
       "name": "Alexander Vance",
