@@ -553,106 +553,86 @@ const PRODUCTS_DATA = [
         id: "trexos",
         code: "TRX-01",
         title: "TrexOS",
-        category: "DETERMINISTIC NEURAL MICROKERNEL",
-        tagline: "Sub-millisecond thread scheduling, zero-trust hardware memory isolation, and predictive neural load balancing.",
+        category: "HYBRID AGENTIC OS CONSOLE",
+        tagline: "Compact. Powerful. Intelligent. 20x20x8 cm Hybrid Agentic OS Console with dual-boot Windows + Linux architecture.",
         telemetry: [
-            { label: "CONTEXT SWITCH", val: "0.35 ms", note: "Deterministic Guarantee" },
-            { label: "ISOLATION LEVEL", val: "RING 0", note: "Hardware Enclave" },
-            { label: "MEMORY OVERHEAD", val: "1.4 MB", note: "Bare-Metal Rust" }
+            { label: "FORM FACTOR", val: "20x20x8 CM", note: "Ultra Compact Chassis" },
+            { label: "DUAL BOOT", val: "WIN + LINUX", note: "Hardware Level" },
+            { label: "ETHERNET", val: "2.5GbE LAN", note: "Low-Latency Wire" }
         ],
         features: [
-            "Predictive neural task scheduler pre-empting execution spikes",
-            "Zero-trust microkernel memory isolation with hardware enclaves",
-            "Hardware-level DMA validation bypassing OS kernel bloat",
-            "Autonomous self-governing sandbox for distributed agent fleets"
+            "Ultra-compact 20x20x8 cm dark metallic chassis with intelligent cooling",
+            "Windows + Linux dual-boot architecture with TPM 2.0 and Secure Boot",
+            "High-speed multi-port I/O: HDMI 2.1, USB 3.0, USB-C / USB4, 2.5GbE LAN, DC IN",
+            "Whisper-silent thermal management engineered for continuous agentic operations"
         ],
         accentColor: "#00f2fe",
         detailLink: "products.html#trexos",
-        simType: "kernel"
+        simType: "hardware",
+        image: "assets/images/trexos-console-hardware.jpg"
     },
     {
-        id: "trexcore",
+        id: "aerohydra",
         code: "TRX-02",
-        title: "TrexCore",
-        category: "PLANETARY EDGE CLOUD FABRIC & STATE MESH",
-        tagline: "Geo-distributed serverless runtime synchronizing state in sub-12ms across worldwide nodes with peer-to-peer mTLS WireGuard mesh.",
+        title: "I-Trax AeroHydra X-1",
+        category: "SPECIALLY DESIGNED AUTONOMOUS DRONE",
+        tagline: "Specially designed enterprise drone engineered for autonomous aerial surveillance, high-speed telemetry, and extreme mission reliability.",
         telemetry: [
-            { label: "GLOBAL SYNC", val: "11.4 ms", note: "Worldwide Median" },
-            { label: "EDGE PRESENCE", val: "180+ POPS", note: "Anycast Routed" },
-            { label: "FAILOVER TIME", val: "< 45 ms", note: "Zero Packet Loss" }
+            { label: "AUTONOMY", val: "LEVEL 4+", note: "Onboard Controller" },
+            { label: "TELEMETRY", val: "SUB-5MS", note: "Encrypted Mesh" },
+            { label: "AIRFRAME", val: "CARBON-COMP", note: "Aerospace Grade" }
         ],
         features: [
-            "Hyper-converged distributed compute mesh with automated geo-sharding",
-            "Sub-12ms global state reconciliation via WireGuard mTLS fabric",
-            "Cold starts reduced to under 2ms globally with instant memory resume",
-            "Autonomous multi-cloud failover and compliance residency guarantees"
+            "Specially designed carbon-composite airframe engineered for extreme mission durability",
+            "Onboard autonomous flight controller with real-time waypoint pathfinding",
+            "Sub-5ms encrypted telemetry link streaming real-time metrics to base station",
+            "Modular payload bay supporting high-resolution thermal, optical, and LiDAR sensors"
         ],
         accentColor: "#f97316",
-        detailLink: "products.html#trexcore",
-        simType: "mesh"
+        detailLink: "products.html#aerohydra",
+        simType: "drone"
     },
     {
         id: "trexvision",
         code: "TRX-03",
         title: "TrexVision",
-        category: "SPATIAL INTELLIGENCE & SLAM ENGINE",
-        tagline: "Multimodal 3D spatial perception, point-cloud odometry, and visual telemetry processing locked at 120 FPS on local edge silicons.",
+        category: "AUTONOMOUS AI ASSISTANT & AUTONOMY SERVERS",
+        tagline: "The AI assistant of the Trex system integrated with dedicated autonomy servers for real-time task orchestration and cross-fleet intelligence.",
         telemetry: [
-            { label: "FRAME RATE", val: "120 FPS", note: "Zero Jitter Sync" },
-            { label: "ODOMETRY DRIFT", val: "< 0.04%", note: "Full Trajectory" },
-            { label: "SENSOR FUSION", val: "LIDAR+RGBD", note: "Hardware Native" }
+            { label: "ORCHESTRATION", val: "REAL-TIME", note: "Fleet Intelligence" },
+            { label: "AUTONOMY CORE", val: "SERVERS", note: "Zero Cloud Lock-in" },
+            { label: "RESPONSE", val: "< 10MS", note: "Local & Mesh Sync" }
         ],
         features: [
-            "WebGPU/Vulkan accelerated real-time 3D pose and environment meshing",
-            "Multimodal sensor fusion combining LiDAR, stereo optics, and IMU",
-            "Low-precision quantized neural inference running directly at the edge",
-            "Zero cloud telemetry leakage mode for aerospace, robotics, and defense"
+            "Centralized autonomy server infrastructure powering cross-device agent operations",
+            "Context-aware multimodal intelligence orchestrating Trex ecosystem hardware",
+            "Autonomous task delegation, system scheduling, and telemetry synthesis",
+            "Seamless coordination layer linking TrexOS consoles, Synap-X robots, and AeroHydra drones"
         ],
         accentColor: "#38bdf8",
         detailLink: "products.html#trexvision",
         simType: "spatial"
     },
     {
-        id: "trexshield",
+        id: "synapx",
         code: "TRX-04",
-        title: "TrexShield",
-        category: "EBPF ZERO-TRUST HARDWARE ENCLAVE & DEFENSE",
-        tagline: "Autonomous kernel-level threat isolation utilizing eBPF system call verification with sub-4ms automated container quarantine.",
+        title: "Synap-X",
+        category: "AUTONOMOUS DESKTOP ROBOT & PHYSICAL AI COMPANION",
+        tagline: "Breaking the flaws of Alexa, Siri, and DIY assistants: zero-latency local execution, physical attention tilt/pan, acoustic perfection, and circuit-level privacy.",
         telemetry: [
-            { label: "QUARANTINE SPEED", val: "3.8 ms", note: "Autonomous Response" },
-            { label: "EBPF INTROSPECTION", val: "100%", note: "Kernel Syscall Coverage" },
-            { label: "COMPLIANCE LEVEL", val: "FEDRAMP", note: "ISO 27001 Cryptographic" }
+            { label: "LOCAL EXECUTION", val: "0-MS CLOUD", note: "Local Daemon" },
+            { label: "SILENT CHIME", val: "50 MS", note: "Tactile LED Pulse" },
+            { label: "HARDWARE SWITCH", val: "CIRCUIT-LEVEL", note: "Absolute Privacy" }
         ],
         features: [
-            "Autonomous kernel honeypot injection upon unauthorized probe detection",
-            "Zero-overhead eBPF packet introspection and memory boundary locks",
-            "Instant cryptographic quarantine of compromised micro-containers",
-            "Real-time compliance attestations generated directly at Ring 0"
+            "Zero-latency local daemon for desktop/phone toggles + offline fallback mode",
+            "Fuzzy intent parsing ('nuke Chrome' == 'close browser') + screen state awareness",
+            "Custom hardware AEC & directional beamforming with mechanical attention tilt/pan",
+            "Unified cross-platform clipboard + call auto-ducking + two-step destructive safeguards"
         ],
         accentColor: "#10b981",
-        detailLink: "products.html#trexshield",
-        simType: "security"
-    },
-    {
-        id: "trexconnect",
-        code: "TRX-05",
-        title: "TrexConnect",
-        category: "ULTRA-LOW LATENCY MULTIPLEXED PROTOCOL MESH",
-        tagline: "High-throughput binary protocol engine bridging edge robotics fleets, IoT gateways, and telemetry pipelines with zero-copy serialization.",
-        telemetry: [
-            { label: "THROUGHPUT", val: "1.8M MSG/S", note: "Saturated Wire Speed" },
-            { label: "SERIALIZATION", val: "ZERO-COPY", note: "Direct DMA Buffer" },
-            { label: "TRANSPORT", val: "QUIC/TLS 1.3", note: "Quantum-Resistant" }
-        ],
-        features: [
-            "Zero-copy binary packet serialization bypassing userland memory copies",
-            "Multiplexed bidirectional QUIC and TLS 1.3 encrypted event channels",
-            "Cross-cloud VPC bridging with sub-millisecond edge queue dispatch",
-            "Telemetry multiplexing engineered for drone fleets and industrial automation"
-        ],
-        accentColor: "#e2e8f0",
-        detailLink: "products.html#trexconnect",
-        simType: "protocol"
+        detailLink: "products.html#synapx",
+        simType: "robot"
     }
 ];
 
@@ -851,7 +831,7 @@ function initProductCanvasSimulation(type, color) {
 
         time += 0.025;
 
-        if (type === 'kernel') {
+        if (type === 'hardware' || type === 'kernel') {
             // Rotating nested cyber rings representing deterministic microkernel CPU queues
             for (let r = 30; r <= 110; r += 26) {
                 ctx.beginPath();
@@ -860,8 +840,6 @@ function initProductCanvasSimulation(type, color) {
                 ctx.lineWidth = 2;
                 ctx.stroke();
             }
-
-            // Central Ring 0 Core
             ctx.beginPath();
             ctx.arc(cx, cy, 14, 0, Math.PI * 2);
             ctx.fillStyle = '#ffffff';
@@ -869,6 +847,58 @@ function initProductCanvasSimulation(type, color) {
             ctx.shadowBlur = 18;
             ctx.fill();
             ctx.shadowBlur = 0;
+
+        } else if (type === 'drone') {
+            // Drone radar sweep and telemetry flight path
+            ctx.strokeStyle = 'rgba(249, 115, 22, 0.25)';
+            ctx.lineWidth = 1;
+            for (let r = 40; r <= 120; r += 35) {
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            // Radar sweeping arm
+            const sweepAngle = time * 2;
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(cx + Math.cos(sweepAngle) * 115, cy + Math.sin(sweepAngle) * 115);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            // Drone flight vector crosshair
+            const dx = cx + Math.cos(time * 0.8) * 45;
+            const dy = cy + Math.sin(time * 1.2) * 35;
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(dx, dy, 5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.strokeRect(dx - 10, dy - 10, 20, 20);
+
+        } else if (type === 'robot') {
+            // Synap-X acoustic beamforming and physical attention direction
+            const beamAngle = Math.sin(time * 1.5) * 0.8;
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate(beamAngle);
+            // Acoustic waves
+            for (let r = 25; r <= 100; r += 22) {
+                const waveAlpha = (1 - (r / 110) + Math.sin(time * 3 - r * 0.05) * 0.2);
+                ctx.beginPath();
+                ctx.arc(0, 0, r, -Math.PI * 0.35, Math.PI * 0.35);
+                ctx.strokeStyle = `rgba(16, 185, 129, ${Math.max(0.1, waveAlpha)})`;
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+            }
+            // Robot physical attention core
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(0, 0, 16, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.restore();
 
         } else if (type === 'mesh') {
             // Geo-distributed planetary edge node mesh
@@ -1011,32 +1041,32 @@ function initProductCanvasSimulation(type, color) {
    ========================================================================== */
 const PILLARS_DATA = [
     {
-        title: "TrexOS Kernel",
-        tag: "01 // DETERMINISTIC MICROKERNEL",
-        desc: "Sub-millisecond thread scheduling with zero-trust hardware memory isolation and Rust-native safety guarantees.",
-        metric: "0.35ms Latency",
+        title: "TrexOS Console & OS",
+        tag: "01 // HYBRID AGENTIC OS CONSOLE",
+        desc: "Compact 20x20x8 cm hybrid agentic console with Windows + Linux dual boot, TPM 2.0 hardware security, and 2.5GbE LAN.",
+        metric: "20x20x8 cm Dual Boot",
         color: "#00f2fe"
     },
     {
-        title: "TrexCore Mesh",
-        tag: "02 // PLANETARY STATE FABRIC",
-        desc: "Geo-distributed serverless runtime synchronizing distributed state across 180+ global edge pops in sub-12ms.",
-        metric: "11.4ms Global Sync",
+        title: "I-Trax AeroHydra X-1",
+        tag: "02 // AUTONOMOUS DRONE PLATFORM",
+        desc: "Specially designed autonomous drone engineered for enterprise missions, tactical aerial robotics, and low-latency encrypted telemetry.",
+        metric: "Level 4+ Autonomy",
         color: "#f97316"
     },
     {
-        title: "TrexShield SecOps",
-        tag: "03 // EBPF KERNEL ENCLAVE",
-        desc: "Autonomous system call introspection with automated threat quarantine in under 4ms and cryptographic attestations.",
-        metric: "3.8ms Quarantine",
-        color: "#10b981"
+        title: "TrexVision AI Assistant",
+        tag: "03 // AUTONOMY SERVERS & AI",
+        desc: "Dedicated AI assistant of the Trex system with centralized autonomy servers for real-time task orchestration, spatial perception, and fleet coordination.",
+        metric: "Dedicated Autonomy",
+        color: "#38bdf8"
     },
     {
-        title: "TrexVision SLAM",
-        tag: "04 // SPATIAL PERCEPTION ENGINE",
-        desc: "120 FPS 3D odometry, LiDAR & RGB-D sensor fusion, and spatial telemetry pipeline for autonomous robotics.",
-        metric: "120 FPS Locked",
-        color: "#38bdf8"
+        title: "Synap-X Desktop Robot",
+        tag: "04 // AUTONOMOUS DESKTOP ROBOT",
+        desc: "Next-gen desktop robot with 0-latency local execution, directional beamforming, physical attention tilt/pan, and circuit kill switch.",
+        metric: "Zero-Latency Local",
+        color: "#10b981"
     }
 ];
 
@@ -1604,12 +1634,12 @@ window.dismissCookieBanner = dismissCookieBanner;
    SITE SEARCH COMMAND PALETTE (CTRL+K / CMD+K)
    ========================================================================== */
 const SITE_SEARCH_INDEX = [
-    { title: 'TrexOS Microkernel', category: 'Product', desc: 'Deterministic neural microkernel with sub-0.35ms context switching.', url: '#technology' },
-    { title: 'TrexCore Edge Fabric', category: 'Product', desc: 'Planetary mesh and BGP Anycast routing with zero packet loss.', url: '#technology' },
-    { title: 'TrexShield SecOps', category: 'Product', desc: 'Autonomous zero-trust honeypot enclave and eBPF syscall auditing.', url: '#technology' },
-    { title: 'TrexVision Spatial Engine', category: 'Product', desc: 'WebGPU 120 FPS neural perception and real-time SLAM.', url: '#technology' },
+    { title: 'TrexOS Hardware Console', category: 'Product', desc: 'Compact 20x20x8 cm Hybrid Agentic OS Console with Windows + Linux dual boot.', url: 'products.html#trexos' },
+    { title: 'I-Trax AeroHydra X-1 Drone', category: 'Product', desc: 'Specially designed enterprise drone engineered for autonomous aerial surveillance.', url: 'products.html#aerohydra' },
+    { title: 'TrexVision AI Assistant', category: 'Product', desc: 'AI assistant of Trex system with dedicated autonomy servers for real-time orchestration.', url: 'products.html#trexvision' },
+    { title: 'Synap-X Desktop Robot', category: 'Product', desc: 'Next-gen autonomous desktop robot solving Alexa/Siri/DIY flaws with local daemon.', url: 'products.html#synapx' },
     { title: 'Products Matrix', category: 'Matrix', desc: 'Complete autonomous product showroom and technical specifications.', url: 'products.html' },
-    { title: 'Architectural Vision', category: 'Vision', desc: 'The Four Pillars and foundation of autonomous computing.', url: '#technology' },
+    { title: 'Architectural Vision', category: 'Vision', desc: 'The Four Engines and foundation of autonomous computing.', url: '#technology' },
     { title: 'Engineering Benchmarks', category: 'Capabilities', desc: 'Sub-ms scheduler, consensus engines, and deterministic latency.', url: '#capabilities' },
     { title: 'Founding Manifesto', category: 'Manifesto', desc: 'Principles of autonomous trajectory and executive philosophy.', url: '#manifesto' },
     { title: 'Strategic Roadmap', category: 'Roadmap', desc: 'Genesis, Alpha Release, Edge Mesh, and Autonomous Fleet milestones.', url: '#roadmap' },

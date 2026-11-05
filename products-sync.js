@@ -43,8 +43,8 @@ async function initDynamicProductShowroom() {
                 const badgeBg = isEven ? 'bg-cyan-950 text-cyan-400 border-cyan-500/30' : 'bg-orange-950 text-orange-400 border-orange-500/30';
 
                 const featuresHtml = (p.keyFeatures || []).map(f => `
-                    <li class="flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full" style="background-color: ${accentColor}"></span>
+                    <li class="flex items-start gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style="background-color: ${accentColor}"></span>
                         <span>${f}</span>
                     </li>
                 `).join('');
@@ -52,10 +52,20 @@ async function initDynamicProductShowroom() {
                 const specs = p.specs || {};
                 const specsRowsHtml = Object.entries(specs).map(([k, v]) => `
                     <div class="flex justify-between border-b border-white/10 pb-2">
-                        <span class="text-neutral-400 uppercase">${k}</span>
+                        <span class="text-neutral-400 uppercase">${k.replace(/_/g, ' ')}</span>
                         <span class="text-white font-bold">${v}</span>
                     </div>
                 `).join('');
+
+                const hardwareBannerHtml = (p.banner && p.banner.includes('trexos')) ? `
+                    <div class="aerodynamic-frame p-4 corner-brackets bg-[#05070a] border border-cyan-500/20">
+                        <img src="${p.banner}" alt="${p.name}" class="w-full h-auto object-cover rounded-lg drop-shadow-[0_10px_35px_rgba(0,242,254,0.25)]">
+                        <div class="mt-3 flex items-center justify-between font-mono text-[11px] text-neutral-400 px-1">
+                            <span class="text-cyan-400 font-bold">${(p.name || '').toUpperCase()} CONSOLE · POWERED BY INNOVATION</span>
+                            <span>20×20×8 CM · DUAL BOOT WIN+LINUX · TPM 2.0</span>
+                        </div>
+                    </div>
+                ` : '';
 
                 return `
                 <section id="${p.slug || p.id}" class="py-28 px-6 lg:px-12 border-b border-white/10 ${bgClass} product-sync-section">
@@ -76,6 +86,8 @@ async function initDynamicProductShowroom() {
                                 <p class="font-sans text-neutral-300 text-base sm:text-lg leading-relaxed font-light">
                                     ${p.detailedDescription || p.shortDescription || ''}
                                 </p>
+
+                                ${hardwareBannerHtml}
 
                                 <!-- Telemetry Spec Table -->
                                 <div class="aerodynamic-frame p-6 corner-brackets font-mono text-xs space-y-4">

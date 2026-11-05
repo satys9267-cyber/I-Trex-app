@@ -1065,56 +1065,45 @@ const DEFAULT_SYSTEM_PRODUCTS = [
     {
         id: "trexos",
         name: "TrexOS",
-        category: "Kernel Architecture",
-        badge: "0.35ms Latency · Ring 0 Microkernel",
-        tagline: "Deterministic Neural Microkernel Architecture",
-        description: "Purpose-built deterministic operating system kernel featuring sub-millisecond thread scheduling, zero-trust hardware isolation, and autonomous neural load balancing.",
+        category: "Hybrid Agentic OS Console",
+        badge: "20×20×8 cm · Win + Linux Dual Boot",
+        tagline: "Compact. Powerful. Intelligent. Hybrid Agentic OS Console",
+        description: "Precision 20 cm × 20 cm × 8 cm hardware console with Windows + Linux dual boot, TPM 2.0 hardware security, intelligent cooling, and 2.5GbE LAN.",
         accentColor: "#00f3ff",
         link: "products.html#trexos"
     },
     {
-        id: "trexcore",
-        name: "TrexCore",
-        category: "Cloud Fabric",
-        badge: "Sub-12ms Global · 84K+ Nodes",
-        tagline: "Planetary Edge Cloud Fabric & State Mesh",
-        description: "Geo-distributed serverless runtime synchronizing state in sub-12ms across worldwide nodes with peer-to-peer mTLS WireGuard mesh fabric.",
+        id: "aerohydra",
+        name: "I-Trax AeroHydra X-1",
+        category: "Autonomous Drone",
+        badge: "Level 4+ Autonomy · Sub-5ms Telemetry",
+        tagline: "Specially Designed Autonomous Aerial Drone",
+        description: "Specially designed autonomous drone engineered for extreme mission reliability, tactical aerial robotics, and low-latency encrypted telemetry.",
         accentColor: "#ff6b00",
-        link: "products.html#trexcore"
+        link: "products.html#aerohydra"
     },
     {
         id: "trexvision",
         name: "TrexVision",
-        category: "Spatial Perception",
-        badge: "120 FPS · WebGPU Spatial SLAM",
-        tagline: "WebGPU Spatial Perception & 3D Odometry",
-        description: "Next-generation 3D spatial odometry and computer vision telemetry pipeline engineered for autonomous robotics, spatial computing, and digital twin orchestration.",
-        accentColor: "#8b5cf6",
+        category: "Autonomy Servers & AI",
+        badge: "Dedicated Autonomy Servers · Real-Time Orchestration",
+        tagline: "Autonomous AI Assistant & System Servers",
+        description: "The AI assistant of the Trex system integrated with dedicated autonomy servers for real-time task orchestration, spatial intelligence, and fleet coordination.",
+        accentColor: "#38bdf8",
         link: "products.html#trexvision"
     },
     {
-        id: "trexshield",
-        name: "TrexShield",
-        category: "Zero-Trust SecOps",
-        badge: "< 4ms Quarantine · Hardware HSM Enclave",
-        tagline: "eBPF Zero-Trust Hardware Enclave & Defense",
-        description: "Proactive kernel-level zero-trust security engine utilizing eBPF system call verification with sub-4ms automated threat isolation and HSM cryptographic audit attestations.",
+        id: "synapx",
+        name: "Synap-X",
+        category: "Autonomous Desktop Robot",
+        badge: "0ms Local Daemon · Physical Attention Tilt/Pan",
+        tagline: "Next-Gen Autonomous Desktop Robot & Physical AI Assistant",
+        description: "Desktop robot solving the frustrating flaws of Alexa, Siri, and DIY assistants: zero-latency local execution, directional beamforming, mechanical attention tilt/pan, and physical kill switch.",
         accentColor: "#10b981",
-        link: "products.html#trexshield"
-    },
-    {
-        id: "trexconnect",
-        name: "TrexConnect",
-        category: "Hyper-Transport Mesh",
-        badge: "1.8M msg/sec · Sub-ms Protocol Mesh",
-        tagline: "Ultra-Low Latency Multiplexed Protocol Mesh",
-        description: "High-throughput binary protocol engine bridging edge robotics fleets, IoT gateways, and telemetry pipelines with zero-copy serialization and QUIC transport.",
-        accentColor: "#d4af37",
-        link: "products.html#trexconnect"
+        link: "products.html#synapx"
     }
 ];
 
-let activeEditingProducts = [];
 let selectedEditingProductId = "trexos";
 
 function initProductManager() {
