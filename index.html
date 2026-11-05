@@ -32,8 +32,8 @@
                         neonCyan: '#00f2fe'
                     },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Space Grotesk', 'Syne', 'sans-serif'],
+                        sans: ['"Times New Roman"', 'Times', 'Georgia', 'serif'],
+                        display: ['"Times New Roman"', 'Times', 'Georgia', 'serif'],
                         mono: ['JetBrains Mono', 'monospace']
                     }
                 }
@@ -578,9 +578,7 @@
                         <span class="text-[10px] text-neutral-500 uppercase block">PRIMARY METRIC</span>
                         <span id="arch-diag-metric" class="text-base font-bold text-white block">0.35ms Latency</span>
                     </div>
-                    <div id="arch-freq-display" class="px-3 py-1.5 border border-cyan-500/30 bg-cyan-950/40 text-cyan-400 text-[10px] uppercase font-bold tracking-widest">
-                        PULSE ACTIVE: 64.28 GHz
-                    </div>
+                    <div id="arch-freq-display" class="hidden"></div>
                 </div>
             </div>
         </div>
@@ -718,21 +716,20 @@
     </section>
 
     <!-- ======================================================================
-         SECTION 08: VISION AND MISSION
+         SECTION 08: OUR VISION
          ====================================================================== -->
     <section id="vision-mission" class="relative py-28 px-6 lg:px-12 border-t border-white/10 bg-black">
-        <div class="max-w-6xl mx-auto space-y-20">
+        <div class="max-w-5xl mx-auto space-y-12 text-center">
             
             <!-- Our Vision -->
-            <div class="text-center space-y-6">
-                
+            <div class="space-y-6">
                 <h2 class="title-section text-4xl sm:text-6xl text-white">OUR VISION</h2>
-                <blockquote class="font-display font-bold text-2xl sm:text-4xl text-neutral-300 max-w-4xl mx-auto leading-tight">
-                    “To make every enterprise operate with zero latency, adaptive intelligence, and absolute operational transparency under one unified platform.”
+                <blockquote class="font-display font-bold text-2xl sm:text-4xl text-neutral-200 max-w-4xl mx-auto leading-relaxed">
+                    “Pioneering a new era where quantum precision and sovereign innovation unlock infinite potential.”
                 </blockquote>
 
                 <!-- Strategic Progress Flow Rail (DISCOVER -> ARCHITECT -> DEPLOY -> SCALE -> TRANSCEND) -->
-                <div class="w-full max-w-4xl mx-auto pt-12">
+                <div class="w-full max-w-4xl mx-auto pt-10">
                     <div class="relative h-[2px] bg-white/10 flex justify-between items-center">
                         <div class="absolute left-0 top-0 h-full bg-cyan-400 w-3/4"></div>
 
@@ -763,15 +760,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Our Mission -->
-            <div class="text-center space-y-6 pt-16 border-t border-white/10">
-                
-                <h2 class="title-section text-4xl sm:text-6xl text-white">OUR MISSION</h2>
-                <blockquote class="font-display font-bold text-2xl sm:text-4xl text-neutral-300 max-w-4xl mx-auto leading-tight">
-                    “Build one unified autonomous operating system that powers public technology innovation and internal enterprise execution with uncompromising precision.”
-                </blockquote>
             </div>
         </div>
     </section>

@@ -723,90 +723,69 @@ function renderProductStage(idx) {
     if (!stageContent) return;
 
     stageContent.innerHTML = `
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            <!-- Left Editorial & Specifications Column -->
-            <div class="lg:col-span-7 space-y-8">
-                <div>
-                    <h3 class="font-display font-extrabold text-4xl sm:text-6xl text-white uppercase tracking-tight leading-none">
-                        ${prod.title}
-                    </h3>
-                    <p class="text-neutral-400 font-sans text-base sm:text-lg mt-4 leading-relaxed max-w-2xl">
-                        ${prod.tagline} · <span class="font-mono text-xs uppercase text-cyan-400 font-bold">${prod.code}</span>
-                    </p>
-                </div>
-
-                <!-- Real-time Telemetry Metrics Pill Grid -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    ${prod.telemetry.map(t => `
-                        <div class="telemetry-pill corner-brackets">
-                            <span class="block font-mono text-[10px] text-neutral-400 uppercase tracking-widest">${t.label}</span>
-                            <span class="block font-display font-bold text-xl sm:text-2xl text-white mt-1">${t.val}</span>
-                            <span class="block font-mono text-[9px] text-neutral-500 mt-0.5">${t.note}</span>
-                        </div>
-                    `).join('')}
-                </div>
-
-                <!-- Architectural Capabilities Checklist -->
-                <div class="space-y-3 pt-2">
-                    <span class="block font-mono text-[11px] uppercase tracking-widest text-neutral-400">ENGINEERING SPECIFICATIONS</span>
-                    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-neutral-300">
-                        ${prod.features.map(f => `
-                            <li class="flex items-start gap-2.5">
-                                <span class="w-1.5 h-1.5 rounded-full bg-white mt-1.5 shrink-0" style="background: ${prod.accentColor}; box-shadow: 0 0 8px ${prod.accentColor}"></span>
-                                <span class="font-sans leading-snug">${f}</span>
-                            </li>
-                        `).join('')}
-                    </ul>
-                </div>
-
-                <!-- Direct CTA to Dedicated Products Experience -->
-                <div class="pt-4 flex flex-wrap items-center gap-4">
-                    <a href="${prod.detailLink}" class="chamfer-btn-primary">
-                        <span>INSPECT SPECIFICATIONS</span>
-                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </a>
-                    <a href="products.html" class="chamfer-btn-outline">
-                        <span>VIEW ALL PRODUCTS</span>
-                    </a>
-                </div>
+        <div class="space-y-8 max-w-5xl mx-auto">
+            <!-- Header & Tagline -->
+            <div class="border-b border-white/10 pb-6">
+                <div class="font-mono text-xs uppercase tracking-widest text-cyan-400 mb-2 font-bold">${prod.code} // ${prod.category}</div>
+                <h3 class="font-display font-extrabold text-4xl sm:text-6xl text-white tracking-tight leading-none">
+                    ${prod.title}
+                </h3>
+                <p class="text-neutral-300 font-sans text-base sm:text-xl mt-4 leading-relaxed max-w-3xl">
+                    ${prod.tagline}
+                </p>
             </div>
 
-            <!-- Right Interactive Graphic Canvas Stage -->
-            <div class="lg:col-span-5 relative">
-                <div class="aerodynamic-frame p-6 sm:p-8 min-h-[380px] sm:min-h-[440px] flex flex-col justify-between relative overflow-hidden">
-                    <!-- Top HUD Label -->
-                    <div class="flex items-center justify-between border-b border-white/10 pb-3 font-mono text-[10px] text-neutral-400">
-                        <span class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full animate-ping" style="background: ${prod.accentColor}"></span>
-                            SYSTEM DIAGNOSTIC ACTIVE
-                        </span>
-                        <span>FREQ: 120.00 GHZ</span>
-                    </div>
-
-                    <!-- Canvas Graphic Simulation -->
-                    <div class="relative w-full h-[260px] sm:h-[300px] flex items-center justify-center">
-                        <canvas id="product-canvas-sim" class="w-full h-full"></canvas>
-                        
-                        <!-- Center Floating Badge -->
-                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                            <span class="font-display font-black text-6xl sm:text-7xl opacity-10 text-white select-none">
-                                ${prod.code}
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- Bottom Status Bar -->
-                    <div class="border-t border-white/10 pt-3 flex items-center justify-between font-mono text-[10px] text-neutral-400">
-                        <span>ARCH: BARE-METAL POSIX-FREE</span>
-                        <span style="color: ${prod.accentColor}">READY // 100% HEALTH</span>
+            <!-- Optional Product Photo (Clean, without bulky diagnostic frame) -->
+            ${prod.image ? `
+                <div class="py-2 flex flex-col sm:flex-row items-center gap-6 border-b border-white/10 pb-6">
+                    <img src="${prod.image}" alt="${prod.title}" class="max-h-[260px] w-auto object-contain rounded-lg border border-white/10 shadow-2xl">
+                    <div class="font-mono text-xs text-neutral-400 space-y-2">
+                        <div class="text-white font-bold text-sm">HARDWARE CONSOLE PROFILE</div>
+                        <div>Form Factor: 20 cm × 20 cm × 8 cm Ultra Compact Chassis</div>
+                        <div>Architecture: Windows + Linux Dual-Boot with Hardware TPM 2.0</div>
+                        <div>Connectivity: 2.5GbE LAN, HDMI 2.1, USB-C / USB4, USB 3.0</div>
                     </div>
                 </div>
+            ` : ''}
+
+            <!-- Telemetry Metrics Pill Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                ${prod.telemetry.map(t => `
+                    <div class="telemetry-pill corner-brackets p-4 border border-white/10 bg-white/[0.02]">
+                        <span class="block font-mono text-[10px] text-neutral-400 uppercase tracking-widest">${t.label}</span>
+                        <span class="block font-display font-bold text-2xl sm:text-3xl text-white mt-1.5">${t.val}</span>
+                        <span class="block font-mono text-[10px] text-neutral-400 mt-1">${t.note}</span>
+                    </div>
+                `).join('')}
+            </div>
+
+            <!-- Architectural Capabilities Checklist -->
+            <div class="space-y-3 pt-2">
+                <span class="block font-mono text-[11px] uppercase tracking-widest text-neutral-400 font-bold">CORE SPECIFICATIONS & CAPABILITIES</span>
+                <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm sm:text-base text-neutral-300">
+                    ${prod.features.map(f => `
+                        <li class="flex items-start gap-3 p-3.5 border border-white/5 bg-white/[0.01]">
+                            <span class="w-2 h-2 rounded-full mt-2 shrink-0" style="background: ${prod.accentColor}; box-shadow: 0 0 8px ${prod.accentColor}"></span>
+                            <span class="leading-relaxed">${f}</span>
+                        </li>
+                    `).join('')}
+                </ul>
+            </div>
+
+            <!-- Direct CTAs -->
+            <div class="pt-6 flex flex-wrap items-center gap-4 border-t border-white/10">
+                <a href="${prod.detailLink}" class="chamfer-btn-primary">
+                    <span>INSPECT SPECIFICATIONS</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+                <a href="products.html" class="chamfer-btn-outline">
+                    <span>VIEW ALL PRODUCTS</span>
+                </a>
             </div>
         </div>
     `;
 
     if (window.lucide) window.lucide.createIcons();
-    initProductCanvasSimulation(prod.simType, prod.accentColor);
 }
 
 function initProductCanvasSimulation(type, color) {
@@ -1101,7 +1080,7 @@ function initArchitecturePillars() {
         if (diagTitle) diagTitle.textContent = `${p.tag} — ${p.title}`;
         if (diagDesc) diagDesc.textContent = p.desc;
         if (diagMetric) diagMetric.textContent = p.metric;
-        if (freqDisplay) freqDisplay.textContent = `PULSE ACTIVE: ${(64.28 + idx * 8.4).toFixed(2)} GHz`;
+        if (freqDisplay) freqDisplay.textContent = '';
     }
 }
 

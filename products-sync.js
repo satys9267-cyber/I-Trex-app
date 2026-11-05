@@ -75,11 +75,7 @@ async function initDynamicProductShowroom() {
                                 <h2 class="title-section text-4xl sm:text-6xl text-white">${(p.name || '').toUpperCase()}</h2>
                                 <p class="font-mono text-sm ${textAccent} mt-1 uppercase tracking-wider">${p.tagline || ''} · ${p.code || 'TRX-' + num}</p>
                             </div>
-                            <div class="flex items-center gap-4">
-                                <span class="font-mono text-xs text-neutral-400">STAGE: ${p.stage || 'PRODUCTION'}</span>
-                                <span class="font-mono text-xs px-3 py-1 border ${badgeBg}">${p.assurance || '99.999% ASSURANCE'}</span>
                             </div>
-                        </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
                             <div class="lg:col-span-7 space-y-8">
