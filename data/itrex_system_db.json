@@ -998,15 +998,11 @@
         "Circuit-Level Kill Switch"
       ],
       "keyFeatures": [
-        "Zero-Latency Local Execution: Volume, mic, outputs, media pause, display sleep on local Wi-Fi/Bluetooth daemon",
-        "Offline Fallback Mode: Controls desktop processes, terminal scripts, and phone toggles with internet down",
-        "Instant Silent Feedback: 50ms tactile chime or LED pulse instead of sluggish vocal acknowledgements",
-        "Fuzzy & Natural Intent: 'nuke Chrome', 'kill browser', or 'close Google' execute the exact same command",
-        "Screen State Awareness: Understands 'Close this', 'Full screen it', 'Copy link to phone' based on active window",
-        "AEC & Barge-In: Hears wake words even while blasting loud desktop audio, game sound, or music",
-        "Directional Attention: Multi-mic array mechanically tilts or pans toward you to visually confirm lock-on",
-        "Unified Clipboard & Auto-Ducking: Spoken clipboard sync + desktop media auto-ducks during incoming calls",
-        "Safety & Kill Switch: Two-step confirmation for critical commands + hardware circuit kill switch for privacy"
+        "1. Speed & Execution (Fixing Latency & Offline Failure): Local Wi-Fi/Bluetooth daemon, offline fallback mode, 50ms tactile chime",
+        "2. Conversational UX (Zero Ads & Fuzzy Intent): Zero upsells, fuzzy natural parsing (nuke Chrome = kill browser), screen awareness",
+        "3. Audio & Acoustic Reliability: Custom hardware AEC, directional beamforming with motorized attention pan/tilt, whisper night mode",
+        "4. Cross-Device Handoff: Unified cross-platform clipboard sync, desktop media auto-ducking on incoming calls, hotkey triggers",
+        "5. Safety & Destructive Command Safeguards: Two-step confirmation for critical commands, physical circuit-level hardware kill switch"
       ],
       "specs": {
         "execution_daemon": "Local Wi-Fi / Bluetooth Daemon (0-ms Cloud Ping)",

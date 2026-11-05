@@ -1,6 +1,6 @@
 {
   "name": "itrex-platform",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "I-Trex Innovations — Autonomous Operating System & Enterprise Workspace Platform",
   "main": "server.js",
   "scripts": {
